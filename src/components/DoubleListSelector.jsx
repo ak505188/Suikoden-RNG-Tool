@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 // import { Label } from 'semantic-ui-react';
 
-const ListSelectorButton = styled.button`
+export const ListButton = styled.button`
   &&& {
     width: 100%;
     border: 0;
@@ -12,7 +12,7 @@ const ListSelectorButton = styled.button`
   }
 `;
 
-const ListContainer = styled.div`
+export const ListContainer = styled.div`
   &&& {
     width: 49.75%;
     display: flex;
@@ -20,7 +20,7 @@ const ListContainer = styled.div`
   }
 `;
 
-const Label = styled.label`
+export const Label = styled.label`
   &&& {
     margin: 0 0 .28571429rem 0;
     color: rgba(0,0,0,.87);
@@ -30,12 +30,14 @@ const Label = styled.label`
   }
 `;
 
-const listSelectorStyle = {
-  border: '1px solid rgba(34,36,38,.15)',
-  borderRadius: '.28571429rem',
-  width: '100%',
-  flex: 1
-};
+export const ListInnerContainer = styled.div`
+  &&& {
+    border: 1px solid rgba(34,36,38,.15);
+    border-radius: .28571429rem;
+    width: 100%;
+    flex: 1;
+  }
+`;
 
 export const DoubleListSelectorDiv = styled.div`
   &&& {
@@ -58,23 +60,23 @@ export class ListSelector extends React.Component {
         <Label>
           {this.props.label}
         </Label>
-        <div style={listSelectorStyle}>
+        <ListInnerContainer>
           {this.props.list.map((value, index) => {
             return (
-              <ListSelectorButton
+              <ListButton
                 onClick={this.handleClick.bind(this, index)}
                 key={index}
                 value={index}
               >
-                  {
-                    this.props.optionNames ?
-                      this.props.optionNames[index] :
-                      value
-                  }
-              </ListSelectorButton>
+                {
+                  this.props.optionNames ?
+                    this.props.optionNames[index] :
+                    value
+                }
+              </ListButton>
             );
           })}
-        </div>
+        </ListInnerContainer>
       </ListContainer>
     );
   }

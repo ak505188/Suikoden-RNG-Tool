@@ -11,27 +11,35 @@ const expTable = [
 
 const offset = 14;
 
-const ExperienceContainer = ({ level, fights }) => {
-  const startingLevel = level;
+const ExperienceContainer = ({ levels, fights }) => {
   const partySize = 6;
 
-  const finalLevel = fights.reduce((currentLevel, currentFight) => {
-    const expGrowth = new BigNumber(currentFight.reduce((exp, enemyLevel) => {
-      let levelDiff = Math.ceil(enemyLevel - currentLevel);
-      if (levelDiff > 14) {
-        levelDiff = 15;
-      } else if (levelDiff < -13) {
-        levelDiff = -14;
-      }
-      return (exp + expTable[levelDiff + offset] / 1000);
-    }, 0)).dividedBy(partySize);
-    return expGrowth.plus(currentLevel).toFormat(3);
-  }, startingLevel);
-
+  const results = levels.map(level => {
+    const startingLevel = parseFloat(level);
+    const finalLevel = fights.reduce((currentLevel, currentFight) => {
+      const expGrowth = new BigNumber(currentFight.reduce((exp, enemyLevel) => {
+        let levelDiff = Math.ceil(enemyLevel - currentLevel);
+        if (levelDiff > 14) {
+          levelDiff = 15;
+        } else if (levelDiff < -13) {
+          levelDiff = -14;
+        }
+        return (exp + expTable[levelDiff + offset] / 1000);
+      }, 0)).dividedBy(partySize);
+      return expGrowth.plus(currentLevel).toFormat(3);
+    }, startingLevel);
+    return finalLevel;
+  });
 
   return (
     <Container style={{ flex: 1 }} textAlign="center">
-      {finalLevel}
+      {
+        results.map((level, index) =>
+          <div key={`${level}-${index}`}>
+            {levels[index]} : {level}
+          </div>
+        )
+      }
     </Container>
   );
 }
