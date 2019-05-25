@@ -37,7 +37,7 @@ const listSelectorStyle = {
   flex: 1
 };
 
-const DoubleListSelectorDiv = styled.div`
+export const DoubleListSelectorDiv = styled.div`
   &&& {
     display: flex;
     flex-direction: row;
@@ -46,7 +46,7 @@ const DoubleListSelectorDiv = styled.div`
   }
 `;
 
-class ListSelector extends React.Component {
+export class ListSelector extends React.Component {
   handleClick = (index, event) => {
     event.preventDefault();
     this.props.click(index, event);
@@ -66,7 +66,11 @@ class ListSelector extends React.Component {
                 key={index}
                 value={index}
               >
-                {value}
+                  {
+                    this.props.optionNames ?
+                      this.props.optionNames[index] :
+                      value
+                  }
               </ListSelectorButton>
             );
           })}
@@ -77,11 +81,11 @@ class ListSelector extends React.Component {
 }
 
 export default class DoubleListSelector extends React.Component {
-  addItem = (index, event) => {
+  addItem = (_index, event) => {
     this.props.handleChange([...this.props.list, parseInt(event.currentTarget.value)]);
   }
 
-  removeItem = (index, event) => {
+  removeItem = (index, _event) => {
     this.props.handleChange([...this.props.list.slice(0, index), ...this.props.list.slice(index + 1)]);
   }
 
@@ -91,7 +95,7 @@ export default class DoubleListSelector extends React.Component {
         <ListSelector list={this.props.options} label="Add Enemies" click={this.addItem}/>
         <ListSelector
           label="Remove Enemies"
-          list={this.props.list.map((val, index) => {
+          list={this.props.list.map((val, _index) => {
             return this.props.options[val];
           })}
           click={this.removeItem}

@@ -1240,7 +1240,10 @@ export const enemies = {
   "Kobold Village": {
     "name": "Kobold Village",
     "encounterRate": 0,
-    "encounters": [],
+    "encounters": [
+      { "name": "6 VeteranSoldier",
+        "parseString": "6 VeteranSoldier(spear)" }
+    ],
     "enemies": {
       "VeteranSoldier(spear)": {
         "bits": 700,
@@ -3000,6 +3003,62 @@ export const enemies = {
       }
     },
     "areaType": "Dungeon"
+  },
+  "Soniere Prison Guards": {
+    "name": "Soniere Prison Guards",
+    "encounterRate": 0,
+    "encounters": [
+      { "name": "3 VeteranSoldier #1",
+        "parseString": "3 VeteranSoldier(spear)" },
+      { "name": "3 VeteranSoldier #2",
+        "parseString": "1 VeteranSoldier(bow) 2 VeteranSoldier(spear)" },
+      { "name": "5 VeteranSoldier #1",
+        "parseString": "3 VeteranSoldier(spear) 2 VeteranSoldier(bow)" },
+      { "name": "5 VeteranSoldier #2",
+        "parseString": "1 VeteranSoldier(bow) 3 VeteranSoldier(spear) 1 VeteranSoldier(bow)"
+      }
+    ],
+    "enemies": {
+      "VeteranSoldier(spear)": {
+        "bits": 700,
+        "drops": [
+          {
+            "item": "Leather Armor",
+            "rate": 8
+          }
+        ],
+        "stats": {
+          "DEF": 55,
+          "HP": 270,
+          "LUK": 45,
+          "MGC": 40,
+          "PWR": 190,
+          "SKL": 55,
+          "SPD": 70,
+          "lvl": 26
+        }
+      },
+      "VeteranSoldier(bow)": {
+        "bits": 700,
+        "drops": [
+          {
+            "item": "Emblem",
+            "rate": 6
+          }
+        ],
+        "stats": {
+          "DEF": 45,
+          "HP": 250,
+          "LUK": 47,
+          "MGC": 38,
+          "PWR": 175,
+          "SKL": 50,
+          "SPD": 80,
+          "lvl": 26
+        }
+      }
+    },
+    "areaType": null
   },
   "Toran Lake Castle": {
     "name": "Toran Lake Castle",

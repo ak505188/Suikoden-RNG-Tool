@@ -10,6 +10,7 @@ import SequenceResult from 'components/sequence/result';
 import NPCForm from 'components/npc-movements/form/';
 import NPCResult from 'components/npc-movements/result/';
 import RNGFinder from 'components/rngfinder';
+import Experience from './components/experience';
 import RunAssistantForm from './RunAssistant';
 import RunAssistantResult from './RunAssistant/RunAssistantTool';
 import { enemies } from './lib/enemies';
@@ -76,6 +77,13 @@ const App = () => {
         path="/rngfinder"
         render={() => (
           <RNGFinder areas={areas}/>
+        )}
+      />
+      <Route
+        path="/experience"
+        exact={true}
+        render={() => (
+          <Experience areas={areas}/>
         )}
       />
       <Route

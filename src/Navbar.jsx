@@ -9,6 +9,7 @@ const Routes = [
   { name: 'NPC Movements', path: '/npc' },
   { name: 'Item Drops', path: '/drops' },
   { name: 'RNG Finder', path: '/rngfinder' },
+  { name: 'Experience', path: '/experience' },
   { name: 'Run Assistant', path: '/runassist' }
 ];
 
