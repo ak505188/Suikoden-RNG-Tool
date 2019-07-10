@@ -37,7 +37,8 @@ const saveToLocalStorage = props => {
     useImages: props.useImages,
     compactMode: props.compactMode,
     columns: props.columns,
-    table: props.table
+    table: props.table,
+    hotkeys: props.hotkeys
   }));
 };
 

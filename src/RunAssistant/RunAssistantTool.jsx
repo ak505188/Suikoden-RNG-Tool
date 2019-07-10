@@ -42,21 +42,23 @@ class RunAssistantTool extends React.Component {
           ...configDefault.table.rowStyle,
           ...JSON.parse(config).table.rowStyle
         }
+      },
+      hotkeys: {
+        ...configDefault.hotkeys,
+        ...JSON.parse(config).hotkeys
       }
     };
 
     const initialState = {
       RunAssistant: {
         currentArea: 0,
-        areas: areas.map(area => {
-          return {
-            name: area.name,
-            enemies: area.encounterTable.map((group) => {
-              const { name, enemies, champVal } = group;
-              return { name, enemies, champVal };
-            })
-          };
-        }),
+        areas: areas.map(area => ({
+          name: area.name,
+          enemies: area.encounterTable.map(group => {
+            const { name, enemies, champVal } = group;
+            return { name, enemies, champVal };
+          })
+        })),
         fightsList,
         index: index < fightsList[0].length ? index : 0,
         pattern: [],
@@ -65,7 +67,7 @@ class RunAssistantTool extends React.Component {
       config: config,
       controls: controlsDefault
     };
-    console.log(initialState);
+
     this.state = { store: createStore(reducer, initialState, applyMiddleware(logger)) };
   }
 
