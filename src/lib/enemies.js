@@ -3155,7 +3155,19 @@ export const enemies = {
     { "name": "Gigantes",
       "parseString": "1 Gigantes" },
     { "name": "Dragon",
-      "parseString": "1 Dragon" }
+      "parseString": "1 Dragon" },
+    { "name": "Pirates",
+      "parseString": "1 Anji 1 Kanak 1 Leonardo" },
+    { "name": "Neclord",
+      "parseString": "1 Neclord" },
+    { "name": "Crystal Core",
+      "parseString": "1 CrystalCore" },
+    { "name": "Shell Venus",
+      "parseString": "1 ShellVenus" },
+    { "name": "Sonya Shulen",
+      "parseString": "1 SonyaShulen" },
+    { "name": "Ain Gide",
+      "parseString": "1 AinGide" }
     ],
     "enemies": {
       "Golem": {
@@ -3293,6 +3305,48 @@ export const enemies = {
           "SKL": 60,
           "SPD": 40,
           "lvl": 40
+        }
+      },
+      "Anji": {
+        "bits": 1000,
+        "drops": [],
+        "stats": {
+          "DEF": 60,
+          "HP": 1700,
+          "LUK": 30,
+          "MGC": 80,
+          "PWR": 250,
+          "SKL": 68,
+          "SPD": 80,
+          "lvl": 39
+        }
+      },
+      "Leonardo": {
+        "bits": 400,
+        "drops": [],
+        "stats": {
+          "DEF": 55,
+          "HP": 1400,
+          "LUK": 40,
+          "MGC": 60,
+          "PWR": 270,
+          "SKL": 98,
+          "SPD": 100,
+          "lvl": 36
+        }
+      },
+      "Kanak": {
+        "bits": 400,
+        "drops": [],
+        "stats": {
+          "DEF": 70,
+          "HP": 2200,
+          "LUK": 70,
+          "MGC": 50,
+          "PWR": 240,
+          "SKL": 38,
+          "SPD": 60,
+          "lvl": 35
         }
       },
       "Neclord": {

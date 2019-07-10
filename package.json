@@ -1,7 +1,8 @@
 {
-  "name": "suikoden-rng-no-ts",
+  "name": "Suikoden-RNG-Tool",
+  "homepage": "https://ak505188.github.io/Suikoden-RNG-Tool",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "dependencies": {
     "array-move": "^2.1.0",
     "bignumber.js": "^8.1.1",
@@ -28,7 +29,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "script": "node -r esm"
+    "script": "node -r esm",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -40,6 +43,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "esm": "^3.2.22"
+    "esm": "^3.2.22",
+    "gh-pages": "^2.0.1"
   }
 }
