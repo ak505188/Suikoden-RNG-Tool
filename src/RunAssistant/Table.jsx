@@ -25,10 +25,10 @@ const RunAssistantTable = props => {
     ...fight,
     enemyGroup: fight.enemyGroup.name,
     enemyGroupImage: (
-      <div className="enemyGroupImage">
+      <div style={{ height: props.rowHeight }} className="enemyGroupImage">
         {
           fight.enemyGroup.enemies.map((enemy, index) => (
-            <img className="enemyImage" alt="" key={index} src={enemy.img}/>
+            <img style={{ height: props.rowHeight }} className="enemyImage" alt="" key={index} src={enemy.img}/>
           ))
         }
       </div>
