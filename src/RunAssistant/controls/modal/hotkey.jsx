@@ -12,7 +12,7 @@ const HotkeyInput = props => {
       changeHotkey(e.key.toLowerCase())
       setSelected(false);
     });
-  }, []);
+  }, [action, changeHotkey]);
 
   return (
     <Form.Input
