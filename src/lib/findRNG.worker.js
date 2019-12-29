@@ -138,4 +138,4 @@ const worker = () => {
   }
 };
 
-module.exports = worker;
+export default worker;

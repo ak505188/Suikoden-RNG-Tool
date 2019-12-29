@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import DoubleListSelector from 'components/DoubleListSelector';
 import { InputRNG } from 'components/form/inputs';
 import RNGFinderStatus from './Status';
@@ -7,41 +7,19 @@ import { Container, Form } from 'semantic-ui-react';
 import WebWorker from 'lib/WebWorker';
 import findRNGWorker from 'lib/findRNG.worker.js';
 
+const initialStatus = {
+  progress: 0,
+  message: '',
+  done: false,
+};
+
 const RNGFinder = ({ areas }) => {
   const [rng, setRNG] = useState(numToHexString(0x12));
   const [selectedArea, setSelectedArea] = useState(areaNamesWithRandomEncounters[0]);
   const [fightList, setFightList] = useState([]);
   const [running, setRunning] = useState(false);
-  const [status, setStatus] = useState({
-    progress: 0,
-    message: '',
-    done: false,
-  });
-  const [worker, setWorker] = useState(new WebWorker(findRNGWorker));
-
-  useEffect(() => {
-    if (!running && worker) {
-      worker.terminate();
-      setWorker(undefined);
-    } else if (running && fightList) {
-      const worker = new WebWorker(findRNGWorker);
-      const area = areas[selectedArea];
-      const workerParams = {
-        dungeon: area.areaType === 'Dungeon',
-        tableLength: area.encounterTable.length,
-        encounterRate: area.encounterRate
-      };
-      worker.onmessage = m => {
-        const result = m.data.result ? m.data.result.rng : null;
-        const done = m.data.done ? m.data.done : false;
-        const prevBattleRNG = m.data.prevBattleRNG ? m.data.prevBattleRNG.rng : null;
-        setStatus({...m.data, result, prevBattleRNG });
-        setRunning(!done);
-      };
-      worker.postMessage({ area: workerParams, encounters: fightList, rng: parseInt(rng) });
-      setWorker(worker);
-    }
-  }, [running]);
+  const [status, setStatus] = useState(initialStatus);
+  const [worker, setWorker] = useState();
 
   const handleAreaChange = (_event, data) => {
     const area = data.value;
@@ -49,16 +27,51 @@ const RNGFinder = ({ areas }) => {
     setSelectedArea(area);
   }
 
-  const handleStop = event => {
-    event.preventDefault();
-    setRunning(false);
+  const handleStart = _event => {
+    if (fightList.length < 2) {
+      return;
+    }
+
+    if (worker !== undefined) {
+      killWorker();
+    }
+
+    const webworker = new WebWorker(findRNGWorker);
+    const area = areas[selectedArea];
+    const workerParams = {
+      dungeon: area.areaType === 'Dungeon',
+      tableLength: area.encounterTable.length,
+      encounterRate: area.encounterRate
+    };
+
+    webworker.onmessage = m => {
+      const result = m.data.result ? m.data.result.rng : null;
+      const done = m.data.done ? m.data.done : false;
+      const prevBattleRNG = m.data.prevBattleRNG ? m.data.prevBattleRNG.rng : null;
+      setStatus({...m.data, result, prevBattleRNG });
+      setRunning(!done);
+    };
+
+    setWorker(webworker);
+    setRunning(true);
+    webworker.postMessage({ area: workerParams, encounters: fightList, rng: parseInt(rng) });
+  }
+
+  const killWorker = () => {
     worker.terminate();
     setWorker(undefined);
   }
 
+  const handleStop = event => {
+    event.preventDefault();
+    setRunning(false);
+    setStatus(initialStatus);
+    killWorker();
+  }
+
   return (
     <Container textAlign="center">
-      <Form size="large" onSubmit={() => setRunning(true)}>
+      <Form size="large" onSubmit={() => handleStart()}>
         <InputRNG
           value={rng}
           onChange={e => setRNG(numToHexString(e.target.value))}
