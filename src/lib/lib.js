@@ -1,6 +1,4 @@
 import AreaClass from './Area';
-// import { IDs } from './constants';
-// import { enemies } from './enemies';
 
 export function numToHexString(num) {
   return '0x' + `0000000${num.toString(16)}`.substr(-8);
@@ -65,32 +63,6 @@ export function arraysEqual(ar1, ar2) {
   return true;
 }
 
-/*
-export function fillAreaSelect(Areas: IAreas): void {
-  const areaSelect = $(`#${IDs.AreaSelect}`);
-
-  for (const area in Areas) {
-    if (Areas[area].areaType !== null) {
-      areaSelect.append($('<option>', {
-        text: area,
-        value: area
-      }));
-    }
-  }
-}
-
-export function download(item, filename) {
-  // http://stackoverflow.com/questions/3665115/create-a-file-in-memory-for-user-to-download-not-through-server
-  const element = document.createElement('a');
-  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(item));
-  element.setAttribute('download', filename);
-  element.style.display = 'none';
-  document.body.appendChild(element);
-  element.click();
-  document.body.removeChild(element);
-}
-*/
-
 export const areaNamesWithRandomEncounters = [
   'Cave of the Past',
   'Dragon Knights Area',
@@ -121,17 +93,3 @@ export const areaNamesWithRandomEncounters = [
   'Soniere Prison',
   'Toran Lake Castle'
 ];
-
-// Params has to be a URLSearchParams object.
-// There's a typescript bug where URLSearchParams.keys() does not exist
-// So we use any to get it to compile :(
-/* keys() doesn't seem to work so we're just commenting this thing out
-export function paramsToObject(params: any): { [key: string]: string } {
-  const paramsObject = {};
-  console.log(params);
-  for (const key of params.keys()) {
-    paramsObject[key] = params.getAll(key);
-  }
-  return paramsObject;
-}
-*/

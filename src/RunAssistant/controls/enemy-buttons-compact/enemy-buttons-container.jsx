@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { getCurrentEnemies } from 'RunAssistant/reducers/RunAssistant';
 import { findFight } from 'RunAssistant/actions/RunAssistant';
@@ -19,11 +19,45 @@ const mapDispatchToProps = {
   setEnemyButtonGroupSize
 };
 
-const EnemyButtonContainer = props => {
+const EnemyButtonContainer = ({ enemies, findFight, groupSize, hotkeys, setEnemyButtonGroupSize, useImages }) => {
+  const enemyGroupSizes = enemies.reduce((groupSizes, enemyGroup) => {
+    const enemyCount = enemyGroup.enemies.length;
+    if (!groupSizes.includes(enemyCount)) {
+      groupSizes.push(enemyCount);
+    }
+    return groupSizes;
+  }, []).sort();
+
+  const enemyGroupsBySize = enemies.reduce((groups, enemyGroup) => {
+    const enemyCount = enemyGroup.enemies.length;
+    groups[enemyCount].push(enemyGroup);
+    return groups;
+  }, { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] });
+
+  const selectFight = useCallback(enemyGroup => {
+    findFight(enemyGroup.name);
+  }, [findFight]);
+
+  const selectGroupSize = useCallback(size => {
+    if (enemyGroupsBySize[size].length === 1) {
+      findFight(enemyGroupsBySize[size][0].name);
+    } else if (enemyGroupsBySize[size].length > 0) {
+      setEnemyButtonGroupSize(size);
+    }
+  }, [enemyGroupsBySize, findFight, setEnemyButtonGroupSize]);
+
+  const handleHotkey = useCallback(index => {
+    if (groupSize === null) {
+      selectGroupSize(index + 1);
+    } else if (index < enemyGroupsBySize[groupSize].length) {
+      selectFight(enemyGroupsBySize[groupSize][index]);
+    }
+  }, [enemyGroupsBySize, groupSize, selectFight, selectGroupSize]);
+
   useEffect(() => {
     const handler = event => {
       if (event.target.tagName.toLowerCase() !== 'input') {
-        const index = props.hotkeys.indexOf(event.key);
+        const index = hotkeys.indexOf(event.key);
         if (index !== -1) {
           handleHotkey(index);
         }
@@ -32,41 +66,7 @@ const EnemyButtonContainer = props => {
 
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
-  }, [props.groupSize]);
-
-  const enemyGroupSizes = props.enemies.reduce((groupSizes, enemyGroup) => {
-    const enemyCount = enemyGroup.enemies.length;
-    if (!groupSizes.includes(enemyCount)) {
-      groupSizes.push(enemyCount);
-    }
-    return groupSizes;
-  }, []).sort();
-
-  const enemyGroupsBySize = props.enemies.reduce((groups, enemyGroup) => {
-    const enemyCount = enemyGroup.enemies.length;
-    groups[enemyCount].push(enemyGroup);
-    return groups;
-  }, { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] });
-
-  const handleHotkey = index => {
-    if (props.groupSize === null) {
-      selectGroupSize(index + 1);
-    } else if (index < enemyGroupsBySize[props.groupSize].length) {
-      selectFight(enemyGroupsBySize[props.groupSize][index]);
-    }
-  };
-
-  const selectFight = enemyGroup => {
-    props.findFight(enemyGroup.name);
-  };
-
-  const selectGroupSize = size => {
-    if (enemyGroupsBySize[size].length === 1) {
-      props.findFight(enemyGroupsBySize[size][0].name);
-    } else if (enemyGroupsBySize[size].length > 0) {
-      props.setEnemyButtonGroupSize(size);
-    }
-  };
+  }, [hotkeys, handleHotkey]);
 
   return (
     <Container style={{ width: '100%' }}>
@@ -74,7 +74,7 @@ const EnemyButtonContainer = props => {
         <Button.Group
           style={{ width: '100%', margin: '2px' }}
         >
-          { props.groupSize === null ?
+          { groupSize === null ?
             enemyGroupSizes.map(size =>
               <button
                 key={size}
@@ -85,10 +85,10 @@ const EnemyButtonContainer = props => {
                 {size}
               </button>
             ) :
-            enemyGroupsBySize[props.groupSize].map(enemyGroup =>
+            enemyGroupsBySize[groupSize].map(enemyGroup =>
               <CompactEnemyButton
                 key={enemyGroup.name}
-                useImages={props.useImages}
+                useImages={useImages}
                 enemyGroup={enemyGroup}
                 onClick={() => selectFight(enemyGroup)}
               />

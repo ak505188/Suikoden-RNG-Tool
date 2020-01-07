@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { AutoSizer } from 'react-virtualized';
-import { Container } from 'semantic-ui-react';
 import Table from './Table';
 import Filter from './Filter';
 import ColumnDropdown from './ColumnDropdown';
 import { arraysEqual, filterPropertiesFromObject } from '../lib/lib';
 
-const createDefaultRowsToRender = (data => data.map((row, index) => index));
+const createDefaultRowsToRender = (data => data.map((_row, index) => index));
 
 export default class TableContainer extends React.Component {
   constructor(props) {
@@ -17,13 +16,7 @@ export default class TableContainer extends React.Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.data.length !== nextProps.data.length) {
-      this.setState({ rowsToRender: createDefaultRowsToRender(nextProps.data)});
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     const prevData = this.props.filterFromData
       ? prevProps.data.map(row => filterPropertiesFromObject(row, this.props.filterFromData))
       : prevProps.data;
@@ -46,7 +39,7 @@ export default class TableContainer extends React.Component {
     return (
       <AutoSizer>
         {({ height, width }) => (
-          <Container>
+          <React.Fragment>
             <div style={{ display: 'flex', 'justifyContent': 'space-between', width, height: 38 }}>
               { this.props.filter !== false ?
                 <Filter
@@ -55,7 +48,7 @@ export default class TableContainer extends React.Component {
                     dataForFilter :
                     this.props.data
                   }
-                  setRowsToRender={(rows: number[]) => this.setState({ rowsToRender: rows })}
+                  setRowsToRender={(rows) => this.setState({ rowsToRender: rows })}
                 /> : null }
               <ColumnDropdown
                 columns={this.state.columns}
@@ -77,7 +70,7 @@ export default class TableContainer extends React.Component {
               rowHeight={this.props.rowHeight || 30}
               rowStyle={this.props.rowStyle || {}}
             />
-          </Container>
+          </React.Fragment>
         )}
       </AutoSizer>
     );
