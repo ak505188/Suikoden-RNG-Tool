@@ -2,15 +2,15 @@ import * as React from 'react';
 import { Button, Container, Progress, Segment } from 'semantic-ui-react';
 import { numToHexString } from 'lib/lib';
 
-const RNGFinderStatus = ({ cancel, message, progress, done, prevBattleRNG, result, running }) => (
+const RNGFinderStatus = ({ cancel, message, progress, done, result, running }) => (
   <Container textAlign="center">
     {result &&
       <Segment>
         <p>
-          First Battle RNG: {numToHexString(result)}
+          First Battle RNG: {numToHexString(result.foundEncounterRNG)}
         </p>
         <p>
-          Previous Battle RNG: {numToHexString(prevBattleRNG)}
+          Previous Battle RNG: {numToHexString(result.foundEncounterRNGPrevious)}
         </p>
       </Segment>
     }

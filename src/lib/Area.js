@@ -18,8 +18,11 @@ export default class AreaClass {
   }
 
   isBattle(rng) {
-    return this.areaType === 'Dungeon'
-      ? this.isBattleDungeon(rng) : this.isBattleWorldMap(rng);
+    return isBattle(rng, this.encounterRate, this.areaType);
+  }
+
+  static isBattle(rng, encounterRate, areaType) {
+    return isBattle(rng, encounterRate, areaType);
   }
 
   getEnemyGroup(name) {
@@ -32,13 +35,11 @@ export default class AreaClass {
   }
 
   getEncounterIndex(rng) {
-    const r2 = rng.getNext().rng2;
-    const r3 = div32ulo(0x7FFF, this.encounterTable.length);
-    let encounterIndex = div32ulo(r2, r3);
-    while (encounterIndex >= this.encounterTable.length) {
-      encounterIndex--;
-    }
-    return encounterIndex;
+    return getEncounterIndex(rng, this.encounterTable.length);
+  }
+
+  static getEncounterIndex(rng, encounterTableLength) {
+    return getEncounterIndex(rng, encounterTableLength);
   }
 
   // Realistic advances RNG whenever getEncounter is called.
@@ -67,23 +68,6 @@ export default class AreaClass {
     return encounters;
   }
 
-  isBattleWorldMap(rng) {
-    let r2 = rng.getRNG2();
-    const r3 = r2;
-    r2 = (r2 >> 8) << 8;
-    r2 = r3 - r2;
-    return r2 < this.encounterRate;
-  }
-
-  isBattleDungeon(rng) {
-    let r2 = rng.getRNG2();
-    const r3 = 0x7F;
-    const mflo = div32ulo(r2, r3);
-    r2 = mflo;
-    r2 = r2 & 0xFF;
-    return r2 < this.encounterRate;
-  }
-
   parseEncounterTable(encounters) {
     const encounterTable = [];
     for (let i = 0; i < encounters.length; i++) {
@@ -110,4 +94,36 @@ export default class AreaClass {
     return enemyGroup;
   }
 
+}
+
+function isBattleWorldMap(rng, encounterRate) {
+  let r2 = rng.getRNG2();
+  const r3 = r2;
+  r2 = (r2 >> 8) << 8;
+  r2 = r3 - r2;
+  return r2 < encounterRate;
+}
+
+function isBattleDungeon(rng, encounterRate) {
+  let r2 = rng.getRNG2();
+  const r3 = 0x7F;
+  const mflo = div32ulo(r2, r3);
+  r2 = mflo;
+  r2 = r2 & 0xFF;
+  return r2 < encounterRate;
+}
+
+function isBattle(rng, encounterRate, areaType) {
+    return areaType === 'Dungeon'
+      ? isBattleDungeon(rng, encounterRate) : isBattleWorldMap(rng, encounterRate);
+}
+
+function getEncounterIndex(rng, encounterTableLength) {
+  const r2 = rng.getNext().rng2;
+  const r3 = div32ulo(0x7FFF, encounterTableLength);
+  let encounterIndex = div32ulo(r2, r3);
+  while (encounterIndex >= encounterTableLength) {
+    encounterIndex--;
+  }
+  return encounterIndex;
 }

@@ -4,8 +4,8 @@ import { InputRNG } from 'components/form/inputs';
 import RNGFinderStatus from './Status';
 import { areaNamesWithRandomEncounters, numToHexString } from 'lib/lib';
 import { Container, Form } from 'semantic-ui-react';
-import WebWorker from 'lib/WebWorker';
-import findRNGWorker from 'lib/findRNG.worker.js';
+
+import findRNGWorker from 'workerize-loader!lib/findRNG.worker.js'; // eslint-disable-line import/no-webpack-loader-syntax
 
 const initialStatus = {
   progress: 0,
@@ -36,25 +36,23 @@ const RNGFinder = ({ areas }) => {
       killWorker();
     }
 
-    const webworker = new WebWorker(findRNGWorker);
+    const webworker = new findRNGWorker();
     const area = areas[selectedArea];
     const workerParams = {
-      dungeon: area.areaType === 'Dungeon',
+      areaType: area.areaType,
       tableLength: area.encounterTable.length,
       encounterRate: area.encounterRate
     };
 
     webworker.onmessage = m => {
-      const result = m.data.result ? m.data.result.rng : null;
-      const done = m.data.done ? m.data.done : false;
-      const prevBattleRNG = m.data.prevBattleRNG ? m.data.prevBattleRNG.rng : null;
-      setStatus({...m.data, result, prevBattleRNG });
+      const { done, message, progress, result } = m.data;
+      setStatus({ done, message, progress, result });
       setRunning(!done);
     };
 
     setWorker(webworker);
     setRunning(true);
-    webworker.postMessage({ area: workerParams, encounters: fightList, rng: parseInt(rng) });
+    webworker.postMessage({ workerParams, encounters: fightList, rng: parseInt(rng) });
   }
 
   const killWorker = () => {

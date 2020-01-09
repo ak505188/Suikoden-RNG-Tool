@@ -1,4 +1,3 @@
-/* tslint:disable:quotemark */
 export const enemies = {
   "Cave of the Past": {
     "name": "Cave of the Past",
