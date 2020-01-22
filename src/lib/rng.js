@@ -36,13 +36,12 @@ export default class RNG {
   // Returns the next set of RNG values
   // Used when you don't want to advance
   // the RNG but need to see next value
-  getNext(iterations) {
-    iterations = iterations ? iterations : 1;
+  getNext(iterations = 1) {
     let rng  = this.getRNG();
     let rng2 = this.getRNG2();
     for (let i = 0; i < iterations; i++) {
       rng  = mult32ulo(rng, 0x41c64e6d) + 0x3039;
-      rng2 = (rng >> 16) & 0x7FFF;
+      rng2 = this.calcRNG2(rng);
     }
     return { rng, rng2 };
   }

@@ -18,7 +18,7 @@ function wheelSuccess(rng) {
   return --counter;
 }
 
-export default function Fight(area, enemyGroup, rng) {
+export default function createFight(area, enemyGroup, rng) {
   return {
     enemyGroup: enemyGroup,
     area: area,

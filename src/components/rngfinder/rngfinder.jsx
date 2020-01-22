@@ -5,7 +5,7 @@ import RNGFinderStatus from './Status';
 import { areaNamesWithRandomEncounters, numToHexString } from 'lib/lib';
 import { Container, Form } from 'semantic-ui-react';
 
-import findRNGWorker from 'workerize-loader!lib/findRNG.worker.js'; // eslint-disable-line import/no-webpack-loader-syntax
+import findRNGWorker from 'workerize-loader!lib/findRNG/findRNG.worker.js'; // eslint-disable-line import/no-webpack-loader-syntax
 
 const initialStatus = {
   progress: 0,

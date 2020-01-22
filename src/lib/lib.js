@@ -1,4 +1,4 @@
-import AreaClass from './Area';
+import AreaFactory from './Area/AreaFactory';
 
 export function numToHexString(num) {
   return '0x' + `0000000${num.toString(16)}`.substr(-8);
@@ -24,11 +24,10 @@ export function div32ulo(n, m) {
 }
 
 export function initAreas(enemies) {
+  const factory = new AreaFactory();
   const areas = {};
   for (const area in enemies) {
-    if (enemies.hasOwnProperty(area)) {
-      areas[area] = new AreaClass(enemies[area].name, enemies[area]);
-    }
+    areas[area] = factory.createArea(enemies[area].name, enemies[area]);
   }
   return areas;
 }
@@ -61,6 +60,10 @@ export function arraysEqual(ar1, ar2) {
   }
 
   return true;
+}
+
+export function encounterSequenceToString(encounters) {
+  return encounters.map(encounter => encounter.toString(16)).join('');
 }
 
 export const areaNamesWithRandomEncounters = [

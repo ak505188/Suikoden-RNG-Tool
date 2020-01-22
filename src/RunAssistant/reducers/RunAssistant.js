@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions';
-import { boyerMoore } from  '../../lib/findRNG';
+import { encounterSequenceToString } from  'lib/lib';
 
 const initialState = {
   currentArea: 0,
@@ -99,12 +99,12 @@ export default handleActions(
         .map(fight => (getEnemyGroupEncounterIndex(fight.enemyGroup.name, currentArea.enemies)))
         .slice(searchStartIndex);
       if (pattern.length > 1) {
-        const i = boyerMoore(fights, pattern, currentArea.enemies.length);
-        if (i !== null) {
+        const searchMatchIndex = encounterSequenceToString(fights).search(encounterSequenceToString(pattern));
+        if (searchMatchIndex >= 0) {
           return {
             ...state,
             pattern,
-            index: searchStartIndex + i + pattern.length - 1
+            index: searchStartIndex + searchMatchIndex + pattern.length - 1
           };
         } else {
           return state;
