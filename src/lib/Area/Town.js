@@ -8,4 +8,8 @@ export default class Town extends Area {
   isBattle(_rng) {
     return null;
   }
+
+  calcIsBattleValue(_rng) {
+    return null;
+  }
 }

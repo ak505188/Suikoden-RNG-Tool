@@ -10,7 +10,8 @@ const Presenter = props => {
     { label: 'Encounter RNG', key: 'startRNG', width: 150 },
     { label: 'Battle RNG', key: 'battleRNG', width: 150 },
     { label: 'Wheel Attempts', key: 'wheel', width: 150 },
-    { label: 'Champion Value', key: 'champVal', width: 150, show: false }
+    { label: 'Champion Value', key: 'champVal', width: 150, show: false },
+    { label: 'Is Battle Value', key: 'isBattleValue', width: 150, show: false }
   ];
   return <VirtTable columns={columns} data={props.encounters}/>;
 };

@@ -16,14 +16,15 @@ const EncountersContainer = ({ areas, location }) => {
     .map(area => area.generateEncounters(new RNG(rng), iterations, partylevel, realistic))
     .reduce((fights, areaFights) => fights.concat(areaFights), [])
     .map(fight => ({
-      area: fight.area,
-      enemy: fight.enemyGroup.name,
-      index: fight.index,
-      run: fight.run ? 'Run' : 'Fail',
-      startRNG: numToHexString(fight.startRNG),
-      battleRNG: numToHexString(fight.battleRNG),
-      wheel: fight.wheel,
-      champVal: fight.enemyGroup.champVal
+        area: fight.area,
+        enemy: fight.enemyGroup.name,
+        index: fight.index,
+        run: fight.run ? 'Run' : 'Fail',
+        startRNG: numToHexString(fight.startRNG),
+        battleRNG: numToHexString(fight.battleRNG),
+        wheel: fight.wheel,
+        champVal: fight.enemyGroup.champVal,
+        isBattleValue: fight.isBattleValue
     }))
     .sort((a, b) => {
       if (a.index !== b.index) {

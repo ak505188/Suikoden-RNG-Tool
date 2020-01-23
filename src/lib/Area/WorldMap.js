@@ -1,4 +1,4 @@
-import Area, { isBattleWorldMap } from './Area';
+import Area, { calcIsBattleValueWorldMap, isBattleWorldMap } from './Area';
 
 export default class WorldMapArea extends Area {
   constructor(name, enemies, encounterTable) {
@@ -7,5 +7,9 @@ export default class WorldMapArea extends Area {
 
   isBattle(rng) {
     return isBattleWorldMap(rng, this.encounterRate);
+  }
+
+  calcIsBattleValueWorldMap(rng) {
+    return calcIsBattleValueWorldMap(rng);
   }
 }

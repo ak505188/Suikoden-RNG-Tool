@@ -1,4 +1,4 @@
-import Area, { isBattleDungeon } from './Area';
+import Area, { isBattleDungeon, calcIsBattleValueDungeon } from './Area';
 
 export default class Dungeon extends Area {
   constructor(name, enemies, encounterTable, encounterRate) {
@@ -7,5 +7,9 @@ export default class Dungeon extends Area {
 
   isBattle(rng) {
     return isBattleDungeon(rng, this.encounterRate);
+  }
+
+  calcIsBattleValue(rng) {
+    return calcIsBattleValueDungeon(rng);
   }
 }
