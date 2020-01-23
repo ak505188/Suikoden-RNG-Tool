@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/Suikoden-RNG-Tool/precache-manifest.1c51cf9cb1989b1384bab6300ddafce4.js"
+  "/Suikoden-RNG-Tool/precache-manifest.ad34fc788ddd2f2a9c80dbb0f5d727f7.js"
 );
 
 self.addEventListener('message', (event) => {
