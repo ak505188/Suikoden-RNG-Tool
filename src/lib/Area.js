@@ -25,6 +25,14 @@ export default class AreaClass {
     return isBattle(rng, encounterRate, areaType);
   }
 
+  calcIsBattleValue(rng) {
+    return calcIsBattleValue(rng, this.areaType);
+  }
+
+  static calcIsBattleValue(rng, areaType) {
+    return calcIsBattleValue(rng, areaType);
+  }
+
   getEnemyGroup(name) {
     for (const enemyGroup of this.encounterTable) {
       if (enemyGroup.name === name) {
@@ -96,21 +104,34 @@ export default class AreaClass {
 
 }
 
-function isBattleWorldMap(rng, encounterRate) {
+function calcIsBattleValueWorldMap(rng) {
   let r2 = rng.getRNG2();
   const r3 = r2;
   r2 = (r2 >> 8) << 8;
   r2 = r3 - r2;
-  return r2 < encounterRate;
+  return r2;
 }
 
-function isBattleDungeon(rng, encounterRate) {
+function calcIsBattleValue(rng, areaType) {
+    return areaType === 'Dungeon'
+      ? calcIsBattleValueDungeon(rng) : calcIsBattleValueWorldMap(rng);
+}
+
+function isBattleWorldMap(rng, encounterRate) {
+  return calcIsBattleValueWorldMap(rng) < encounterRate;
+}
+
+function calcIsBattleValueDungeon(rng) {
   let r2 = rng.getRNG2();
   const r3 = 0x7F;
   const mflo = div32ulo(r2, r3);
   r2 = mflo;
   r2 = r2 & 0xFF;
-  return r2 < encounterRate;
+  return r2;
+}
+
+function isBattleDungeon(rng, encounterRate) {
+  return calcIsBattleValueDungeon(rng) < encounterRate;
 }
 
 function isBattle(rng, encounterRate, areaType) {

@@ -6,7 +6,7 @@ function isRun(r2) {
   return r3 > 50 ? true : false;
 }
 
-function wheelSuccess(rng) {
+export function wheelSuccess(rng) {
   let counter = 0;
   const success = pos => {
     return pos >= 0x7f && pos <= 0xa0;

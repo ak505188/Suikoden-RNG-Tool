@@ -9,7 +9,7 @@ export default class WorldMapArea extends Area {
     return isBattleWorldMap(rng, this.encounterRate);
   }
 
-  calcIsBattleValueWorldMap(rng) {
+  calcIsBattleValue(rng) {
     return calcIsBattleValueWorldMap(rng);
   }
 }

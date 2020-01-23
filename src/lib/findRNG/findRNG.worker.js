@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { findRNG } from './findRNG';
 
 self.addEventListener('message', function(e) {
