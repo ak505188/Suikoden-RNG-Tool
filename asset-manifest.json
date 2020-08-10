@@ -1,30 +1,30 @@
 {
   "files": {
     "main.css": "/Suikoden-RNG-Tool/static/css/main.03da2e84.chunk.css",
-    "main.js": "/Suikoden-RNG-Tool/static/js/main.9da5fc51.chunk.js",
-    "main.js.map": "/Suikoden-RNG-Tool/static/js/main.9da5fc51.chunk.js.map",
-    "runtime-main.js": "/Suikoden-RNG-Tool/static/js/runtime-main.f4e9240b.js",
-    "runtime-main.js.map": "/Suikoden-RNG-Tool/static/js/runtime-main.f4e9240b.js.map",
-    "static/css/2.ba220c4e.chunk.css": "/Suikoden-RNG-Tool/static/css/2.ba220c4e.chunk.css",
-    "static/js/2.0963a62b.chunk.js": "/Suikoden-RNG-Tool/static/js/2.0963a62b.chunk.js",
-    "static/js/2.0963a62b.chunk.js.map": "/Suikoden-RNG-Tool/static/js/2.0963a62b.chunk.js.map",
-    "1032ec1c43c28bc526b1.worker.js": "/Suikoden-RNG-Tool/1032ec1c43c28bc526b1.worker.js",
-    "1032ec1c43c28bc526b1.worker.js.map": "/Suikoden-RNG-Tool/1032ec1c43c28bc526b1.worker.js.map",
+    "main.js": "/Suikoden-RNG-Tool/static/js/main.3e582e7a.chunk.js",
+    "main.js.map": "/Suikoden-RNG-Tool/static/js/main.3e582e7a.chunk.js.map",
+    "runtime-main.js": "/Suikoden-RNG-Tool/static/js/runtime-main.d97acd05.js",
+    "runtime-main.js.map": "/Suikoden-RNG-Tool/static/js/runtime-main.d97acd05.js.map",
+    "static/css/2.fdd32756.chunk.css": "/Suikoden-RNG-Tool/static/css/2.fdd32756.chunk.css",
+    "static/js/2.940e04ea.chunk.js": "/Suikoden-RNG-Tool/static/js/2.940e04ea.chunk.js",
+    "static/js/2.940e04ea.chunk.js.map": "/Suikoden-RNG-Tool/static/js/2.940e04ea.chunk.js.map",
+    "8d69f3dcc8ac286f2033.worker.js": "/Suikoden-RNG-Tool/8d69f3dcc8ac286f2033.worker.js",
+    "8d69f3dcc8ac286f2033.worker.js.map": "/Suikoden-RNG-Tool/8d69f3dcc8ac286f2033.worker.js.map",
     "index.html": "/Suikoden-RNG-Tool/index.html",
-    "precache-manifest.b6985abbd3aaf304a4bf73f6559698ef.js": "/Suikoden-RNG-Tool/precache-manifest.b6985abbd3aaf304a4bf73f6559698ef.js",
+    "precache-manifest.0bb91755bb55a7df14135403539ceccb.js": "/Suikoden-RNG-Tool/precache-manifest.0bb91755bb55a7df14135403539ceccb.js",
     "service-worker.js": "/Suikoden-RNG-Tool/service-worker.js",
-    "static/css/2.ba220c4e.chunk.css.map": "/Suikoden-RNG-Tool/static/css/2.ba220c4e.chunk.css.map",
+    "static/css/2.fdd32756.chunk.css.map": "/Suikoden-RNG-Tool/static/css/2.fdd32756.chunk.css.map",
     "static/css/main.03da2e84.chunk.css.map": "/Suikoden-RNG-Tool/static/css/main.03da2e84.chunk.css.map",
-    "static/js/2.0963a62b.chunk.js.LICENSE": "/Suikoden-RNG-Tool/static/js/2.0963a62b.chunk.js.LICENSE",
+    "static/js/2.940e04ea.chunk.js.LICENSE.txt": "/Suikoden-RNG-Tool/static/js/2.940e04ea.chunk.js.LICENSE.txt",
     "static/media/GoldenHydraLeft.png": "/Suikoden-RNG-Tool/static/media/GoldenHydraLeft.61a7efea.png",
     "static/media/GoldenHydraRight.png": "/Suikoden-RNG-Tool/static/media/GoldenHydraRight.d4e4014e.png",
     "static/media/semantic.min.css": "/Suikoden-RNG-Tool/static/media/outline-icons.ef60a4f6.woff"
   },
   "entrypoints": [
-    "static/js/runtime-main.f4e9240b.js",
-    "static/css/2.ba220c4e.chunk.css",
-    "static/js/2.0963a62b.chunk.js",
+    "static/js/runtime-main.d97acd05.js",
+    "static/css/2.fdd32756.chunk.css",
+    "static/js/2.940e04ea.chunk.js",
     "static/css/main.03da2e84.chunk.css",
-    "static/js/main.9da5fc51.chunk.js"
+    "static/js/main.3e582e7a.chunk.js"
   ]
 }
