@@ -1,6 +1,6 @@
-import EnemyGroup from './EnemyGroup';
-import Fight from './Fight';
-import { div32ulo } from './lib';
+import EnemyGroup from '../EnemyGroup';
+import Fight from '../Fight';
+import { div32ulo } from '../lib';
 
 export default class AreaClass {
   constructor(name, area) {

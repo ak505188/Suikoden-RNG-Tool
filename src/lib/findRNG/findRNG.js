@@ -1,4 +1,4 @@
-import Area from '../Area';
+import Area from './Area';
 import RNG from '../rng';
 import Status from './Status';
 import Encounters from './Encounters';
