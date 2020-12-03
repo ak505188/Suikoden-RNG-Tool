@@ -1,8 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { Container } from 'semantic-ui-react';
-import RNG from 'lib/rng';
-import { numToHexString } from 'lib/lib';
+import { Helpers, RNG } from 'suikoden-rng-lib';
 import ItemdropsTable from './itemdrops-result-table';
 
 const ItemdropsContainer = ({ areas, location }) => {
@@ -15,7 +14,7 @@ const ItemdropsContainer = ({ areas, location }) => {
     group.calculateDrops(rng, iterations).map((drop, index) => ({
       drop: drop.drop,
       index,
-      rng: numToHexString(drop.rng)
+      rng: Helpers.numToHexString(drop.rng)
     })
   );
 

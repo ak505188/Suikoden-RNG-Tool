@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
-import { areaNamesWithRandomEncounters, numToHexString } from 'lib/lib';
+import { Helpers } from 'suikoden-rng-lib';
 import { Container, Form } from 'semantic-ui-react';
 import { InputRNG, InputIterations, InputPartyLevel } from 'components/form/inputs';
 
 const EncountersForm = ({ areas, history }) => {
-  const [rng, setRNG] = useState(numToHexString(0x12));
+  const [rng, setRNG] = useState(Helpers.numToHexString(0x12));
   const [iterations, setIterations] = useState(1000);
   const [partylevel, setPartylevel] = useState(0);
   const [realistic, setRealistic] = useState(true)
@@ -40,7 +40,7 @@ const EncountersForm = ({ areas, history }) => {
         <Form.Dropdown
           label="Areas"
           placeholder="Area"
-          options={areaNamesWithRandomEncounters.map(name =>
+          options={Helpers.areaNamesWithRandomEncounters.map(name =>
             ({ key: name, value: name, text: areas[name].name })
           )}
           value={selectedAreas}

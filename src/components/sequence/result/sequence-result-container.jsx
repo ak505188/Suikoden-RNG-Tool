@@ -2,10 +2,7 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { Container } from 'semantic-ui-react';
 import SequenceTable from './sequence-result-table';
-import RNG from 'lib/rng';
-import { numToHexString } from 'lib/lib';
-import { wheelSuccess } from 'lib/Fight';
-import { CliveAppearance, MarieDialogue } from 'lib/miscRNGCalcs';
+import { RNG } from 'suikoden-rng-lib';
 
 const SequenceResult = ({ location }) => {
   const params = new URLSearchParams(location.search);
@@ -16,10 +13,10 @@ const SequenceResult = ({ location }) => {
   const marieText = [];
   const cliveAppearance = [];
   for (let i = 0; i < iterations; i++) {
-    sequence.push(numToHexString(rng.getRNG()));
-    wheelAttempts.push(wheelSuccess(rng.clone().next()));
-    marieText.push(MarieDialogue(rng));
-    cliveAppearance.push(CliveAppearance(rng));
+    sequence.push(rng.toString());
+    wheelAttempts.push(RNG.getWheelAttempts(rng.clone().next()));
+    marieText.push(rng.isMarieDialogue() ? 'Antonio Dialogue' : 'No Dialogue');
+    cliveAppearance.push(rng.isCliveAppearance() ? 'Clive' : 'No Clive');
     rng.next();
   }
 

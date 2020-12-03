@@ -22,6 +22,7 @@
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.88.2",
     "styled-components": "^4.2.0",
+    "suikoden-rng-lib": "git+https://github.com/ak505188/Suikoden-RNG-lib.git",
     "worker-loader": "^2.0.0"
   },
   "scripts": {

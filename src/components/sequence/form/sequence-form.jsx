@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { numToHexString } from 'lib/lib';
+import { Helpers } from 'suikoden-rng-lib';
 import { Container, Form } from 'semantic-ui-react';
 import { InputRNG, InputIterations } from 'components/form/inputs';
 import { withRouter } from 'react-router-dom';
 
 const SequenceForm = ({ history }) => {
-  const [rng, setRNG] = useState(numToHexString(0x12));
+  const [rng, setRNG] = useState(Helpers.numToHexString(0x12));
   const [iterations, setIterations] = useState(1000);
 
   const handleSubmit = event => {

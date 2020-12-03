@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Container, Form } from 'semantic-ui-react';
-import { numToHexString } from 'lib/lib';
+import { Helpers } from 'suikoden-rng-lib';
 import { InputRNG, InputIterations } from 'components/form/inputs';
 
 const ItemDropsForm = ({ areas, history }) => {
-  const [rng, setRNG] = useState(numToHexString(0x12));
+  const [rng, setRNG] = useState(Helpers.numToHexString(0x12));
   const [iterations, setIterations] = useState(1000);
   const [area, setArea] = useState('Cave of the Past');
   const [enemyGroup, setEnemyGroup] = useState(0);

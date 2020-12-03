@@ -2,8 +2,7 @@ import * as React from 'react';
 import { withRouter } from 'react-router-dom';
 import { Container } from 'semantic-ui-react';
 import Table from './npc-movements-table';
-import RNG from 'lib/rng';
-import { div32ulo, numToHexString } from 'lib/lib';
+import { Helpers, RNG } from 'suikoden-rng-lib';
 
 function directionToString(num) {
   const dir = num % 4;
@@ -36,12 +35,12 @@ const NPCMovementsResult = ({ location }) => {
       rng.next();
       i++;
       direction = 'Previous Movement';
-      if (div32ulo(rng.getRNG2(), 0x1fff) > 0) {
+      if (Helpers.div32ulo(rng.getRNG2(), 0x1fff) > 0) {
         rng.next();
         i++;
-        direction = directionToString(div32ulo(rng.getRNG2(), 0x1999));
+        direction = directionToString(Helpers.div32ulo(rng.getRNG2(), 0x1999));
       }
-      result.push({ index, rng: numToHexString(rng.getRNG()), direction, npc: currentNPC + 1 });
+      result.push({ index, rng: Helpers.numToHexString(rng.getRNG()), direction, npc: currentNPC + 1 });
     } else {
       currentNPC = (currentNPC + 1) % npcCount;
     }

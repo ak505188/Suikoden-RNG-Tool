@@ -13,14 +13,11 @@ import RNGFinder from 'components/rngfinder';
 import Experience from './components/experience';
 import RunAssistantForm from './RunAssistant';
 import RunAssistantResult from './RunAssistant/RunAssistantTool';
-import { enemies } from './lib/enemies';
-import { initAreas } from './lib/lib';
+import { Areas } from 'suikoden-rng-lib';
 import { Route } from 'react-router-dom';
 import './index.css';
 
 const App = () => {
-  const areas = initAreas(enemies);
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100vh' }}>
       <Navbar/>
@@ -29,14 +26,14 @@ const App = () => {
         path="/encounters"
         exact={true}
         render={() => (
-          <EncountersForm areas={areas}/>
+          <EncountersForm areas={Areas}/>
         )}
       />
       <Route
         path="/encounters/result"
         exact={true}
         render={() => (
-          <EncounterResult areas={areas}/>
+          <EncounterResult areas={Areas}/>
         )}
       />
       <Route
@@ -63,41 +60,41 @@ const App = () => {
         path="/drops"
         exact={true}
         render={() => (
-          <ItemDropsForm areas={areas}/>
+          <ItemDropsForm areas={Areas}/>
         )}
       />
       <Route
         path="/drops/result"
         exact={true}
         render={() => (
-          <ItemDropsResult areas={areas}/>
+          <ItemDropsResult areas={Areas}/>
         )}
       />
       <Route
         path="/rngfinder"
         render={() => (
-          <RNGFinder areas={areas}/>
+          <RNGFinder areas={Areas}/>
         )}
       />
       <Route
         path="/experience"
         exact={true}
         render={() => (
-          <Experience areas={areas}/>
+          <Experience areas={Areas}/>
         )}
       />
       <Route
         path="/runassist"
         exact={true}
         render={() => (
-          <RunAssistantForm areas={areas}/>
+          <RunAssistantForm areas={Areas}/>
         )}
       />
       <Route
         path="/runassist/result"
         exact={true}
         render={() => (
-          <RunAssistantResult areas={areas}/>
+          <RunAssistantResult areas={Areas}/>
         )}
       />
     </div>

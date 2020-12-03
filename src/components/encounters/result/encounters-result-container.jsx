@@ -1,9 +1,8 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { Container } from 'semantic-ui-react';
-import RNG from 'lib/rng';
+import { Helpers, RNG } from 'suikoden-rng-lib';
 import EncountersTable from './encounters-result-table';
-import { numToHexString } from 'lib/lib';
 
 const EncountersContainer = ({ areas, location }) => {
   const params = new URLSearchParams(location.search);
@@ -20,8 +19,8 @@ const EncountersContainer = ({ areas, location }) => {
         enemy: fight.enemyGroup.name,
         index: fight.index,
         run: fight.run ? 'Run' : 'Fail',
-        startRNG: numToHexString(fight.startRNG),
-        battleRNG: numToHexString(fight.battleRNG),
+        startRNG: Helpers.numToHexString(fight.startRNG),
+        battleRNG: Helpers.numToHexString(fight.battleRNG),
         wheel: fight.wheel,
         champVal: fight.enemyGroup.champVal,
         isBattleValue: fight.isBattleValue
