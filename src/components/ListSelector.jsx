@@ -1,21 +1,36 @@
 import React from 'react';
 import { Label, ListContainer, ListInnerContainer, ListButton } from './DoubleListSelector';
-import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
+import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import arrayMove from 'array-move';
-import { Icon } from 'semantic-ui-react';
 
-const Handle = SortableHandle(() => <Icon name="exchange" rotated="clockwise" />);
+const SelectedFight = ({ enemyGroupName, index, partySize, onPartySizeChange, onSelectedFightDelete }) => (
+  <span className="experience-selected-fight-container">
+    <span
+      className="experience-remove-fight"
+      onClick={onSelectedFightDelete}
+    >
+      X
+    </span>
+    <input className="experience-party-size" type="number" min="0" max="6" value={partySize} onChange={e => onPartySizeChange(e.target.value, index)}/>
+    <span className="experience-fight-name">{enemyGroupName}</span>
+  </span>
+);
 
-const SortableItem = SortableElement(({ value, onClick, sortIndex }) => {
+
+const SortableItem = SortableElement(({ value, listItemHandlers, sortIndex }) => {
   return (
-    <ListButton onClick={() => onClick(sortIndex)}>
-      <Handle/>
-      {value.name}
+    <ListButton style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <SelectedFight
+        enemyGroupName={value.enemyGroup.name}
+        partySize={value.partySize}
+        onPartySizeChange={listItemHandlers.onPartySizeChange}
+        index={sortIndex}
+        onSelectedFightDelete={() => listItemHandlers.onSelectedFightDelete(sortIndex)}/>
     </ListButton>
   );
 });
 
-const SortableList = SortableContainer(({ list, onClick }) => {
+const SortableList = SortableContainer(({ list, listItemHandlers }) => {
   return (
     <ListInnerContainer>
       { list.map((value, index) => (
@@ -24,7 +39,8 @@ const SortableList = SortableContainer(({ list, onClick }) => {
           index={index}
           sortIndex={index}
           value={value}
-          onClick={onClick}
+          listItemHandlers={listItemHandlers}
+          render={value}
         />
       ))}
     </ListInnerContainer>
@@ -33,16 +49,19 @@ const SortableList = SortableContainer(({ list, onClick }) => {
 
 const SortableComponent = props => {
   const onSortEnd = ({oldIndex, newIndex}) => {
-    props.handleDrag(arrayMove(props.list, oldIndex, newIndex));
+    const newArr = arrayMove(props.list, oldIndex, newIndex);
+    props.handleDrag(newArr);
   };
 
   return (
     <ListContainer>
       <Label>
-        {props.label}
+        {props.label} (Hold to drag)
       </Label>
       <SortableList
         list={props.list}
+        listItemHandlers={props.listItemHandlers}
+        pressDelay={100}
         onSortEnd={onSortEnd}
         onClick={props.onClick}
         lockAxis="y"

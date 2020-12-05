@@ -12,12 +12,15 @@ const expTable = [
 const offset = 14;
 
 const ExperienceContainer = ({ levels, fights }) => {
-  const partySize = 6;
 
   const results = levels.map(level => {
     const startingLevel = parseFloat(level);
     const finalLevel = fights.reduce((currentLevel, currentFight) => {
-      const expGrowth = new BigNumber(currentFight.reduce((exp, enemyLevel) => {
+      const partySize = parseInt(currentFight.partySize);
+      if (partySize === 0) {
+        return currentLevel;
+      }
+      const expGrowth = new BigNumber(currentFight.levels.reduce((exp, enemyLevel) => {
         let levelDiff = Math.ceil(enemyLevel - currentLevel);
         if (levelDiff > 14) {
           levelDiff = 15;

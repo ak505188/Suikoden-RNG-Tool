@@ -95,7 +95,6 @@ export default class AreaClass {
       for (let k = 0; k < parseInt(encounter[j], 10); k++) {
         const enemy = enemies[encounter[j + 1]];
         enemy.name = name;
-        enemy.img = require(`../assets/${name}.png`);
         enemyGroup.push(enemies[encounter[j + 1]]);
       }
     }
