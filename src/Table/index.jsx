@@ -1,9 +1,11 @@
 import * as React from 'react';
 import { AutoSizer } from 'react-virtualized';
+import { Button } from 'semantic-ui-react';
 import Table from './Table';
 import Filter from './Filter';
 import ColumnDropdown from './ColumnDropdown';
 import { arraysEqual, filterPropertiesFromObject } from '../lib/lib';
+import ExportModal from './export-modal';
 
 const createDefaultRowsToRender = (data => data.map((_row, index) => index));
 
@@ -42,14 +44,17 @@ export default class TableContainer extends React.Component {
           <React.Fragment>
             <div style={{ display: 'flex', 'justifyContent': 'space-between', width, height: 38 }}>
               { this.props.filter !== false ?
-                <Filter
-                  data={
-                    this.props.filterFromData !== undefined ?
-                    dataForFilter :
-                    this.props.data
-                  }
-                  setRowsToRender={(rows) => this.setState({ rowsToRender: rows })}
-                /> : null }
+                <div style={{ marginRight: 'auto' }}>
+                  <Filter
+                    data={
+                      this.props.filterFromData !== undefined ?
+                      dataForFilter :
+                      this.props.data
+                    }
+                    setRowsToRender={(rows) => this.setState({ rowsToRender: rows })}
+                  />
+                </div> : null }
+              <ExportModal columns={this.state.columns} data={data} trigger={<Button primary>Export</Button>}/>
               <ColumnDropdown
                 columns={this.state.columns}
                 toggleColumn={(columnIndex => {
