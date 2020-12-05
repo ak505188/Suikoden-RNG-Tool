@@ -1,0 +1,32 @@
+.experience-selected-fight-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+
+  * {
+    display: inline-block;
+    margin: .1em 0;
+  }
+
+  .experience-remove-fight {
+    cursor: pointer;
+    line-height: 2rem;
+    font-size: 1.5rem;
+    color: red;
+    font-weight: 700;
+  }
+
+  .experience-party-size {
+    padding: 0 !important;
+    padding-left: 1rem !important;
+    margin: 0 1rem !important;
+    width: unset !important;
+  }
+
+  .experience-fight-name {
+    flex: 1;
+    text-align: right;
+    line-height: 2rem;
+    font-size: 1.2rem;
+  }
+}

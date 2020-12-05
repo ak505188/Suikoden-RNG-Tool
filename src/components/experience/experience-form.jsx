@@ -4,11 +4,24 @@ import { Container, Form } from 'semantic-ui-react';
 import { DoubleListSelectorDiv, ListSelector } from 'components/DoubleListSelector';
 import SortableContainer from 'components/ListSelector';
 import ExperienceResult from './experience-result';
+import './experience.scss';
 
 const ExperienceForm = ({ areas }) => {
   const [levels, setLevels] = useState('24.165');
   const [selectedArea, setSelectedArea] = useState('Cave of the Past');
   const [selectedFights, setSelectedFights] = useState([]);
+  const onPartySizeChange = (partySize, index) => {
+    setSelectedFights(prevSelectedFights => [
+      ...prevSelectedFights.slice(0, index),
+      { partySize, enemyGroup: prevSelectedFights[index].enemyGroup },
+      ...prevSelectedFights.slice(index + 1)
+    ])
+  };
+
+  const onSelectedFightDelete = index => setSelectedFights(prevSelectedFights => [
+    ...prevSelectedFights.slice(0, index),
+    ...prevSelectedFights.slice(index + 1)
+  ])
 
   return (
     <Container textAlign="center">
@@ -37,7 +50,7 @@ const ExperienceForm = ({ areas }) => {
         <DoubleListSelectorDiv>
           <ListSelector
             label="Add Fight"
-            click={index => setSelectedFights([...selectedFights, areas[selectedArea].encounterTable[index]])}
+            click={index => setSelectedFights([...selectedFights, { partySize: 6, enemyGroup: areas[selectedArea].encounterTable[index]} ])}
             list={areas[selectedArea].encounterTable}
             optionNames={areas[selectedArea].encounterTable.map(group => group.name)}
           />
@@ -47,16 +60,18 @@ const ExperienceForm = ({ areas }) => {
               ...selectedFights.slice(0, index),
               ...selectedFights.slice(index + 1)
             ])}
-            list={selectedFights}
             handleDrag={fights => setSelectedFights(fights)}
+            listItemHandlers={{ onPartySizeChange, onSelectedFightDelete }}
+            list={selectedFights}
           />
         </DoubleListSelectorDiv>
       </Form>
       <ExperienceResult
         levels={levels.split(',')}
-        fights={selectedFights.map(fight =>
-          fight.enemies.map(enemy => enemy.stats.lvl)
-        )}
+        fights={selectedFights.map(selectedFight => ({
+          partySize: selectedFight.partySize,
+          levels: selectedFight.enemyGroup.enemies.map(enemy => enemy.stats.lvl)
+        }))}
       />
     </Container>
   );
