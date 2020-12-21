@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { AutoSizer } from 'react-virtualized';
 import { Button } from 'semantic-ui-react';
+import { Helpers } from 'suikoden-rng-lib';
 import Table from './Table';
 import Filter from './Filter';
 import ColumnDropdown from './ColumnDropdown';
-import { arraysEqual, filterPropertiesFromObject } from '../lib/lib';
 import ExportModal from './export-modal';
 
 const createDefaultRowsToRender = (data => data.map((_row, index) => index));
@@ -20,12 +20,12 @@ export default class TableContainer extends React.Component {
 
   componentDidUpdate(prevProps) {
     const prevData = this.props.filterFromData
-      ? prevProps.data.map(row => filterPropertiesFromObject(row, this.props.filterFromData))
+      ? prevProps.data.map(row => Helpers.filterPropertiesFromObject(row, this.props.filterFromData))
       : prevProps.data;
     const curData = this.props.filterFromData
-      ? this.props.data.map(row => filterPropertiesFromObject(row, this.props.filterFromData))
+      ? this.props.data.map(row => Helpers.filterPropertiesFromObject(row, this.props.filterFromData))
       : this.props.data;
-    if (!arraysEqual(prevData, curData)) {
+    if (!Helpers.arraysEqual(prevData, curData)) {
       this.setState({ rowsToRender: createDefaultRowsToRender(this.props.data) });
     }
   }
@@ -35,7 +35,7 @@ export default class TableContainer extends React.Component {
 
     const dataForFilter = this.props.filterFromData ?
       this.props.data.map(row =>
-        filterPropertiesFromObject(row, this.props.filterFromData)) :
+        Helpers.filterPropertiesFromObject(row, this.props.filterFromData)) :
       this.props.data;
 
     return (

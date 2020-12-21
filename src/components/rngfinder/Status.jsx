@@ -1,16 +1,16 @@
 import * as React from 'react';
 import { Button, Container, Progress, Segment } from 'semantic-ui-react';
-import { numToHexString } from 'lib/lib';
+import { Helpers } from 'suikoden-rng-lib';
 
 const RNGFinderStatus = ({ cancel, message, progress, done, result, running }) => (
   <Container textAlign="center">
     {result &&
       <Segment>
         <p>
-          First Battle RNG: {numToHexString(result.foundEncounterRNG)}
+          First Battle RNG: {Helpers.numToHexString(result.foundEncounterRNG)}
         </p>
         <p>
-          Previous Battle RNG: {numToHexString(result.foundEncounterRNGPrevious)}
+          Previous Battle RNG: {Helpers.numToHexString(result.foundEncounterRNGPrevious)}
         </p>
       </Segment>
     }

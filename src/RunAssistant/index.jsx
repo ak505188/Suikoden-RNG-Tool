@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
-import { areaNamesWithRandomEncounters, numToHexString } from '../lib/lib';
+import { Helpers } from 'suikoden-rng-lib';
 import { Container, Form } from 'semantic-ui-react';
 
 class RunAssistantForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      rng: numToHexString(0x12),
+      rng: Helpers.numToHexString(0x12),
       iterations: 1000,
       partylevel: 0,
       realistic: true,
@@ -61,7 +61,7 @@ class RunAssistantForm extends React.Component {
           <Form.Dropdown
             label="Areas"
             placeholder="Area"
-            options={areaNamesWithRandomEncounters.map(name =>
+            options={Helpers.areaNamesWithRandomEncounters.map(name =>
               ({ key: name, value: name, text: this.props.areas[name].name })
             )}
             value={this.state.areas}

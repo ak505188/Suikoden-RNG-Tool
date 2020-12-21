@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { createStore, applyMiddleware } from 'redux';
 import { createLogger } from 'redux-logger';
 import { Divider } from 'semantic-ui-react';
-import RNG from 'lib/rng';
+import { RNG } from 'suikoden-rng-lib';
 import { ConnectedTable as Table } from './Table';
 import ConnectedControls from './controls';
 import reducer from './reducers';

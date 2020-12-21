@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Input } from 'semantic-ui-react';
 import SearchApi from 'js-worker-search';
-import { arraysEqual } from '../lib/lib';
+import { Helpers } from 'suikoden-rng-lib';
 
 export default class Filter extends React.Component {
   constructor(props) {
@@ -18,7 +18,7 @@ export default class Filter extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (!arraysEqual(this.props.data, prevProps.data)) {
+    if (!Helpers.arraysEqual(this.props.data, prevProps.data)) {
       this.state.searchApi._search._worker.terminate();
       this.setState({ searchApi: new SearchApi({ tokenizePattern: /,/ }) }, () => {
         this.indexData(this.props.data);

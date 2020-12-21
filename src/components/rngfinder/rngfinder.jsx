@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import DoubleListSelector from 'components/DoubleListSelector';
 import { InputRNG } from 'components/form/inputs';
-import RNGFinderStatus from './Status';
-import { areaNamesWithRandomEncounters, numToHexString } from 'lib/lib';
+import { Helpers } from 'suikoden-rng-lib';
 import { Container, Form } from 'semantic-ui-react';
+import RNGFinderStatus from './Status';
 
-import findRNGWorker from 'workerize-loader!lib/findRNG/findRNG.worker.js'; // eslint-disable-line import/no-webpack-loader-syntax
+import findRNGWorker from 'workerize-loader!findRNG/findRNG.worker.js'; // eslint-disable-line import/no-webpack-loader-syntax
 
 const initialStatus = {
   progress: 0,
@@ -14,8 +14,8 @@ const initialStatus = {
 };
 
 const RNGFinder = ({ areas }) => {
-  const [rng, setRNG] = useState(numToHexString(0x12));
-  const [selectedArea, setSelectedArea] = useState(areaNamesWithRandomEncounters[0]);
+  const [rng, setRNG] = useState(Helpers.numToHexString(0x12));
+  const [selectedArea, setSelectedArea] = useState(Helpers.areaNamesWithRandomEncounters[0]);
   const [fightList, setFightList] = useState([]);
   const [running, setRunning] = useState(false);
   const [status, setStatus] = useState(initialStatus);
@@ -72,12 +72,12 @@ const RNGFinder = ({ areas }) => {
       <Form size="large" onSubmit={() => handleStart()}>
         <InputRNG
           value={rng}
-          onChange={e => setRNG(numToHexString(e.target.value))}
+          onChange={e => setRNG(Helpers.numToHexString(e.target.value))}
         />
         <Form.Dropdown
           label="Areas"
           placeholder="Area"
-          options={areaNamesWithRandomEncounters.map(name =>
+          options={Helpers.areaNamesWithRandomEncounters.map(name =>
             ({ key: name, value: name, text: areas[name].name })
           )}
           value={selectedArea}

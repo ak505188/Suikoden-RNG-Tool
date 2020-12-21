@@ -1,10 +1,10 @@
 import * as React from 'react';
+import VirtTable from '../Table';
 import { Container } from 'semantic-ui-react';
 import { connect } from 'react-redux';
-import { numToHexString } from '../lib/lib';
 import { selectFight } from './actions/RunAssistant';
 import { getCurrentFights } from './reducers/RunAssistant';
-import VirtTable from '../Table';
+import { Helpers } from 'suikoden-rng-lib';
 
 const mapStateToProps = state => ({
   fights: getCurrentFights(state.RunAssistant),
@@ -28,14 +28,14 @@ const RunAssistantTable = props => {
       <div style={{ height: props.rowHeight }} className="enemyGroupImage">
         {
           fight.enemyGroup.enemies.map((enemy, index) => (
-            <img style={{ height: props.rowHeight }} className="enemyImage" alt="" key={index} src={enemy.img}/>
+            <img style={{ height: props.rowHeight }} className="enemyImage" alt="" key={index} src={`data:image/png;base64, ${enemy.img}`}/>
           ))
         }
       </div>
     ),
     run: fight.run ? 'Run' : 'Fail',
-    startRNG: numToHexString(fight.startRNG),
-    battleRNG: numToHexString(fight.battleRNG),
+    startRNG: Helpers.numToHexString(fight.startRNG),
+    battleRNG: Helpers.numToHexString(fight.battleRNG),
     champVal: fight.enemyGroup.champVal
   }));
 

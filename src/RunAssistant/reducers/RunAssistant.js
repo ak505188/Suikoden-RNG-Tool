@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions';
-import { encounterSequenceToString } from  'lib/lib';
+import { Helpers } from  'suikoden-rng-lib';
 
 const initialState = {
   currentArea: 0,
@@ -99,7 +99,7 @@ export default handleActions(
         .map(fight => (getEnemyGroupEncounterIndex(fight.enemyGroup.name, currentArea.enemies)))
         .slice(searchStartIndex);
       if (pattern.length > 1) {
-        const searchMatchIndex = encounterSequenceToString(fights).search(encounterSequenceToString(pattern));
+        const searchMatchIndex = Helpers.encounterSequenceToString(fights).search(Helpers.encounterSequenceToString(pattern));
         if (searchMatchIndex >= 0) {
           return {
             ...state,

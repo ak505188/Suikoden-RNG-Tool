@@ -1,8 +1,6 @@
-import Area from './Area';
-import RNG from '../rng';
+import { Area, Helpers, RNG } from 'suikoden-rng-lib';
 import Status from './Status';
 import Encounters from './Encounters';
-import { encounterSequenceToString } from '../lib';
 
 export function findRNG(area, encounters, rngSeed, progress) {
   if (encounters.length <= 1) {
@@ -13,7 +11,7 @@ export function findRNG(area, encounters, rngSeed, progress) {
   const startTime = new Date().getTime();
 
   const generatedEncounters = new Encounters();
-  const encountersPattern = new RegExp(encounterSequenceToString(encounters));
+  const encountersPattern = new RegExp(Helpers.encounterSequenceToString(encounters));
   const rng = new RNG(rngSeed);
 
   for (let i = 0; i < 0xffffffff; i++) {
