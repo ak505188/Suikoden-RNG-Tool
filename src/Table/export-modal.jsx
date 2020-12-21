@@ -4,12 +4,18 @@ import FileSaver from 'file-saver';
 
 const ExportModal = props => {
   const [formatType, setFormatType] = useState('csv');
+  const [copySuccess, setCopySuccess] = useState('');
   const handleFormatChange = (e, { value }) => setFormatType(value);
   const [fileName, setFileName] = useState('');
-  const submit = () => {
-    let blobData = JSON.stringify(props.data, null, 2);
-    let mimeType = 'application/json;charset=utf-8;';
 
+  const copyToClipboard = () => {
+    const text = dataToText();
+    navigator.clipboard.writeText(text)
+      .then(() => setCopySuccess('Copied!'), () => setCopySuccess('Failure.'));
+    setTimeout(() => setCopySuccess(''), 3000);
+  }
+
+  const dataToText = () => {
     if (formatType === 'csv') {
       const columns = props.columns.filter(column => column.show !== false);
       const csv = [];
@@ -19,13 +25,20 @@ const ExportModal = props => {
         const rowData = [];
         columns.forEach(column => rowData.push(row[column.key]));
         return rowData.join();
-      }).join('\n');
+      }).join('\r\n');
 
       csv.push(rows);
-
-      blobData = csv.join('\n');
-      mimeType = 'text/csv;charset=utf-8;'
+      return csv.join('\r\n');
     }
+    return JSON.stringify(props.data, null, 2);
+  }
+
+
+  const download = () => {
+    let blobData = dataToText();
+    let mimeType = formatType === 'json'
+      ? 'application/json;charset=utf-8'
+      : 'text/csv;charset=utf-8;'
 
     const fileBlob = new Blob([blobData], { type: mimeType });
     FileSaver.saveAs(fileBlob, `${fileName}.${formatType}`);
@@ -51,15 +64,19 @@ const ExportModal = props => {
               checked={formatType === 'json'}
               onChange={handleFormatChange}
             />
+            <Form.Button color='green' content='Copy to Clipboard' onClick={copyToClipboard}/>
+            <span>{copySuccess}</span>
           </Form.Group>
-          <Form.Input
-            label='Filename'
-            type='text'
-            placeholder='Filename'
-            value={fileName}
-            onChange={e => setFileName(e.target.value)}
-          />
-          <Form.Button content='Download' primary={true} onClick={submit}/>
+          <Form.Group inline={true}>
+            <Form.Input
+              label='Filename'
+              type='text'
+              placeholder='Filename'
+              value={fileName}
+              onChange={e => setFileName(e.target.value)}
+            />
+            <Form.Button content='Download' primary={true} onClick={download}/>
+          </Form.Group>
         </Form>
       </Modal.Content>
     </Modal>
