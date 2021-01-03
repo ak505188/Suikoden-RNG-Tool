@@ -1,4 +1,5 @@
-import { Area, Helpers, RNG } from 'suikoden-rng-lib';
+import { Helpers, RNG } from 'suikoden-rng-lib';
+import Area from 'suikoden-rng-lib/lib/Area/Area';
 import Status from './Status';
 import Encounters from './Encounters';
 

@@ -1,4 +1,4 @@
-import { encounterSequenceToString } from '../lib';
+import { Helpers } from 'suikoden-rng-lib';
 
 export default class Encounters {
   constructor() {
@@ -34,7 +34,7 @@ export default class Encounters {
   }
 
   toIdString() {
-    return encounterSequenceToString(this.encounters.map(encounter => encounter.id));
+    return Helpers.encounterSequenceToString(this.encounters.map(encounter => encounter.id));
   }
 
   search(pattern) {
