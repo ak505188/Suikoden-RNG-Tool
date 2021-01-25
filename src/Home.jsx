@@ -33,6 +33,14 @@ const Home = () => {
       </Segment>
       <Segment>
         <Header>
+          <Link to="/stats">Stats</Link>
+        </Header>
+        <p>
+          Generate stat growths for characters based on RNG and levels.
+        </p>
+      </Segment>
+      <Segment>
+        <Header>
           <Link to="/drops">Item Drops</Link>
         </Header>
         <p>
