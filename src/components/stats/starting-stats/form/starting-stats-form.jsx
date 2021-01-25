@@ -20,7 +20,7 @@ const StartingStatsForm = ({ areas, history }) => {
     params.append('iterations', iterations);
     params.append('startingLevel', startingLevel);
     params.append('levelsGained', levelsGained);
-    history.push(`/stats/result?${params.toString()}`);
+    history.push(`/stats/starting-stats/result?${params.toString()}`);
   }
 
   return (
@@ -61,7 +61,7 @@ const StartingStatsForm = ({ areas, history }) => {
           min={1}
           max={98}
         />
-        <Form.Button type="submit" content="Generate Encounters" primary={true}/>
+        <Form.Button type="submit" content="Generate Starting Stats" primary={true}/>
       </Form>
     </Container>
   );

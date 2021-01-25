@@ -55,7 +55,7 @@ const LevelUpsForm = ({ areas, history }) => {
           min={1}
           max={99}
         />
-        <Form.Button type="submit" content="Generate Encounters" primary={true}/>
+        <Form.Button type="submit" content="Generate Level Ups" primary={true}/>
       </Form>
     </Container>
   );
