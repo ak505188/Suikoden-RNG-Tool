@@ -4,7 +4,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/Suikoden-RNG-Tool/8a43328c1f98fdade2dd.worker.js"
   },
   {
-    "revision": "0ccd81d9bdb981a4db4e734c5c8f565d",
+    "revision": "3b2a9f503e9059d6249cc794a066ac3e",
     "url": "/Suikoden-RNG-Tool/index.html"
   },
   {
@@ -12,7 +12,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/Suikoden-RNG-Tool/static/css/2.3383c4cc.chunk.css"
   },
   {
-    "revision": "f0246d4634fb7ee17be1",
+    "revision": "3ab81775fbb7a1fe58f8",
     "url": "/Suikoden-RNG-Tool/static/css/main.b47a8c17.chunk.css"
   },
   {
@@ -24,8 +24,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/Suikoden-RNG-Tool/static/js/2.b29f2f5d.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "f0246d4634fb7ee17be1",
-    "url": "/Suikoden-RNG-Tool/static/js/main.af06ccd7.chunk.js"
+    "revision": "3ab81775fbb7a1fe58f8",
+    "url": "/Suikoden-RNG-Tool/static/js/main.c159d22f.chunk.js"
   },
   {
     "revision": "4a7c3ef1b70f5004652a",
