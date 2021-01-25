@@ -13,6 +13,11 @@ import RNGFinder from 'components/rngfinder';
 import Experience from './components/experience';
 import RunAssistantForm from './RunAssistant';
 import RunAssistantResult from './RunAssistant/RunAssistantTool';
+import StatsInfo from 'components/stats/';
+import StartingStatsForm from 'components/stats/starting-stats/form';
+import StartingStatsResult from 'components/stats/starting-stats/result';
+import LevelUpsForm from 'components/stats/level-ups/form';
+import LevelUpsResult from 'components/stats/level-ups/result';
 import { Areas } from 'suikoden-rng-lib';
 import { Route } from 'react-router-dom';
 import './index.css';
@@ -34,6 +39,41 @@ const App = () => {
         exact={true}
         render={() => (
           <EncounterResult areas={Areas}/>
+        )}
+      />
+      <Route
+        path="/stats"
+        exact={true}
+        render={() => (
+          <StatsInfo/>
+        )}
+      />
+      <Route
+        path="/stats/starting-stats"
+        exact={true}
+        render={() => (
+          <StartingStatsForm/>
+        )}
+      />
+      <Route
+        path="/stats/starting-stats/result"
+        exact={true}
+        render={() => (
+          <StartingStatsResult/>
+        )}
+      />
+      <Route
+        path="/stats/level-ups"
+        exact={true}
+        render={() => (
+          <LevelUpsForm/>
+        )}
+      />
+      <Route
+        path="/stats/level-ups/result"
+        exact={true}
+        render={() => (
+          <LevelUpsResult/>
         )}
       />
       <Route

@@ -55,7 +55,7 @@ const EncountersForm = ({ areas, history }) => {
           checked={realistic}
           onChange={e => setRealistic(e.target.checked)}
         />
-        <Form.Button type="submit" content="Generate Encounters" primary={true}/>
+        <Form.Button type="submit" content="Generate Starting Stats" primary={true}/>
       </Form>
     </Container>
   );
