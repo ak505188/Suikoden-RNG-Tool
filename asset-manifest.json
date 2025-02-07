@@ -1,28 +1,28 @@
 {
   "files": {
-    "main.css": "/Suikoden-RNG-Tool/static/css/main.b47a8c17.chunk.css",
-    "main.js": "/Suikoden-RNG-Tool/static/js/main.fa766937.chunk.js",
-    "main.js.map": "/Suikoden-RNG-Tool/static/js/main.fa766937.chunk.js.map",
-    "runtime-main.js": "/Suikoden-RNG-Tool/static/js/runtime-main.d97acd05.js",
-    "runtime-main.js.map": "/Suikoden-RNG-Tool/static/js/runtime-main.d97acd05.js.map",
-    "static/css/2.3383c4cc.chunk.css": "/Suikoden-RNG-Tool/static/css/2.3383c4cc.chunk.css",
-    "static/js/2.55d1bf66.chunk.js": "/Suikoden-RNG-Tool/static/js/2.55d1bf66.chunk.js",
-    "static/js/2.55d1bf66.chunk.js.map": "/Suikoden-RNG-Tool/static/js/2.55d1bf66.chunk.js.map",
-    "2db592b10852ce538299.worker.js": "/Suikoden-RNG-Tool/2db592b10852ce538299.worker.js",
-    "2db592b10852ce538299.worker.js.map": "/Suikoden-RNG-Tool/2db592b10852ce538299.worker.js.map",
-    "index.html": "/Suikoden-RNG-Tool/index.html",
-    "precache-manifest.dea04fdadfe681f8d6300a441a520b3c.js": "/Suikoden-RNG-Tool/precache-manifest.dea04fdadfe681f8d6300a441a520b3c.js",
-    "service-worker.js": "/Suikoden-RNG-Tool/service-worker.js",
-    "static/css/2.3383c4cc.chunk.css.map": "/Suikoden-RNG-Tool/static/css/2.3383c4cc.chunk.css.map",
-    "static/css/main.b47a8c17.chunk.css.map": "/Suikoden-RNG-Tool/static/css/main.b47a8c17.chunk.css.map",
-    "static/js/2.55d1bf66.chunk.js.LICENSE.txt": "/Suikoden-RNG-Tool/static/js/2.55d1bf66.chunk.js.LICENSE.txt",
-    "static/media/semantic.min.css": "/Suikoden-RNG-Tool/static/media/outline-icons.ef60a4f6.woff"
+    "main.css": "/static/css/main.b47a8c17.chunk.css",
+    "main.js": "/static/js/main.cf2a6fe3.chunk.js",
+    "main.js.map": "/static/js/main.cf2a6fe3.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.91e8cc52.js",
+    "runtime-main.js.map": "/static/js/runtime-main.91e8cc52.js.map",
+    "static/css/2.d308dda7.chunk.css": "/static/css/2.d308dda7.chunk.css",
+    "static/js/2.6454ac21.chunk.js": "/static/js/2.6454ac21.chunk.js",
+    "static/js/2.6454ac21.chunk.js.map": "/static/js/2.6454ac21.chunk.js.map",
+    "64569c854d6f3e134140.worker.js": "/64569c854d6f3e134140.worker.js",
+    "64569c854d6f3e134140.worker.js.map": "/64569c854d6f3e134140.worker.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.7864ce1b026b3131c11129c5d08be8af.js": "/precache-manifest.7864ce1b026b3131c11129c5d08be8af.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/2.d308dda7.chunk.css.map": "/static/css/2.d308dda7.chunk.css.map",
+    "static/css/main.b47a8c17.chunk.css.map": "/static/css/main.b47a8c17.chunk.css.map",
+    "static/js/2.6454ac21.chunk.js.LICENSE.txt": "/static/js/2.6454ac21.chunk.js.LICENSE.txt",
+    "static/media/semantic.min.css": "/static/media/outline-icons.ef60a4f6.woff"
   },
   "entrypoints": [
-    "static/js/runtime-main.d97acd05.js",
-    "static/css/2.3383c4cc.chunk.css",
-    "static/js/2.55d1bf66.chunk.js",
+    "static/js/runtime-main.91e8cc52.js",
+    "static/css/2.d308dda7.chunk.css",
+    "static/js/2.6454ac21.chunk.js",
     "static/css/main.b47a8c17.chunk.css",
-    "static/js/main.fa766937.chunk.js"
+    "static/js/main.cf2a6fe3.chunk.js"
   ]
 }
