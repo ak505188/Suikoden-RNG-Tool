@@ -10,10 +10,6 @@ import ExportModal from './export-modal';
 const createDefaultRowsToRender = (data => data.map((_row, index) => index));
 
 export default class TableContainer extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const rowsToRender = createDefaultRowsToRender(this.props.data);
     const data = rowsToRender.map(rowIndex => this.props.data[rowIndex]);
