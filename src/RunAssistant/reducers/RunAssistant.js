@@ -29,6 +29,7 @@ export default handleActions(
       }
 
       let index = state.index;
+
       if (state.fightsList[currentArea].length <= index) {
         index = state.fightsList[currentArea].length - 1;
       }

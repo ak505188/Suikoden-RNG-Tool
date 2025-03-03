@@ -16,9 +16,10 @@ const Table = props => {
       return accumulator;
     },
     []);
-  const columnsWidthRatio: number = props.width /
+  const columnsWidthRatio = props.width /
     columns.reduce((total, column) => (total += column.width), 0);
   const rowStyle = props.rowStyle ? { ...defaultRowStyle, ...props.rowStyle } : defaultRowStyle;
+
   return (
     <VirtTable
       headerHeight={props.headerHeight}

@@ -12,26 +12,11 @@ const createDefaultRowsToRender = (data => data.map((_row, index) => index));
 export default class TableContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      rowsToRender: createDefaultRowsToRender(props.data),
-      columns: props.columns
-    };
-  }
-
-  componentDidUpdate(prevProps) {
-    const prevData = this.props.filterFromData
-      ? prevProps.data.map(row => Helpers.filterPropertiesFromObject(row, this.props.filterFromData))
-      : prevProps.data;
-    const curData = this.props.filterFromData
-      ? this.props.data.map(row => Helpers.filterPropertiesFromObject(row, this.props.filterFromData))
-      : this.props.data;
-    if (!Helpers.arraysEqual(prevData, curData)) {
-      this.setState({ rowsToRender: createDefaultRowsToRender(this.props.data) });
-    }
   }
 
   render() {
-    const data = this.state.rowsToRender.map(rowIndex => this.props.data[rowIndex]);
+    const rowsToRender = createDefaultRowsToRender(this.props.data);
+    const data = rowsToRender.map(rowIndex => this.props.data[rowIndex]);
 
     const dataForFilter = this.props.filterFromData ?
       this.props.data.map(row =>
@@ -54,11 +39,11 @@ export default class TableContainer extends React.Component {
                     setRowsToRender={(rows) => this.setState({ rowsToRender: rows })}
                   />
                 </div> : null }
-              <ExportModal columns={this.state.columns} data={data} trigger={<Button primary>Export</Button>}/>
+              <ExportModal columns={this.props.columns} data={data} trigger={<Button primary>Export</Button>}/>
               <ColumnDropdown
-                columns={this.state.columns}
+                columns={this.props.columns}
                 toggleColumn={(columnIndex => {
-                  const columns = this.state.columns;
+                  const columns = this.props.columns;
                   columns[columnIndex].show = columns[columnIndex].show === false ? true : false;
                   this.setState({ columns });
                 })}
@@ -67,7 +52,7 @@ export default class TableContainer extends React.Component {
             <Table
               {...this.props}
               currentRow={this.props.currentRow}
-              columns={this.state.columns}
+              columns={this.props.columns}
               data={data}
               height={height - 38}
               width={width}

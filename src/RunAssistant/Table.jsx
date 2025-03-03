@@ -20,7 +20,7 @@ const mapDispatchToProps = {
 };
 
 const RunAssistantTable = props => {
-  const columns: Column[] =  props.columns;
+  const columns =  props.columns;
   const fights = props.fights.map(fight => ({
     ...fight,
     enemyGroup: fight.enemyGroup.name,
@@ -48,7 +48,7 @@ const RunAssistantTable = props => {
         filter={true}
         filterFromData={['enemyGroupImage']}
         headerHeight={props.headerHeight}
-        onRowClick={(index: number) => props.selectFight(index)}
+        onRowClick={index => props.selectFight(index)}
         rowHeight={props.rowHeight}
         rowStyle={props.rowStyle}
       />
