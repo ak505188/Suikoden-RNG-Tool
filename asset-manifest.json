@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/Suikoden-RNG-Tool/static/css/main.1f93abc1.chunk.css",
-    "main.js": "/Suikoden-RNG-Tool/static/js/main.fa766937.chunk.js",
-    "main.js.map": "/Suikoden-RNG-Tool/static/js/main.fa766937.chunk.js.map",
+    "main.js": "/Suikoden-RNG-Tool/static/js/main.6f96340e.chunk.js",
+    "main.js.map": "/Suikoden-RNG-Tool/static/js/main.6f96340e.chunk.js.map",
     "runtime-main.js": "/Suikoden-RNG-Tool/static/js/runtime-main.d97acd05.js",
     "runtime-main.js.map": "/Suikoden-RNG-Tool/static/js/runtime-main.d97acd05.js.map",
     "static/css/2.3383c4cc.chunk.css": "/Suikoden-RNG-Tool/static/css/2.3383c4cc.chunk.css",
@@ -11,7 +11,7 @@
     "2db592b10852ce538299.worker.js": "/Suikoden-RNG-Tool/2db592b10852ce538299.worker.js",
     "2db592b10852ce538299.worker.js.map": "/Suikoden-RNG-Tool/2db592b10852ce538299.worker.js.map",
     "index.html": "/Suikoden-RNG-Tool/index.html",
-    "precache-manifest.1a5498618cc5cf0955393284794eff59.js": "/Suikoden-RNG-Tool/precache-manifest.1a5498618cc5cf0955393284794eff59.js",
+    "precache-manifest.92f21f13535e4ce39f251701c95f2ad5.js": "/Suikoden-RNG-Tool/precache-manifest.92f21f13535e4ce39f251701c95f2ad5.js",
     "service-worker.js": "/Suikoden-RNG-Tool/service-worker.js",
     "static/css/2.3383c4cc.chunk.css.map": "/Suikoden-RNG-Tool/static/css/2.3383c4cc.chunk.css.map",
     "static/css/main.1f93abc1.chunk.css.map": "/Suikoden-RNG-Tool/static/css/main.1f93abc1.chunk.css.map",
@@ -23,6 +23,6 @@
     "static/css/2.3383c4cc.chunk.css",
     "static/js/2.55d1bf66.chunk.js",
     "static/css/main.1f93abc1.chunk.css",
-    "static/js/main.fa766937.chunk.js"
+    "static/js/main.6f96340e.chunk.js"
   ]
 }
