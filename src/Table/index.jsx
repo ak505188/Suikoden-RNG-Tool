@@ -10,9 +10,16 @@ import ExportModal from './export-modal';
 const createDefaultRowsToRender = (data => data.map((_row, index) => index));
 
 export default class TableContainer extends React.Component {
+  constructor(props) {
+    super();
+    this.state = {
+      rowsToRender: createDefaultRowsToRender(props.data),
+      columns: props.columns
+    }
+  }
+
   render() {
-    const rowsToRender = createDefaultRowsToRender(this.props.data);
-    const data = rowsToRender.map(rowIndex => this.props.data[rowIndex]);
+    const data = this.state.rowsToRender.map(rowIndex => this.props.data[rowIndex]).filter(row => row !== undefined);
 
     const dataForFilter = this.props.filterFromData ?
       this.props.data.map(row =>
