@@ -1,4 +1,6 @@
-## Suikoden RNG Generator
+You can find the tool here: [https://ak505188.github.io/Suikoden-RNG-Tool/#/](https://ak505188.github.io/Suikoden-RNG-Tool/#/)
+
+## Suikoden RNG Tool
 This is a RNG calculator for the PS1 game Suikoden. It can predict RNG based
 events, such as future encounters, enemy drops, and finding your RNG Seed.
 This is all pseudocode. There is actual code in the repo.
