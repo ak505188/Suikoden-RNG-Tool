@@ -48,3 +48,8 @@ const ExperienceContainer = ({ levels, fights }) => {
 }
 
 export default withRouter(ExperienceContainer);
+
+// V2 structure
+// characters: { name: 'Name', level: 1, ignore_fights: [fight_ids] }
+// fight_ids can just be based off an increment starting from 1. Basically index, but keeps increasing even if fights are removed, and will be able to be tracked even if fights get reordered.
+// I think the form might mess with this on re-render?

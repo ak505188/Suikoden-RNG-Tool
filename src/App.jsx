@@ -18,6 +18,8 @@ import StartingStatsForm from 'components/stats/starting-stats/form';
 import StartingStatsResult from 'components/stats/starting-stats/result';
 import LevelUpsForm from 'components/stats/level-ups/form';
 import LevelUpsResult from 'components/stats/level-ups/result';
+import ChinchironinForm from 'components/chinchironin/form/chinchironin-form';
+import ChinchironinResult from 'components/chinchironin/result'
 import { Areas } from 'suikoden-rng-lib';
 import { Route } from 'react-router-dom';
 import './index.css';
@@ -135,6 +137,20 @@ const App = () => {
         exact={true}
         render={() => (
           <RunAssistantResult areas={Areas}/>
+        )}
+      />
+      <Route
+        path="/chinchironin"
+        exact={true}
+        render={() => (
+          <ChinchironinForm/>
+        )}
+      />
+      <Route
+        path="/chinchironin/result"
+        exact={true}
+        render={() => (
+          <ChinchironinResult/>
         )}
       />
     </div>
