@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Container, Form } from 'semantic-ui-react';
 import { Characters } from 'suikoden-rng-lib/stats/characters';
+
 import ExperienceResult from './experience-result';
 import './experience.scss';
 
@@ -102,6 +103,7 @@ const FightsForm = ({ addFight, areas }) => {
 const ExperienceForm = ({ areas }) => {
   const [characters, setCharacters] = useState([]);
   const [fights, setFights] = useState([]);
+  const [disabledCharacters, setDisabledCharacters] = useState([]);
 
   const addCharacters = new_characters => {
     // TODO: Check for and remove duplicates
@@ -110,12 +112,40 @@ const ExperienceForm = ({ areas }) => {
 
   const addFight = fight => {
     setFights([...fights, fight]);
+    setDisabledCharacters([...disabledCharacters, []]);
   }
 
-  // const onSelectedFightDelete = index => setSelectedFights(prevSelectedFights => [
-  //   ...prevSelectedFights.slice(0, index),
-  //   ...prevSelectedFights.slice(index + 1)
-  // ])
+  const toggleDisabledCharacter = (character_name, fight_index) => {
+    const disabled_characters = disabledCharacters[fight_index];
+    const disabled_character_index = disabled_characters.indexOf(character_name);
+    if (disabled_character_index === -1) {
+      setDisabledCharacters(prevDisabledCharacters => [
+        ...prevDisabledCharacters.slice(0, fight_index),
+        [...disabled_characters, character_name],
+        ...prevDisabledCharacters.slice(fight_index + 1)
+      ]);
+    } else {
+      setDisabledCharacters(prevDisabledCharacters => [
+        ...prevDisabledCharacters.slice(0, fight_index),
+        [
+          ...disabled_characters.slice(0, disabled_character_index),
+          ...disabled_characters.slice(disabled_character_index + 1),
+        ],
+        ...prevDisabledCharacters.slice(fight_index + 1)
+      ]);
+    }
+  }
+
+  const removeFight = index => {
+    setFights(prevFights => [
+      ...prevFights.slice(0, index),
+      ...prevFights.slice(index + 1)
+    ]);
+    setDisabledCharacters(prevDisabledCharacters => [
+      ...prevDisabledCharacters.slice(0, index),
+      ...prevDisabledCharacters.slice(index + 1)
+    ]);
+  };
 
   return (
     <Container textAlign="center">
@@ -124,6 +154,9 @@ const ExperienceForm = ({ areas }) => {
       <ExperienceResult
         characters={characters}
         fights={fights}
+        disabledCharacters={disabledCharacters}
+        removeFight={removeFight}
+        toggleDisabledCharacter={toggleDisabledCharacter}
       />
     </Container>
   );

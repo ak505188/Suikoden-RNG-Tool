@@ -31,3 +31,14 @@
     cursor: pointer;
   }
 }
+
+ul.row {
+  display: flex;
+  list-style-type: none;
+}
+
+div.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1fr;
+}

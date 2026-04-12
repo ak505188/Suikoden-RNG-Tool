@@ -18,15 +18,12 @@ const offset = 14;
 //   },
 //   party_size,
 //   enabled,
-//   disabled_characters
 // }]
-export function calculateLevels(characters, fights) {
-  console.log(characters, fights);
+export function calculateLevels(characters, fights, disabled_characters) {
   const results = [];
   let new_characters = characters;
   for (let i = 0; i < fights.length; i++) {
-    new_characters = levelupCharacters(new_characters, fights[i]);
-    console.log(new_characters);
+    new_characters = levelupCharacters(new_characters, fights[i], disabled_characters[i]);
     results.push({ ...fights[i], characters: new_characters });
   };
 
@@ -34,10 +31,9 @@ export function calculateLevels(characters, fights) {
 }
 
 // Returns new characters
-function levelupCharacters(characters, fight) {
+function levelupCharacters(characters, fight, disabled_characters) {
   return characters.map(character => {
-    if (!fight.enabled || fight.disabled_characters.includes(character.name)) return character;
-    console.log(fight.party_size);
+    if (!fight.enabled || disabled_characters.includes(character.name)) return character;
     const new_level = levelupCharacter(character.level, fight.enemy_group, fight.party_size);
     return { ...character, level: new_level };
   });
@@ -53,7 +49,7 @@ function levelupCharacter(level, enemy_group, party_size) {
     }
     return (exp + EXP_TABLE[levelDiff + offset] / 1000);
   }, 0)).dividedBy(party_size);
-  return expGrowth.plus(level).toFormat(3);
+  return parseFloat(expGrowth.plus(level).toFormat(3));
 }
 
 // const ExperienceContainer = ({ levels, fights }) => {
