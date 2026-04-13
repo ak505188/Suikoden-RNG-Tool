@@ -6,16 +6,15 @@ import { Characters } from 'suikoden-rng-lib/stats/characters';
 import ExperienceResult from './experience-result';
 import './experience.scss';
 
-const CharactersForm = ({ addCharacters }) => {
-  const [characters, setCharacters] = useState([]);
-  const [startingLevels, setStartingLevels] = useState([]);
+const CharactersForm = ({ addCharacters, characters }) => {
+  const [selectedCharacters, setSelectedCharacters] = useState([]);
+
+  const selected_character_names = characters.map(character => character.name);
 
   const handleSubmit = () => {
-    const levels = startingLevels.split(',').map(level => parseFloat(parseFloat(level).toFixed(3)));
-    if (levels.length === characters.length) {
-      const characters_data = characters.map((name, index) => ({ name: name, level: levels[index] }));
-      addCharacters(characters_data);
-    }
+    const characters_data = selectedCharacters.map(name => ({ name, level: 1 }));
+    addCharacters(characters_data);
+    setSelectedCharacters([]);
   }
 
   return (
@@ -23,19 +22,17 @@ const CharactersForm = ({ addCharacters }) => {
       <Form.Dropdown
         label="Characters"
         placeholder="Character"
-        options={Object.keys(Characters).sort().map(name =>
-          ({ key: name, value: name, text: name }))}
-        value={characters}
-        onChange={(_e, data) => setCharacters(data.value)}
+        options={
+          Object.keys(Characters)
+            .sort()
+            .filter(name => !selected_character_names.includes(name))
+            .map(name => ({ key: name, value: name, text: name }))
+        }
+        value={selectedCharacters}
+        onChange={(_e, data) => setSelectedCharacters(data.value)}
         multiple={true}
         search={true}
         selection={true}
-      />
-      <Form.Input
-        label="Starting Levels"
-        type="text"
-        value={startingLevels}
-        onChange={e => setStartingLevels(e.target.value)}
       />
       <Form.Button type="submit" content="Add Character" primary={true}/>
     </Form>
@@ -105,14 +102,16 @@ const ExperienceForm = ({ areas }) => {
   const [fights, setFights] = useState([]);
   const [disabledCharacters, setDisabledCharacters] = useState([]);
 
+  const changeCharacters = chars => setCharacters(chars);
+
   const addCharacters = new_characters => {
-    // TODO: Check for and remove duplicates
     setCharacters([...characters, ...new_characters]);
   }
 
   const addFight = fight => {
     setFights([...fights, fight]);
-    setDisabledCharacters([...disabledCharacters, []]);
+    const new_disabled_characters = disabledCharacters.length > 0 ? disabledCharacters[disabledCharacters.length-1] : [];
+    setDisabledCharacters([...disabledCharacters, new_disabled_characters]);
   }
 
   const toggleDisabledCharacter = (character_name, fight_index) => {
@@ -147,18 +146,30 @@ const ExperienceForm = ({ areas }) => {
     ]);
   };
 
+  const changeFight = (fight, index) => {
+    setFights(prevFights => [
+      ...prevFights.slice(0, index),
+      fight,
+      ...prevFights.slice(index + 1)
+    ]);
+  }
+
   return (
-    <Container textAlign="center">
-      <CharactersForm addCharacters={addCharacters}/>
-      <FightsForm areas={areas} addFight={addFight}/>
+    <div>
+      <Container textAlign="center">
+        <CharactersForm addCharacters={addCharacters} characters={characters}/>
+        <FightsForm areas={areas} addFight={addFight}/>
+      </Container>
       <ExperienceResult
         characters={characters}
+        changeCharacters={changeCharacters}
+        changeFight={changeFight}
         fights={fights}
         disabledCharacters={disabledCharacters}
         removeFight={removeFight}
         toggleDisabledCharacter={toggleDisabledCharacter}
       />
-    </Container>
+    </div>
   );
 }
 

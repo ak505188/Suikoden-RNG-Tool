@@ -20,6 +20,7 @@ const offset = 14;
 //   enabled,
 // }]
 export function calculateLevels(characters, fights, disabled_characters) {
+  console.log(characters, fights, disabled_characters);
   const results = [];
   let new_characters = characters;
   for (let i = 0; i < fights.length; i++) {
