@@ -20,7 +20,6 @@ const offset = 14;
 //   enabled,
 // }]
 export function calculateLevels(characters, fights, disabled_characters) {
-  console.log(characters, fights, disabled_characters);
   const results = [];
   let new_characters = characters;
   for (let i = 0; i < fights.length; i++) {
@@ -50,6 +49,7 @@ function levelupCharacter(level, enemy_group, party_size) {
     }
     return (exp + EXP_TABLE[levelDiff + offset] / 1000);
   }, 0)).dividedBy(party_size);
+  if (expGrowth < .005) return level + .005;
   return parseFloat(expGrowth.plus(level).toFormat(3));
 }
 

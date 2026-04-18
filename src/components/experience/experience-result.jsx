@@ -1,6 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import {
+  Button,
   Container,
   Table,
   TableBody,
@@ -9,10 +10,16 @@ import {
   TableRow,
   TableCell,
 } from 'semantic-ui-react';
+import ExportModal from '../../Table/export-modal';
 import { calculateLevels } from './lib';
 
-const ExperienceContainer = ({ characters, changeCharacters, changeFight, disabledCharacters, fights, removeFight, toggleDisabledCharacter }) => {
+const ExperienceContainer = ({ characters, changeCharacters, changeFight, disabledCharacters, fights, removeFight, toggleFight, toggleDisabledCharacter }) => {
   const results = calculateLevels(characters, fights, disabledCharacters);
+  const export_data = {
+    characters,
+    fights,
+    disabled_characters: disabledCharacters
+  }
 
   const changeCharacterLevel = (level, index) => {
     if (level.isNaN || level < 1) level = 1;
@@ -41,42 +48,48 @@ const ExperienceContainer = ({ characters, changeCharacters, changeFight, disabl
   if (results.length <= 0) return null;
 
   return (
-    <Container style={{ flex: 1 }} textAlign="center">
-      <Table striped>
-        <TableHeader>
-          <TableRow>
-            <TableHeaderCell/>
-            {characters.map((character, index) =>
-              <HeaderCell key={character.name} character={character} index={index} changeCharacterLevel={changeCharacterLevel} removeCharacter={removeCharacter}/>
-            )}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-        {results.map((result, index) => (
-          <TableRow key={index}>
-            <TableCell key={`${result.enemy_group.name}-${index}`}>
-              <div>
-                {result.enemy_group.name}
-              </div>
-              <div className="cell_controls">
-                <input type="number" size={2} min={1} max={99.999} step={1} value={result.party_size} onChange={(e) => changeFightPartySize(e.target.value, index)}/>
-                <button className="remove" onClick={() => removeFight(index)}>⊖</button>
-              </div>
-            </TableCell>
-            {result.characters.map(character =>
-              <RowCell
-                key={character.name}
-                character={character}
-                index={index}
-                enabled={!disabledCharacters[index].includes(character.name)}
-                toggleDisabledCharacter={toggleDisabledCharacter}
-              />
-            )}
-          </TableRow>
-        ))}
-        </TableBody>
-      </Table>
-    </Container>
+    <>
+      <Container style={{ flex: 1 }} textAlign="center">
+        <ExportModal data={export_data} local_storage_prefix={'exp'} trigger={<Button primary>Export</Button>}/>
+      </Container>
+      <Container style={{ flex: 1 }} textAlign="center">
+        <Table striped>
+          <TableHeader>
+            <TableRow>
+              <TableHeaderCell/>
+              {characters.map((character, index) =>
+                <HeaderCell key={index} character={character} index={index} changeCharacterLevel={changeCharacterLevel} removeCharacter={removeCharacter}/>
+              )}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+          {results.map((result, index) => (
+            <TableRow key={index}>
+              <TableCell key={`${result.enemy_group.name}-${index}`}>
+                <div>
+                  {result.enemy_group.name}
+                </div>
+                <div className="cell_controls">
+                  <input type="number" size={2} min={1} max={99.999} step={1} value={result.party_size} onChange={(e) => changeFightPartySize(e.target.value, index)}/>
+                  <button className={`toggle ${result.enabled ? 'fight_enabled' : 'fight_disabled'}`} onClick={() => toggleFight(index)}>●</button>
+                  <button className="remove" onClick={() => removeFight(index)}>⊖</button>
+                </div>
+              </TableCell>
+              {result.characters.map(character =>
+                <RowCell
+                  key={character.name}
+                  character={character}
+                  index={index}
+                  enabled={result.enabled && !disabledCharacters[index].includes(character.name)}
+                  toggleDisabledCharacter={toggleDisabledCharacter}
+                />
+              )}
+            </TableRow>
+          ))}
+          </TableBody>
+        </Table>
+      </Container>
+    </>
   );
 }
 

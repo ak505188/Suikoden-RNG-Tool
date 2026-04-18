@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
-import { Container, Form } from 'semantic-ui-react';
+import { Button, Container, Form } from 'semantic-ui-react';
 import { Characters } from 'suikoden-rng-lib/stats/characters';
+import ImportModal from '../ImportModal';
 
 import ExperienceResult from './experience-result';
 import './experience.scss';
@@ -54,7 +55,6 @@ const FightsForm = ({ addFight, areas }) => {
       enemy_group,
       party_size:partySize,
       enabled: true,
-      disabled_characters: []
     });
   }
 
@@ -104,6 +104,14 @@ const ExperienceForm = ({ areas }) => {
 
   const changeCharacters = chars => setCharacters(chars);
 
+  const importData = data => {
+    setCharacters(data.characters);
+    setDisabledCharacters(data.disabled_characters);
+    // Fights has to be set last, so you don't error calculating results.
+    // Render updates on each setState, so these don't run concurrently.
+    setFights(data.fights);
+  }
+
   const addCharacters = new_characters => {
     setCharacters([...characters, ...new_characters]);
   }
@@ -152,7 +160,15 @@ const ExperienceForm = ({ areas }) => {
       fight,
       ...prevFights.slice(index + 1)
     ]);
-  }
+  };
+
+  const toggleFight = (index) => {
+    setFights(prevFights => [
+      ...prevFights.slice(0, index),
+      { ...prevFights[index], enabled: !prevFights[index].enabled },
+      ...prevFights.slice(index + 1)
+    ]);
+  };
 
   return (
     <div>
@@ -160,6 +176,11 @@ const ExperienceForm = ({ areas }) => {
         <CharactersForm addCharacters={addCharacters} characters={characters}/>
         <FightsForm areas={areas} addFight={addFight}/>
       </Container>
+      <ImportModal
+        local_storage_prefix='exp'
+        importData={importData}
+        trigger={<Button primary>Import</Button>}
+      />
       <ExperienceResult
         characters={characters}
         changeCharacters={changeCharacters}
@@ -168,6 +189,7 @@ const ExperienceForm = ({ areas }) => {
         disabledCharacters={disabledCharacters}
         removeFight={removeFight}
         toggleDisabledCharacter={toggleDisabledCharacter}
+        toggleFight={toggleFight}
       />
     </div>
   );

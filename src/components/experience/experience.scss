@@ -85,6 +85,15 @@ table {
       cursor: pointer;
       background: white;
     }
+
+    button.toggle {
+      cursor: pointer;
+      color: green;
+
+      &.fight_disabled {
+        color: red;
+      }
+    }
   }
 
 
