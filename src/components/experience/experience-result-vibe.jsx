@@ -161,18 +161,20 @@ const ExperienceContainer = ({ characters, changeCharacters, changeFight, change
           {results.map((result, index) => (
             <TableRow
               key={index}
-              draggable
-              onDragStart={() => onRowDragStart(index)}
-              onDragOver={(e) => onRowDragOver(e, index)}
-              onDrop={() => onRowDrop(index)}
-              onDragEnd={onRowDragEnd}
               style={{
                 opacity: dragRowIndex.current === index ? 0.4 : 1,
-                outline: dragOverRow === index ? '2px dashed #2185d0' : undefined,
+                outline: dragOverRow === index ? '1px dashed #2185d0' : undefined,
                 cursor: 'grab',
               }}
             >
-              <TableCell key={`${result.enemy_group.name}-${index}`}>
+              <TableCell
+                key={`${result.enemy_group.name}-${index}`}
+                draggable
+                onDragStart={() => onRowDragStart(index)}
+                onDragOver={(e) => onRowDragOver(e, index)}
+                onDrop={() => onRowDrop(index)}
+                onDragEnd={onRowDragEnd}
+              >
                 <div>
                   {result.enemy_group.name}
                 </div>
@@ -186,7 +188,6 @@ const ExperienceContainer = ({ characters, changeCharacters, changeFight, change
                     step={1}
                     value={result.party_size}
                     onChange={(e) => changeFightPartySize(e.target.value, index)}
-                    draggable
                     onDragStart={(e) => e.stopPropagation()}
                   />
                   <button
@@ -223,7 +224,7 @@ const RowCell = ({ character, index, enabled, toggleDisabledCharacter, isDragOve
       role="button"
       onClick={() => toggleDisabledCharacter(character.name, index)}
       style={{
-        outline: isDragOver ? '2px dashed #2185d0' : undefined,
+        outline: isDragOver ? '1px dashed #2185d0' : undefined,
       }}
     >
       {parseFloat(character.level).toFixed(3)} <span className="indicator">●</span>
@@ -250,8 +251,7 @@ const HeaderCell = ({
       onDrop={onDrop}
       onDragEnd={onDragEnd}
       style={{
-        opacity: undefined, // set from parent if needed
-        outline: isDragOver ? '2px dashed #2185d0' : undefined,
+        outline: isDragOver ? '1px dashed #2185d0' : undefined,
         cursor: 'grab',
       }}
     >
@@ -266,15 +266,12 @@ const HeaderCell = ({
           max={99.999}
           step={1}
           value={character.level}
+          draggable={false}
           onChange={(e) => changeCharacterLevel(e.target.value, index)}
-          draggable
-          onDragStart={(e) => e.stopPropagation()}
         />
         <button
           className="remove"
           onClick={() => removeCharacter(index)}
-          draggable
-          onDragStart={(e) => e.stopPropagation()}
         >⊖</button>
       </div>
     </TableHeaderCell>

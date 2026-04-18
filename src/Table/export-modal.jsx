@@ -42,7 +42,6 @@ const ExportModal = ({ columns, data, local_storage_prefix, trigger }) => {
       : 'text/csv;charset=utf-8;'
 
     const fileBlob = new Blob([blobData], { type: mimeType });
-    window.showSaveFilePicker()
     FileSaver.saveAs(fileBlob, `${fileName}.${formatType}`);
   }
 
