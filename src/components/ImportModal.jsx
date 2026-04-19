@@ -43,15 +43,18 @@ const ImportModal = ({ local_storage_prefix, importData, trigger }) => {
       <Modal.Content>
         <Form>
           {Object.keys(imports).length > 0 ?
-            <Table>
+            <Table celled definition>
               <TableBody>
               {Object.entries(imports).map(([name, data], index)=> (
                 <TableRow key={index}>
-                  <TableCell>{stripPrefix(name, local_storage_prefix)}</TableCell>
+                  <TableCell collapsing>{stripPrefix(name, local_storage_prefix)}</TableCell>
                   <TableCell>
+                    {data.characters.map(character => character.name).join(', ')}
+                  </TableCell>
+                  <TableCell collapsing>
                     <Button content="Import" onClick={() => handleImport(data)}/>
                   </TableCell>
-                  <TableCell>
+                  <TableCell collapsing>
                     <Button content="Delete" onClick={() => clearLocalStorageKey(name)}/>
                   </TableCell>
                 </TableRow>
@@ -72,6 +75,7 @@ const ImportModal = ({ local_storage_prefix, importData, trigger }) => {
               type="file"
               ref={fileInputRef}
               hidden
+              accept=".json"
               onChange={fileInputHandleChange}
             />
             <Form.Button content='Refresh' primary={true} onClick={refresh}/>
