@@ -1,0 +1,88 @@
+.roll {
+  --roll-triple-win: #5BC0A7;
+  --roll-double-win: #85D3A4;
+  --roll-triple-lose: #E68781;
+  --roll-double-lose: #EFB9B7;
+  --roll-1: #F1D1A3;
+  --roll-2: #F6E3A1;
+  --roll-3: #FFF3B0;
+  --roll-4: #E3F2A1;
+  --roll-5: #C8E6A0;
+  --roll-6: #A8DFA0;
+  --roll-piss: #FDE2E1;
+  --roll-miss: white;
+  padding: .25rem;
+  line-height: 1rem;
+  border-radius: .25rem;
+  width: 100%;
+  display: inline-block;
+}
+
+.roll.player {
+  &.roll_1 { background: var(--roll-miss); }
+  &.roll_2 { background: var(--roll-2); }
+  &.roll_3 { background: var(--roll-3); }
+  &.roll_4 { background: var(--roll-4); }
+  &.roll_5 { background: var(--roll-5); }
+  &.roll_6 { background: var(--roll-6); }
+  &.roll_double_win { background: var(--roll-double-win); }
+  &.roll_triple_win { background: var(--roll-triple-win); }
+  &.roll_double_lose { background: var(--roll-double-lose); }
+  &.roll_triple_lose { background: var(--roll-triple-lose); }
+  &.roll_piss { background: var(--roll-piss); }
+  &.roll_miss { background: var(--roll-miss); }
+}
+
+.roll.gaspar {
+  &.roll_1,
+  &.roll_2,
+  &.roll_3,
+  &.roll_4,
+  &.roll_5,
+  &.roll_6,
+  &.roll_double_win,
+  &.roll_triple_win,
+  &.roll_miss {
+    background: var(--roll-triple-lose);
+  }
+
+  &.roll_piss {
+    background: var(--roll-4);
+  }
+
+  &.roll_double_lose {
+    background: var(--roll-double-win);
+  }
+
+  &.roll_triple_lose {
+    background: var(--roll-triple-win);
+  }
+}
+
+.roll.tai_ho {
+  &.roll_1 {
+    background: var(--roll-6);
+  }
+  &.roll_2 {
+    background: var(--roll-5);
+  }
+  &.roll_3 {
+    background: var(--roll-4);
+  }
+  &.roll_4 {
+    background: var(--roll-3);
+  }
+  &.roll_5 {
+    background: var(--roll-2);
+  }
+  &.roll_6 {
+    background: var(--roll-1);
+  }
+  &.roll_double_win,
+  &.roll_triple_win,
+  &.roll_double_lose,
+  &.roll_triple_lose,
+  &.roll_piss {
+    background: black;
+  }
+}

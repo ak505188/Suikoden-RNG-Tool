@@ -35,7 +35,6 @@ const ExperienceForm = ({ areas }) => {
   }
 
   const addFight = () => {
-    console.log('Test');
     const group = areas[area].encounterTable[enemyGroup];
     const enemy_group = {
       name: group.name,
@@ -46,7 +45,6 @@ const ExperienceForm = ({ areas }) => {
       party_size: partySize,
       enabled: true,
     });
-    console.log(fight);
     setFights([...fights, fight]);
 
     const new_disabled_characters = disabledCharacters.length > 0 ? disabledCharacters[disabledCharacters.length-1] : [];

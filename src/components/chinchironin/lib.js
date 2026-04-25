@@ -1,5 +1,5 @@
-export const PLAYERS = {
-  TAI_HO: 'Tai Ho',
-  GASPAR: 'Gaspar',
-  PLAYER: 'Player'
-}
+export const PLAYERS = [
+  'Tai Ho',
+  'Gaspar',
+  'Player'
+];

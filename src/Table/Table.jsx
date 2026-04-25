@@ -14,11 +14,20 @@ const Table = props => {
         accumulator.push(column);
       }
       return accumulator;
-    },
-    []);
+    }
+  , []);
+
   const columnsWidthRatio = props.width /
     columns.reduce((total, column) => (total += column.width), 0);
   const rowStyle = props.rowStyle ? { ...defaultRowStyle, ...props.rowStyle } : defaultRowStyle;
+
+  const defaultCellRenderer = ({ cellData }) => {
+    if (cellData === null) return '';
+    if (React.isValidElement(cellData)) return cellData;
+    return String(cellData);
+  }
+
+  const cellRenderer = props.cellRenderer ? props.cellRenderer : defaultCellRenderer;
 
   return (
     <VirtTable
@@ -42,21 +51,12 @@ const Table = props => {
       {columns.map(column => {
         return (
           <Column
-            cellRenderer={({ cellData }) => {
-              if (cellData === null) {
-                return '';
-              }
-
-              if (React.isValidElement(cellData)) {
-                return cellData;
-              }
-
-              return String(cellData);
-            }}
+            cellRenderer={cellRenderer}
             key={column.key}
             label={column.label}
             dataKey={column.key}
             width={columnsWidthRatio * column.width}
+            columnStyler={data => console.log(data)}
           />
         );
       })}
