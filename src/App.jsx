@@ -22,6 +22,8 @@ import ChinchironinForm from 'components/chinchironin/form/chinchironin-form';
 import ChinchironinResult from 'components/chinchironin/result';
 import AssassinForm from 'components/assassin/form';
 import AssassinResult from 'components/assassin/result';
+import KakuForm from 'components/kaku/form';
+import KakuResult from 'components/kaku/result';
 import { Areas } from 'suikoden-rng-lib';
 import { Route } from 'react-router-dom';
 import './index.css';
@@ -167,6 +169,20 @@ const App = () => {
         exact={true}
         render={() => (
           <AssassinResult/>
+        )}
+      />
+      <Route
+        path="/kaku"
+        exact={true}
+        render={() => (
+          <KakuForm/>
+        )}
+      />
+      <Route
+        path="/kaku/result"
+        exact={true}
+        render={() => (
+          <KakuResult/>
         )}
       />
     </div>

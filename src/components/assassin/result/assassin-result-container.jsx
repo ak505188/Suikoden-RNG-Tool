@@ -11,7 +11,6 @@ const KIRKIS_STARTING_HP = 20;
 const AssassinResult = ({ location }) => {
   const params = new URLSearchParams(location.search);
   const rng = new RNG(parseInt(params.get('rng')));
-  const iterations = parseInt(params.get('iterations'));
   const armor = parseInt(params.get('armor'));
   const rangeStart = parseInt(params.get('range_start'));
   const rangeEnd = parseInt(params.get('range_end'));

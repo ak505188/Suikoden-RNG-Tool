@@ -65,6 +65,30 @@ const Home = () => {
       </Segment>
       <Segment>
         <Header>
+          <Link to="/chinchironin">Chinchironin Generator</Link>
+        </Header>
+        <p>
+          Simulate rolls for yourself, Tai Ho, and Gaspar.
+        </p>
+      </Segment>
+      <Segment>
+        <Header>
+          <Link to="/assassin">Assassin Fight</Link>
+        </Header>
+        <p>
+          Use this to find your RNG index mid-run based off the Assassin fight and Kirkis stats.
+        </p>
+      </Segment>
+      <Segment>
+        <Header>
+          <Link to="/kaku">Kaku NPC Simulator</Link>
+        </Header>
+        <p>
+          If you know what RNG you enter Kaku on (use the Assassin tool), you can use this to simulate NPC movements to determine what RNG you're on.
+        </p>
+      </Segment>
+      <Segment>
+        <Header>
           <a href="https://github.com/ak505188/SuikodenRNG-React/tree/master">Github Repository</a>
         </Header>
         <p>
