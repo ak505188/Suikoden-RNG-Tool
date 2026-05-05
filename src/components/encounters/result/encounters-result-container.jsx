@@ -6,13 +6,15 @@ import EncountersTable from './encounters-result-table';
 
 const EncountersContainer = ({ areas, location }) => {
   const params = new URLSearchParams(location.search);
-  const rng = parseInt(params.get('rng'));
+  const rng = new RNG(parseInt(params.get('rng')));
   const iterations = parseInt(params.get('iterations'));
+  const offset = parseInt(params.get('offset')) || 0;
   const partylevel = parseInt(params.get('partylevel'));
   const selectedAreas = params.get('areas').split(',').map((name) => areas[name]);
   const realistic = params.get('realistic') === 'true';
+
   const encounters = selectedAreas
-    .map(area => area.generateEncounters(new RNG(rng), iterations, partylevel, realistic))
+    .map(area => area.generateEncounters(rng.next(offset), iterations, partylevel, realistic))
     .reduce((fights, areaFights) => fights.concat(areaFights), [])
     .map(fight => ({
         area: fight.area,

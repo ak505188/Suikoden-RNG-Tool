@@ -7,6 +7,7 @@ import { InputRNG, InputIterations, InputPartyLevel } from 'components/form/inpu
 const EncountersForm = ({ areas, history }) => {
   const [rng, setRNG] = useState(Helpers.numToHexString(0x12));
   const [iterations, setIterations] = useState(1000);
+  const [offset, setOffset] = useState(0);
   const [partylevel, setPartylevel] = useState(0);
   const [realistic, setRealistic] = useState(true)
   const [selectedAreas, setSelectedAreas] = useState([]);
@@ -16,6 +17,7 @@ const EncountersForm = ({ areas, history }) => {
     const params = new URLSearchParams();
     params.append('rng', rng);
     params.append('iterations', iterations);
+    params.append('offset', offset);
     params.append('partylevel', partylevel);
     params.append('realistic', realistic);
     params.append('areas', selectedAreas);
@@ -32,6 +34,14 @@ const EncountersForm = ({ areas, history }) => {
         <InputIterations
           value={iterations}
           onChange={e => setIterations(e.target.value)}
+        />
+        <Form.Input
+          label="RNG offset to start from"
+          name="offset"
+          step="500"
+          type="number"
+          value={offset}
+          onChange={e => setOffset(e.target.value)}
         />
         <InputPartyLevel
           value={partylevel}

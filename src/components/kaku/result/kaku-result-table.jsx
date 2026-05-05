@@ -8,20 +8,7 @@ import {
   TableRow,
   TableCell,
 } from 'semantic-ui-react';
-import VirtTable from 'Table';
 import './kaku.css';
-
-const Presenter = ({ events }) => {
-  const columns = [
-    { key: 'frame', label: 'Frame', width: 50 },
-    { key: 'name', label: 'NPC', width: 50, show: false },
-    { key: 'description', label: 'Desription', width: 200 },
-    { key: 'index', label: 'Index', width: 50 },
-    { key: 'direction', label: 'Direction', width: 100, show: false },
-    { key: 'event', label: 'Event', width: 100, show: false },
-  ];
-  return <VirtTable columns={columns} data={events}/>;
-};
 
 const generateDescription = npc_event => {
   const description =
@@ -34,7 +21,7 @@ const generateDescription = npc_event => {
 const RegularTable = ({ events }) => {
   return (
     <Container textAlign="center">
-      <Table>
+      <Table compact celled size="large">
         <TableHeader>
           <TableRow>
             <TableHeaderCell collapsing>
