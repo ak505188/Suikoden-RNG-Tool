@@ -6,16 +6,25 @@ import { RNG } from 'suikoden-rng-lib';
 import { simulateAssassinFight } from 'suikoden-rng-lib/lib/rng';
 import { characterLevelUps } from 'suikoden-rng-lib/stats/growths';
 
-const KIRKIS_STARTING_HP = 20;
+const KIRKIS_STARTING_STATS = {
+  HP: 20,
+  PWR: 13,
+  SKL: 21,
+  DEF: 12,
+  SPD: 11,
+  MGC: 10,
+  LUK: 12,
+}
 
 const AssassinResult = ({ location }) => {
   const params = new URLSearchParams(location.search);
   const rng = new RNG(parseInt(params.get('rng')));
-  const armor = parseInt(params.get('armor'));
   const rangeStart = parseInt(params.get('range_start'));
   const rangeEnd = parseInt(params.get('range_end'));
-  const [dmg1, setDmg1] = useState(0);
-  const [dmg2, setDmg2] = useState(0);
+
+  const [heroArmor, setHeroArmor] = useState(80);
+  const [dmg1, setDmg1] = useState(25);
+  const [dmg2, setDmg2] = useState(25);
   const [kirkisHP, setKirkisHP] = useState(0);
 
   const sim_results = [];
@@ -24,7 +33,7 @@ const AssassinResult = ({ location }) => {
 
   for (let i = rangeStart; i < rangeEnd; i++) {
     const cur_rng = rng.cloneKeepIndex();
-    const sim_result = simulateAssassinFight(cur_rng, armor);
+    const sim_result = simulateAssassinFight(cur_rng, heroArmor);
 
     const assassin_end_index = cur_rng.count;
     const kirkis_stats = characterLevelUps('Kirkis', 1, 14, cur_rng);
@@ -37,7 +46,13 @@ const AssassinResult = ({ location }) => {
       turn2_damage: sim_result.turns[1].damage,
       end_rng: cur_rng.getRNG().toString(16),
       end_index: assassin_end_index,
-      kirkis_hp: kirkis_stats.HP + KIRKIS_STARTING_HP,
+      kirkis_hp: kirkis_stats.HP + KIRKIS_STARTING_STATS.HP,
+      kirkis_pwr: kirkis_stats.PWR + KIRKIS_STARTING_STATS.PWR,
+      kirkis_skl: kirkis_stats.SKL + KIRKIS_STARTING_STATS.SKL,
+      kirkis_def: kirkis_stats.DEF + KIRKIS_STARTING_STATS.DEF,
+      kirkis_spd: kirkis_stats.SPD + KIRKIS_STARTING_STATS.SPD,
+      kirkis_mgc: kirkis_stats.MGC + KIRKIS_STARTING_STATS.MGC,
+      kirkis_luk: kirkis_stats.LUK + KIRKIS_STARTING_STATS.LUK,
       kirkis_index: cur_rng.count,
       advancement: cur_rng.count - i
     });
@@ -59,6 +74,14 @@ const AssassinResult = ({ location }) => {
     <Container style={{ flex: 1 }} textAlign="center">
       <Form>
         <Form.Group>
+          <Form.Input
+            label="McDohl Armor"
+            value={heroArmor}
+            type="number"
+            min={18}
+            step={1}
+            onChange={e => setHeroArmor(parseInt(e.target.value))}
+          />
           <Form.Input
             label="Turn 1 Damage"
             value={dmg1}
@@ -85,7 +108,7 @@ const AssassinResult = ({ location }) => {
           />
         </Form.Group>
       </Form>
-      <AssassinTable data={results_to_show}/>
+      <AssassinTable rng={`0x${rng.originalRNG.toString(16)}`} data={results_to_show}/>
     </Container>
   );
 }

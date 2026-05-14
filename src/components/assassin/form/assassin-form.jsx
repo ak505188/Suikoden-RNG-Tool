@@ -6,7 +6,6 @@ import { withRouter } from 'react-router-dom';
 
 const AssassinForm = ({ history }) => {
   const [rng, setRNG] = useState(Helpers.numToHexString(0x12));
-  const [heroArmor, setHeroArmor] = useState(80);
   const [rangeStart, setRangeStart] = useState(0);
   const [rangeEnd, setRangeEnd] = useState(1000);
 
@@ -14,7 +13,6 @@ const AssassinForm = ({ history }) => {
     event.preventDefault();
     const params = new URLSearchParams();
     params.append('rng', rng);
-    params.append('armor', heroArmor);
     params.append('range_start', rangeStart);
     params.append('range_end', rangeEnd);
     history.push(`/assassin/result?${params.toString()}`);
@@ -26,14 +24,6 @@ const AssassinForm = ({ history }) => {
         <InputRNG
           value={rng}
           onChange={event => setRNG(event.target.value)}
-        />
-        <Form.Input
-          label="McDohl ARM"
-          name="McDohl ARM"
-          type="number"
-          value={heroArmor}
-          onChange={event => setHeroArmor(event.target.value)}
-          min={18}
         />
         <Form.Input
           label="Index Range Start"
