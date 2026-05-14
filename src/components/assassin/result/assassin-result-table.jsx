@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import VirtTable from 'Table';
 
 const Presenter = ({ data, rng }) => {
@@ -23,11 +24,11 @@ const Presenter = ({ data, rng }) => {
   ];
 
   const cellRenderer = (props) => {
-    // Return if not a speed key
     if (!props.dataKey.includes('kirkis_index')) return props.cellData;
     return (
-      <a href={`/#/kaku/result?rng=${rng}&start_index=${props.cellData}&frames=900`}>
-        {props.cellData}</a>
+      <Link to={`/kaku/result?rng=${rng}&start_index=${props.cellData}&frames=900`}>
+        {props.cellData}
+      </Link>
     );
   };
   return <VirtTable columns={columns} cellRenderer={cellRenderer} data={data}/>;
