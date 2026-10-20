@@ -14,7 +14,7 @@ const EncountersContainer = ({ areas, location }) => {
   const realistic = params.get('realistic') === 'true';
 
   const encounters = selectedAreas
-    .map(area => area.generateEncounters(rng.next(offset), iterations, partylevel, realistic))
+    .map(area => area.generateEncounters(rng.jump(offset), iterations, partylevel, realistic))
     .reduce((fights, areaFights) => fights.concat(areaFights), [])
     .map(fight => ({
         area: fight.area,

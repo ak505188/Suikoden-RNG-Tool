@@ -2,8 +2,7 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { Container } from 'semantic-ui-react';
 import KakuTable from './kaku-result-table';
-import { RNG } from 'suikoden-rng-lib';
-import Kaku from 'suikoden-rng-lib/lib/Kaku/Kaku';
+import { RNG, Kaku } from 'suikoden-rng-lib';
 
 const KakuResult = ({ location }) => {
   const params = new URLSearchParams(location.search);
@@ -12,7 +11,7 @@ const KakuResult = ({ location }) => {
   const frames_to_simulate = parseInt(params.get('frames'));
 
   const kaku = new Kaku();
-  rng.next(start_index);
+  rng.jump(start_index);
   let events = [];
 
   for (let i = 1; i <= frames_to_simulate; i++) {

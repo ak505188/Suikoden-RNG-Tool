@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Container, Form } from 'semantic-ui-react';
 import AssassinTable from './assassin-result-table';
-import { RNG } from 'suikoden-rng-lib';
-import { simulateAssassinFight } from 'suikoden-rng-lib/lib/rng';
-import { characterLevelUps } from 'suikoden-rng-lib/stats/growths';
+import { RNG, simulateAssassinFight, characterLevelUps } from 'suikoden-rng-lib';
 
 const KIRKIS_STARTING_STATS = {
   HP: 20,
@@ -29,22 +27,22 @@ const AssassinResult = ({ location }) => {
 
   const sim_results = [];
 
-  rng.next(rangeStart);
+  rng.jump(rangeStart);
 
   for (let i = rangeStart; i < rangeEnd; i++) {
-    const cur_rng = rng.cloneKeepIndex();
+    const cur_rng = rng.clone();
     const sim_result = simulateAssassinFight(cur_rng, heroArmor);
 
     const assassin_end_index = cur_rng.count;
     const kirkis_stats = characterLevelUps('Kirkis', 1, 14, cur_rng);
     sim_results.push({
       index: i,
-      rng: rng.getRNG().toString(16),
+      rng: rng.raw.toString(16),
       turn1_move: sim_result.turns[0].move_name,
       turn1_damage: sim_result.turns[0].damage,
       turn2_move: sim_result.turns[1].move_name,
       turn2_damage: sim_result.turns[1].damage,
-      end_rng: cur_rng.getRNG().toString(16),
+      end_rng: cur_rng.raw.toString(16),
       end_index: assassin_end_index,
       kirkis_hp: kirkis_stats.HP + KIRKIS_STARTING_STATS.HP,
       kirkis_pwr: kirkis_stats.PWR + KIRKIS_STARTING_STATS.PWR,
@@ -108,7 +106,7 @@ const AssassinResult = ({ location }) => {
           />
         </Form.Group>
       </Form>
-      <AssassinTable rng={`0x${rng.originalRNG.toString(16)}`} data={results_to_show}/>
+      <AssassinTable rng={`0x${rng.seed.toString(16)}`} data={results_to_show}/>
     </Container>
   );
 }

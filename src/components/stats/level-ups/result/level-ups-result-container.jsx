@@ -1,8 +1,7 @@
 import React from 'react';
-import { generateCharacterMultipleLevelup } from 'suikoden-rng-lib/stats/growths';
 import { withRouter } from 'react-router-dom';
 import { Container } from 'semantic-ui-react';
-import { RNG } from 'suikoden-rng-lib';
+import { RNG, generateCharacterMultipleLevelup } from 'suikoden-rng-lib';
 import LevelUpsTable from './level-ups-result-table';
 
 const LevelUpsContainer = ({ areas, location }) => {

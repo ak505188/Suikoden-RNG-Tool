@@ -1,8 +1,7 @@
 import React from 'react';
-import { characterLevelUps } from 'suikoden-rng-lib/stats/growths';
 import { withRouter } from 'react-router-dom';
 import { Container } from 'semantic-ui-react';
-import { RNG } from 'suikoden-rng-lib';
+import { RNG, characterLevelUps } from 'suikoden-rng-lib';
 import StartingStatsTable from './starting-stats-result-table';
 
 const StartingStatsContainer = ({ areas, location }) => {

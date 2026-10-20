@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { Characters } from 'suikoden-rng-lib/stats/characters';
 import { withRouter } from 'react-router-dom';
-import { Helpers } from 'suikoden-rng-lib';
+import { Characters, Helpers } from 'suikoden-rng-lib';
 import { Container, Form } from 'semantic-ui-react';
 import { InputRNG } from 'components/form/inputs';
 

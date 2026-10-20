@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Button, Container, Form } from 'semantic-ui-react';
-import { Characters } from 'suikoden-rng-lib/stats/characters';
+import { Characters } from 'suikoden-rng-lib';
 import ImportModal from '../ImportModal';
 
 import ExperienceResult from './experience-result-vibe';

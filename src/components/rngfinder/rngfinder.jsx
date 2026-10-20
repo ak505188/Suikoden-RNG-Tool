@@ -5,7 +5,7 @@ import { Helpers } from 'suikoden-rng-lib';
 import { Container, Form } from 'semantic-ui-react';
 import RNGFinderStatus from './Status';
 
-import findRNGWorker from 'workerize-loader!findRNG/findRNG.worker.js'; // eslint-disable-line import/no-webpack-loader-syntax
+import findRNGWorker from 'findRNG/findRNG.worker.js?worker';
 
 const initialStatus = {
   progress: 0,

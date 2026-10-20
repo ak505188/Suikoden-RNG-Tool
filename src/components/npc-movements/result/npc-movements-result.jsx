@@ -28,19 +28,19 @@ const NPCMovementsResult = ({ location }) => {
   const result = [];
   let currentNPC = 0;
   for (let i = 0; i < iterations; i++) {
-    const move = rng.getRNG2() < 0xcb;
+    const move = rng.rand < 0xcb;
     let direction = '';
     const index = i;
     if (move) {
       rng.next();
       i++;
       direction = 'Previous Movement';
-      if (Helpers.div32ulo(rng.getRNG2(), 0x1fff) > 0) {
+      if (Helpers.div32ulo(rng.rand, 0x1fff) > 0) {
         rng.next();
         i++;
-        direction = directionToString(Helpers.div32ulo(rng.getRNG2(), 0x1999));
+        direction = directionToString(Helpers.div32ulo(rng.rand, 0x1999));
       }
-      result.push({ index, rng: Helpers.numToHexString(rng.getRNG()), direction, npc: currentNPC + 1 });
+      result.push({ index, rng: Helpers.numToHexString(rng.raw), direction, npc: currentNPC + 1 });
     } else {
       currentNPC = (currentNPC + 1) % npcCount;
     }

@@ -1,5 +1,4 @@
-import { Helpers, RNG } from 'suikoden-rng-lib';
-import Area from 'suikoden-rng-lib/lib/Area/Area';
+import { Helpers, RNG, Area } from 'suikoden-rng-lib';
 import Status from './Status';
 import Encounters from './Encounters';
 
@@ -18,7 +17,7 @@ export function findRNG(area, encounters, rngSeed, progress) {
   for (let i = 0; i < 0xffffffff; i++) {
     if (Area.isBattle(rng, area.encounterRate, area.areaType)) {
       const encounterID = Area.getEncounterIndex(rng, area.tableLength);
-      const encounterRNGSeed = rng.getRNG();
+      const encounterRNGSeed = rng.raw;
       generatedEncounters.push(encounterID, encounterRNGSeed);
       // Uncomment for realistic mode
       // rng.next()
