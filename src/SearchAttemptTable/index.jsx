@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { AutoSizer, Column, Table } from 'react-virtualized';
 import { Input } from 'semantic-ui-react';
-import SearchApi from 'js-worker-search';
+import SearchApi from 'Table/SearchIndex';
 import SearchInputPresenter from './SearchInput';
 
 const VirtTable = props => {
@@ -50,14 +50,14 @@ export default class Container extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props.data !== nextProps.data) {
-      this.state.searchApi._search._worker.terminate();
+      this.state.searchApi.terminate();
       this.setState({ searchApi: new SearchApi(), rowsToRender: undefined }, () => this.indexData(nextProps.data));
     }
   }
 
   indexData(data) {
     for (let i = 0; i < data.length; i++) {
-      const row: string = JSON.stringify(data[i])
+      const row = JSON.stringify(data[i])
         .replace(/{|}/g, '')
         .replace(/"[^,]*?":/g, '')
         .replace(/"/g, '')
@@ -81,7 +81,7 @@ export default class Container extends React.Component {
     this.setState({ search }, () => {
       this.state.searchApi.search(this.state.search)
         .then((result) => {
-          const searchResults: number[] = this.state.rowsToRender
+          const searchResults = this.state.rowsToRender
             ? this.searchFilteredResults(result, this.state.rowsToRender)
             : result;
           this.setState({ searchResults }, () => console.log(this.state.searchResults));
@@ -91,7 +91,7 @@ export default class Container extends React.Component {
   }
 
   searchFilteredResults(searchResults, renderedRows) {
-    const matches: number[] = [];
+    const matches = [];
     for (let i = 0; i < searchResults.length; i++) {
       if (renderedRows.indexOf(searchResults[i]) !== -1) {
         matches.push(searchResults[i]);
@@ -115,7 +115,7 @@ export default class Container extends React.Component {
         />
         <SearchInputPresenter
           matches={this.state.searchResults}
-          next={(row: number) => console.log(data[row])}
+          next={(row) => console.log(data[row])}
           search={this.search}
         />
         <VirtTable columns={this.props.columns} data={data} />
