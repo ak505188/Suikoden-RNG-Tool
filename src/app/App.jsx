@@ -7,8 +7,7 @@ import { Form as SequenceForm, Result as SequenceResult } from 'features/sequenc
 import { Form as NPCForm, Result as NPCResult } from 'features/npc-movements';
 import RNGFinder from 'features/rng-finder';
 import Experience from 'features/experience';
-import RunAssistantForm from 'features/run-assistant';
-import RunAssistantResult from 'features/run-assistant/RunAssistantTool';
+import { Form as RunAssistantForm, Tool as RunAssistantTool } from 'features/run-assistant';
 import {
   StatsInfo,
   StartingStatsForm,
@@ -55,7 +54,7 @@ const App = () => {
       <Route
         path="/runassist/result"
         exact={true}
-        render={() => <RunAssistantResult areas={Areas} />}
+        render={() => <RunAssistantTool areas={Areas} />}
       />
       <Route path="/chinchironin" exact={true} render={() => <ChinchironinForm />} />
       <Route path="/chinchironin/result" exact={true} render={() => <ChinchironinResult />} />

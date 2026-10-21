@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { getCurrentEnemies } from 'features/run-assistant/reducers/RunAssistant';
-import { findFight } from 'features/run-assistant/actions/RunAssistant';
-import EnemyButtonsView from './enemy-buttons-view';
+import { getCurrentEnemies } from 'features/run-assistant/reducers/runAssistant';
+import { findFight } from 'features/run-assistant/actions/runAssistant';
+import EnemyButtonsView from './EnemyButtonsView';
 
 const mapStateToProps = (state) => ({
   enemies: getCurrentEnemies(state.RunAssistant),

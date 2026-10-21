@@ -2,8 +2,8 @@ import * as React from 'react';
 import VirtTable from 'shared/table';
 import { Container } from 'semantic-ui-react';
 import { connect } from 'react-redux';
-import { selectFight } from './actions/RunAssistant';
-import { getCurrentFights } from './reducers/RunAssistant';
+import { selectFight } from './actions/runAssistant';
+import { getCurrentFights } from './reducers/runAssistant';
 import { Helpers } from 'suikoden-rng-lib';
 
 const mapStateToProps = (state) => ({

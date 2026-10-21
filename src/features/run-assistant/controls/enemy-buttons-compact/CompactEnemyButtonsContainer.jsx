@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { getCurrentEnemies } from 'features/run-assistant/reducers/RunAssistant';
-import { findFight } from 'features/run-assistant/actions/RunAssistant';
+import { getCurrentEnemies } from 'features/run-assistant/reducers/runAssistant';
+import { findFight } from 'features/run-assistant/actions/runAssistant';
 import { setEnemyButtonGroupSize } from 'features/run-assistant/actions/controls';
 import { Button, Container, Segment } from 'semantic-ui-react';
 import { CompactEnemyButton } from '../enemy-buttons/EnemyButton';

@@ -1,10 +1,10 @@
 import config from './config';
-import RunAssistant from 'features/run-assistant';
+import runAssistant from './runAssistant';
 import controls from './controls';
 import { combineReducers } from 'redux';
 
 export default combineReducers({
-  RunAssistant,
+  RunAssistant: runAssistant,
   config,
   controls,
 });

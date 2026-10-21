@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Button, Container, Segment } from 'semantic-ui-react';
 import EnemyButton from './EnemyButton';
-import EvenColumnContainer from './even-column-container';
+import EvenColumnContainer from './EvenColumnContainer';
 
 const EnemyButtonsView = ({ enemiesByEnemyCount, useImages, enemyButtonOnClick }) => {
   return (

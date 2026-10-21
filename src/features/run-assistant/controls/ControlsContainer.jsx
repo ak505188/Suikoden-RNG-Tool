@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Button, Checkbox, Container, Dropdown, Segment } from 'semantic-ui-react';
-import EnemyButtonContainer from './enemy-buttons/';
+import CompactEnemyButtons from './enemy-buttons-compact/CompactEnemyButtonsContainer';
+import EnemyButtons from './enemy-buttons';
 import {
   jumpRNG,
   nextFight,
@@ -9,9 +10,9 @@ import {
   findFight,
   switchArea,
   togglePatternMode,
-} from '../actions/RunAssistant';
-import { findNextFight, getCurrentArea, getCurrentFight, getFight } from '../reducers/RunAssistant';
-import ConfigModal from '../ConfigModal';
+} from '../actions/runAssistant';
+import { findNextFight, getCurrentArea, getCurrentFight, getFight } from '../reducers/runAssistant';
+import ConfigModal from './modal/ConfigModal';
 import styled from 'styled-components';
 
 const mapStateToProps = (state) => ({
@@ -23,6 +24,8 @@ const mapStateToProps = (state) => ({
   },
   getCurrentFight: () => getCurrentFight(state.RunAssistant),
   patternMode: state.RunAssistant.patternMode,
+  compactMode: state.config.compactMode,
+  hotkeys: state.config.hotkeys,
 });
 
 const mapDispatchToProps = {
@@ -36,25 +39,36 @@ const mapDispatchToProps = {
 
 class Controls extends React.Component {
   componentDidMount() {
-    document.addEventListener(
-      'keydown',
-      (event) => {
-        const target = event.target;
-        if (target.tagName.toLowerCase() !== 'input') {
-          if (event.keyCode === 78) {
-            this.props.nextFight();
-          }
-        }
-      },
-      false,
-    );
+    document.addEventListener('keydown', this.handleHotkeyNextFight);
+    document.addEventListener('keydown', this.handleHotkeyPrevFight);
   }
 
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleHotkeyNextFight);
+    document.removeEventListener('keydown', this.handleHotkeyPrevFight);
+  }
+
+  handleHotkeyNextFight = (event) => {
+    if (event.target.tagName.toLowerCase() !== 'input') {
+      if (event.key === this.props.hotkeys.nextFight) {
+        this.props.nextFight();
+      }
+    }
+  };
+
+  handleHotkeyPrevFight = (event) => {
+    if (event.target.tagName.toLowerCase() !== 'input') {
+      if (event.key === this.props.hotkeys.prevFight) {
+        this.props.previousFight();
+      }
+    }
+  };
+
   render() {
-    const { areas, currentArea } = this.props;
+    const { areas, currentArea, compactMode } = this.props;
     return (
       <Container className={this.props.className}>
-        <EnemyButtonContainer />
+        {compactMode ? <CompactEnemyButtons /> : <EnemyButtons />}
         <Segment style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Dropdown
             label="Areas"
