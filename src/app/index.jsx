@@ -7,7 +7,7 @@ import 'react-virtualized/styles.css';
 
 ReactDOM.render(
   <HashRouter>
-    <App/>
+    <App />
   </HashRouter>,
-  document.getElementById('root')
+  document.getElementById('root'),
 );

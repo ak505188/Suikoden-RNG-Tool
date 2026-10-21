@@ -34,11 +34,10 @@ export default class Encounters {
   }
 
   toIdString() {
-    return Helpers.encounterSequenceToString(this.encounters.map(encounter => encounter.id));
+    return Helpers.encounterSequenceToString(this.encounters.map((encounter) => encounter.id));
   }
 
   search(pattern) {
     return this.toIdString().search(pattern);
   }
 }
-

@@ -20,7 +20,7 @@ const Presenter = ({ data, rng }) => {
     { key: 'kirkis_mgc', label: 'Kirkis MGC', width: 50, show: false },
     { key: 'kirkis_luk', label: 'Kirkis LUK', width: 50, show: false },
     { key: 'end_rng', label: 'End RNG', width: 100, show: false },
-    { key: 'advancement', label: 'RNG advancement', width: 100, show: false }
+    { key: 'advancement', label: 'RNG advancement', width: 100, show: false },
   ];
 
   const cellRenderer = (props) => {
@@ -31,7 +31,7 @@ const Presenter = ({ data, rng }) => {
       </Link>
     );
   };
-  return <VirtTable columns={columns} cellRenderer={cellRenderer} data={data}/>;
+  return <VirtTable columns={columns} cellRenderer={cellRenderer} data={data} />;
 };
 
 export default Presenter;

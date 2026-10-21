@@ -1,36 +1,36 @@
-export const switchArea = area => ({
+export const switchArea = (area) => ({
   type: 'SWITCH_AREA',
-  area
+  area,
 });
 
 export const previousFight = () => ({
-  type: 'PREVIOUS_FIGHT'
+  type: 'PREVIOUS_FIGHT',
 });
 
 export const nextFight = () => ({
-  type: 'NEXT_FIGHT'
+  type: 'NEXT_FIGHT',
 });
 
-export const selectFight = index => ({
+export const selectFight = (index) => ({
   type: 'SELECT_FIGHT',
-  index
+  index,
 });
 
-export const findFight = name => ({
+export const findFight = (name) => ({
   type: 'FIND_FIGHT',
-  name
+  name,
 });
 
-export const findMatch = name => ({
+export const findMatch = (name) => ({
   type: 'FIND_MATCH',
-  name
+  name,
 });
 
-export const jumpRNG = jump => ({
+export const jumpRNG = (jump) => ({
   type: 'JUMP_RNG',
-  jump
+  jump,
 });
 
 export const togglePatternMode = () => ({
-  type: 'TOGGLE_PATTERN_MODE'
+  type: 'TOGGLE_PATTERN_MODE',
 });

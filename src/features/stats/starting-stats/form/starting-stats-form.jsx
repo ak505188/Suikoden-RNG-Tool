@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Characters, Helpers } from 'suikoden-rng-lib';
 import { Container, Form } from 'semantic-ui-react';
-import { InputRNG, InputIterations} from 'shared/form/inputs';
+import { InputRNG, InputIterations } from 'shared/form/inputs';
 
-const StartingStatsForm = ({ areas, history }) => {
+const StartingStatsForm = ({ history }) => {
   const [characters, setCharacters] = useState([]);
   const [startingLevel, setStartingLevel] = useState(1);
   const [levelsGained, setLevelsGained] = useState(1);
   const [rng, setRNG] = useState(Helpers.numToHexString(0x12));
   const [iterations, setIterations] = useState(1000);
 
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     const params = new URLSearchParams();
     params.append('characters', characters);
@@ -20,7 +20,7 @@ const StartingStatsForm = ({ areas, history }) => {
     params.append('startingLevel', startingLevel);
     params.append('levelsGained', levelsGained);
     history.push(`/stats/starting-stats/result?${params.toString()}`);
-  }
+  };
 
   return (
     <Container textAlign="center">
@@ -28,27 +28,22 @@ const StartingStatsForm = ({ areas, history }) => {
         <Form.Dropdown
           label="Characters"
           placeholder="Character"
-          options={Object.keys(Characters).sort().map(name =>
-            ({ key: name, value: name, text: name }))}
+          options={Object.keys(Characters)
+            .sort()
+            .map((name) => ({ key: name, value: name, text: name }))}
           value={characters}
           onChange={(_e, data) => setCharacters(data.value)}
           multiple={true}
           search={true}
           selection={true}
         />
-        <InputRNG
-          value={rng}
-          onChange={e => setRNG(e.target.value)}
-        />
-        <InputIterations
-          value={iterations}
-          onChange={e => setIterations(e.target.value)}
-        />
+        <InputRNG value={rng} onChange={(e) => setRNG(e.target.value)} />
+        <InputIterations value={iterations} onChange={(e) => setIterations(e.target.value)} />
         <Form.Input
           label="Starting Level"
           type="number"
           value={startingLevel}
-          onChange={e => setStartingLevel(e.target.value)}
+          onChange={(e) => setStartingLevel(e.target.value)}
           min={1}
           max={99}
         />
@@ -56,14 +51,14 @@ const StartingStatsForm = ({ areas, history }) => {
           label="Levels Gained"
           type="number"
           value={levelsGained}
-          onChange={e => setLevelsGained(e.target.value)}
+          onChange={(e) => setLevelsGained(e.target.value)}
           min={1}
           max={98}
         />
-        <Form.Button type="submit" content="Generate Starting Stats" primary={true}/>
+        <Form.Button type="submit" content="Generate Starting Stats" primary={true} />
       </Form>
     </Container>
   );
-}
+};
 
 export default withRouter(StartingStatsForm);

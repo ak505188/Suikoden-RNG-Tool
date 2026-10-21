@@ -31,162 +31,45 @@ import './index.css';
 const App = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100vh' }}>
-      <Navbar/>
-      <Route path="/" component={Home} exact={true}/>
-      <Route
-        path="/encounters"
-        exact={true}
-        render={() => (
-          <EncountersForm areas={Areas}/>
-        )}
-      />
+      <Navbar />
+      <Route path="/" component={Home} exact={true} />
+      <Route path="/encounters" exact={true} render={() => <EncountersForm areas={Areas} />} />
       <Route
         path="/encounters/result"
         exact={true}
-        render={() => (
-          <EncounterResult areas={Areas}/>
-        )}
+        render={() => <EncounterResult areas={Areas} />}
       />
-      <Route
-        path="/stats"
-        exact={true}
-        render={() => (
-          <StatsInfo/>
-        )}
-      />
-      <Route
-        path="/stats/starting-stats"
-        exact={true}
-        render={() => (
-          <StartingStatsForm/>
-        )}
-      />
+      <Route path="/stats" exact={true} render={() => <StatsInfo />} />
+      <Route path="/stats/starting-stats" exact={true} render={() => <StartingStatsForm />} />
       <Route
         path="/stats/starting-stats/result"
         exact={true}
-        render={() => (
-          <StartingStatsResult/>
-        )}
+        render={() => <StartingStatsResult />}
       />
-      <Route
-        path="/stats/level-ups"
-        exact={true}
-        render={() => (
-          <LevelUpsForm/>
-        )}
-      />
-      <Route
-        path="/stats/level-ups/result"
-        exact={true}
-        render={() => (
-          <LevelUpsResult/>
-        )}
-      />
-      <Route
-        path="/sequence"
-        exact={true}
-        component={SequenceForm}
-      />
-      <Route
-        path="/sequence/result"
-        exact={true}
-        component={SequenceResult}
-      />
-      <Route
-        path="/npc"
-        exact={true}
-        component={NPCForm}
-      />
-      <Route
-        path="/npc/result"
-        exact={true}
-        component={NPCResult}
-      />
-      <Route
-        path="/drops"
-        exact={true}
-        render={() => (
-          <ItemDropsForm areas={Areas}/>
-        )}
-      />
-      <Route
-        path="/drops/result"
-        exact={true}
-        render={() => (
-          <ItemDropsResult areas={Areas}/>
-        )}
-      />
-      <Route
-        path="/rngfinder"
-        render={() => (
-          <RNGFinder areas={Areas}/>
-        )}
-      />
-      <Route
-        path="/experience"
-        exact={true}
-        render={() => (
-          <Experience areas={Areas}/>
-        )}
-      />
-      <Route
-        path="/runassist"
-        exact={true}
-        render={() => (
-          <RunAssistantForm areas={Areas}/>
-        )}
-      />
+      <Route path="/stats/level-ups" exact={true} render={() => <LevelUpsForm />} />
+      <Route path="/stats/level-ups/result" exact={true} render={() => <LevelUpsResult />} />
+      <Route path="/sequence" exact={true} component={SequenceForm} />
+      <Route path="/sequence/result" exact={true} component={SequenceResult} />
+      <Route path="/npc" exact={true} component={NPCForm} />
+      <Route path="/npc/result" exact={true} component={NPCResult} />
+      <Route path="/drops" exact={true} render={() => <ItemDropsForm areas={Areas} />} />
+      <Route path="/drops/result" exact={true} render={() => <ItemDropsResult areas={Areas} />} />
+      <Route path="/rngfinder" render={() => <RNGFinder areas={Areas} />} />
+      <Route path="/experience" exact={true} render={() => <Experience areas={Areas} />} />
+      <Route path="/runassist" exact={true} render={() => <RunAssistantForm areas={Areas} />} />
       <Route
         path="/runassist/result"
         exact={true}
-        render={() => (
-          <RunAssistantResult areas={Areas}/>
-        )}
+        render={() => <RunAssistantResult areas={Areas} />}
       />
-      <Route
-        path="/chinchironin"
-        exact={true}
-        render={() => (
-          <ChinchironinForm/>
-        )}
-      />
-      <Route
-        path="/chinchironin/result"
-        exact={true}
-        render={() => (
-          <ChinchironinResult/>
-        )}
-      />
-      <Route
-        path="/assassin"
-        exact={true}
-        render={() => (
-          <AssassinForm/>
-        )}
-      />
-      <Route
-        path="/assassin/result"
-        exact={true}
-        render={() => (
-          <AssassinResult/>
-        )}
-      />
-      <Route
-        path="/kaku"
-        exact={true}
-        render={() => (
-          <KakuForm/>
-        )}
-      />
-      <Route
-        path="/kaku/result"
-        exact={true}
-        render={() => (
-          <KakuResult/>
-        )}
-      />
+      <Route path="/chinchironin" exact={true} render={() => <ChinchironinForm />} />
+      <Route path="/chinchironin/result" exact={true} render={() => <ChinchironinResult />} />
+      <Route path="/assassin" exact={true} render={() => <AssassinForm />} />
+      <Route path="/assassin/result" exact={true} render={() => <AssassinResult />} />
+      <Route path="/kaku" exact={true} render={() => <KakuForm />} />
+      <Route path="/kaku/result" exact={true} render={() => <KakuResult />} />
     </div>
   );
-}
+};
 
 export default App;

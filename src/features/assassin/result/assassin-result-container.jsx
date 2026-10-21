@@ -12,7 +12,7 @@ const KIRKIS_STARTING_STATS = {
   SPD: 11,
   MGC: 10,
   LUK: 12,
-}
+};
 
 const AssassinResult = ({ location }) => {
   const params = new URLSearchParams(location.search);
@@ -52,7 +52,7 @@ const AssassinResult = ({ location }) => {
       kirkis_mgc: kirkis_stats.MGC + KIRKIS_STARTING_STATS.MGC,
       kirkis_luk: kirkis_stats.LUK + KIRKIS_STARTING_STATS.LUK,
       kirkis_index: cur_rng.count,
-      advancement: cur_rng.count - i
+      advancement: cur_rng.count - i,
     });
     rng.next();
   }
@@ -61,12 +61,12 @@ const AssassinResult = ({ location }) => {
     if (typeof selected_dmg != 'number' || isNaN(selected_dmg)) return true;
     if (selected_dmg <= 0) return true;
     return sim_dmg === selected_dmg;
-  }
+  };
 
   const results_to_show = sim_results
     .filter(({ turn1_damage }) => damage_filter(turn1_damage, dmg1))
     .filter(({ turn2_damage }) => damage_filter(turn2_damage, dmg2))
-    .filter(({ kirkis_hp }) => damage_filter(kirkis_hp, kirkisHP))
+    .filter(({ kirkis_hp }) => damage_filter(kirkis_hp, kirkisHP));
 
   return (
     <Container style={{ flex: 1 }} textAlign="center">
@@ -78,7 +78,7 @@ const AssassinResult = ({ location }) => {
             type="number"
             min={18}
             step={1}
-            onChange={e => setHeroArmor(parseInt(e.target.value))}
+            onChange={(e) => setHeroArmor(parseInt(e.target.value))}
           />
           <Form.Input
             label="Turn 1 Damage"
@@ -86,7 +86,7 @@ const AssassinResult = ({ location }) => {
             type="number"
             min={0}
             step={1}
-            onChange={e => setDmg1(parseInt(e.target.value))}
+            onChange={(e) => setDmg1(parseInt(e.target.value))}
           />
           <Form.Input
             label="Turn 2 Damage"
@@ -94,7 +94,7 @@ const AssassinResult = ({ location }) => {
             type="number"
             min={0}
             step={1}
-            onChange={e => setDmg2(parseInt(e.target.value))}
+            onChange={(e) => setDmg2(parseInt(e.target.value))}
           />
           <Form.Input
             label="Kirkis HP"
@@ -102,13 +102,13 @@ const AssassinResult = ({ location }) => {
             type="number"
             min={0}
             step={1}
-            onChange={e => setKirkisHP(parseInt(e.target.value))}
+            onChange={(e) => setKirkisHP(parseInt(e.target.value))}
           />
         </Form.Group>
       </Form>
-      <AssassinTable rng={`0x${rng.seed.toString(16)}`} data={results_to_show}/>
+      <AssassinTable rng={`0x${rng.seed.toString(16)}`} data={results_to_show} />
     </Container>
   );
-}
+};
 
 export default withRouter(AssassinResult);

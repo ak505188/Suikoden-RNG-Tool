@@ -10,14 +10,14 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     // Absolute imports from src/, e.g. 'shared/form/inputs' (see jsconfig.json)
-    alias: [{ find: /^(app|features|shared)(\/|$)/, replacement: `${src}/$1$2` }]
+    alias: [{ find: /^(app|features|shared)(\/|$)/, replacement: `${src}/$1$2` }],
   },
   build: {
     outDir: 'build',
     // lightningcss rejects some selectors in semantic-ui-css
-    cssMinify: 'esbuild'
+    cssMinify: 'esbuild',
   },
   test: {
-    environment: 'jsdom'
-  }
+    environment: 'jsdom',
+  },
 });

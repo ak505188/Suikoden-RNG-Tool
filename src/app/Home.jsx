@@ -6,70 +6,53 @@ const Home = () => {
   return (
     <Container text={true}>
       <Segment>
-        <Header>
-          About
-        </Header>
+        <Header>About</Header>
         <p>
-          This is a webapp dedicated to random number generation(RNG) manipulation
-          in Suikoden 1. It's primary use is for routing and assisting a speedrun of
-          the game.
+          This is a webapp dedicated to random number generation(RNG) manipulation in Suikoden 1.
+          It's primary use is for routing and assisting a speedrun of the game.
         </p>
       </Segment>
       <Segment>
         <Header>
           <Link to="/encounters">Encounter Tool</Link>
         </Header>
-        <p>
-          Calculate upcoming fights based off the RNG seed and area.
-        </p>
+        <p>Calculate upcoming fights based off the RNG seed and area.</p>
       </Segment>
       <Segment>
         <Header>
           <Link to="/sequence">RNG Sequence</Link>
         </Header>
-        <p>
-          Calculate the sequence of upcoming RNG seeds based off a RNG seed.
-        </p>
+        <p>Calculate the sequence of upcoming RNG seeds based off a RNG seed.</p>
       </Segment>
       <Segment>
         <Header>
           <Link to="/stats">Stats</Link>
         </Header>
-        <p>
-          Generate stat growths for characters based on RNG and levels.
-        </p>
+        <p>Generate stat growths for characters based on RNG and levels.</p>
       </Segment>
       <Segment>
         <Header>
           <Link to="/drops">Item Drops</Link>
         </Header>
-        <p>
-          Calculate what RNG seeds drop items based off a starting RNG seed and enemy group.
-        </p>
+        <p>Calculate what RNG seeds drop items based off a starting RNG seed and enemy group.</p>
       </Segment>
       <Segment>
         <Header>
           <Link to="/rngfinder">RNG Finder</Link>
         </Header>
-        <p>
-          Find (approximately) the current RNG seed based off a sequence of fights.
-        </p>
+        <p>Find (approximately) the current RNG seed based off a sequence of fights.</p>
       </Segment>
       <Segment>
         <Header>
           <Link to="/runassist">Run Assistant</Link>
         </Header>
-        <p>
-          Tool to assist in implementing RNG manipulation strategies while speedrunning.
-        </p>
+        <p>Tool to assist in implementing RNG manipulation strategies while speedrunning.</p>
       </Segment>
       <Segment>
         <Header>
           <Link to="/chinchironin">Chinchironin Generator</Link>
         </Header>
-        <p>
-          Simulate rolls for yourself, Tai Ho, and Gaspar.
-        </p>
+        <p>Simulate rolls for yourself, Tai Ho, and Gaspar.</p>
       </Segment>
       <Segment>
         <Header>
@@ -84,7 +67,8 @@ const Home = () => {
           <Link to="/kaku">Kaku NPC Simulator</Link>
         </Header>
         <p>
-          If you know what RNG you enter Kaku on (use the Assassin tool), you can use this to simulate NPC movements to determine what RNG you're on.
+          If you know what RNG you enter Kaku on (use the Assassin tool), you can use this to
+          simulate NPC movements to determine what RNG you're on.
         </p>
       </Segment>
       <Segment>
@@ -92,8 +76,8 @@ const Home = () => {
           <a href="https://github.com/ak505188/SuikodenRNG-React/tree/master">Github Repository</a>
         </Header>
         <p>
-          This webapp's Github repository. README details how the game calculates
-          most things RNG related.
+          This webapp's Github repository. README details how the game calculates most things RNG
+          related.
         </p>
       </Segment>
     </Container>

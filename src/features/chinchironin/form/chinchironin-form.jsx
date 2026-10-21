@@ -11,7 +11,7 @@ const ChinchironinForm = ({ history }) => {
   const [framesToWait, setFramesToAdvance] = useState(203);
   const [player, setPlayer] = useState(PLAYERS[0]);
 
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     const params = new URLSearchParams();
     params.append('rng', rng);
@@ -19,40 +19,37 @@ const ChinchironinForm = ({ history }) => {
     params.append('frames_to_wait', framesToWait);
     params.append('player', player);
     history.push(`/chinchironin/result?${params.toString()}`);
-  }
+  };
 
   return (
     <Container textAlign="center">
       <Form size="large" onSubmit={handleSubmit}>
-        <InputRNG
-          value={rng}
-          onChange={event => setRNG(event.target.value)}
-        />
+        <InputRNG value={rng} onChange={(event) => setRNG(event.target.value)} />
         <InputIterations
           value={iterations}
-          onChange={event => setIterations(event.target.value)}
+          onChange={(event) => setIterations(event.target.value)}
         />
         <Form.Input
           label="Frames to Advance"
           value={framesToWait}
           min={0}
-          onChange={event => setFramesToAdvance(event.target.value)}
+          onChange={(event) => setFramesToAdvance(event.target.value)}
         />
         <Form.Dropdown
           label="Player"
-          options={PLAYERS.map(player => ({
+          options={PLAYERS.map((player) => ({
             key: player,
             value: player,
-            text: player
+            text: player,
           }))}
           value={player}
           onChange={(_e, data) => setPlayer(data.value)}
           selection={true}
         />
-        <Form.Button type="submit" content="Calculate Rolls" primary={true}/>
+        <Form.Button type="submit" content="Calculate Rolls" primary={true} />
       </Form>
     </Container>
   );
-}
+};
 
 export default withRouter(ChinchironinForm);

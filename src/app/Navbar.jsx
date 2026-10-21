@@ -11,7 +11,7 @@ const Routes = [
   { name: 'Item Drops', path: '/drops' },
   { name: 'RNG Finder', path: '/rngfinder' },
   { name: 'Experience', path: '/experience' },
-  { name: 'Run Assistant', path: '/runassist' }
+  { name: 'Run Assistant', path: '/runassist' },
 ];
 
 const Navbar = () => {
@@ -19,13 +19,7 @@ const Navbar = () => {
     <Menu widths={Routes.length}>
       {Routes.map((route, index) => {
         return (
-          <Menu.Item
-            as={NavLink}
-            exact={true}
-            key={index}
-            name={route.name}
-            to={route.path}
-          />
+          <Menu.Item as={NavLink} exact={true} key={index} name={route.name} to={route.path} />
         );
       })}
     </Menu>

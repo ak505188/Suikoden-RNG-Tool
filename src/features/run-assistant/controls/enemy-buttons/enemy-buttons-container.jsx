@@ -4,42 +4,40 @@ import { getCurrentEnemies } from 'features/run-assistant/reducers/RunAssistant'
 import { findFight } from 'features/run-assistant/actions/RunAssistant';
 import EnemyButtonsView from './enemy-buttons-view';
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   enemies: getCurrentEnemies(state.RunAssistant),
   useImages: state.config.useImages,
-  patternMode: state.RunAssistant.patternMode
+  patternMode: state.RunAssistant.patternMode,
 });
 
 const mapDispatchToProps = {
-  findFight
+  findFight,
 };
 
-const EnemyButtonContainer = props => {
+const EnemyButtonContainer = (props) => {
   const enemiesByEnemyCount = props.enemies
-    .reduce(
-      (groups, enemyData) => {
-        const enemyCount = enemyData.enemies.length - 1;
-        if (groups[enemyCount] === undefined) {
-          groups[enemyCount] = [];
-        }
-        if (!groups[enemyCount].some(currentEnemyData => enemyData.name === currentEnemyData.name)) {
-          groups[enemyCount].push(enemyData);
-        }
-        return groups;
-      },
-      new Array(6))
-    .reduce(
-      (arr, enemyGroup) => {
-        if (enemyGroup === undefined) {
-          return arr;
-        }
-        if (enemyGroup.length > 1) {
-          enemyGroup.sort((a, b) => a.name < b.name ? -1 : 1);
-        }
-        arr.push(enemyGroup);
+    .reduce((groups, enemyData) => {
+      const enemyCount = enemyData.enemies.length - 1;
+      if (groups[enemyCount] === undefined) {
+        groups[enemyCount] = [];
+      }
+      if (
+        !groups[enemyCount].some((currentEnemyData) => enemyData.name === currentEnemyData.name)
+      ) {
+        groups[enemyCount].push(enemyData);
+      }
+      return groups;
+    }, new Array(6))
+    .reduce((arr, enemyGroup) => {
+      if (enemyGroup === undefined) {
         return arr;
-      },
-      []);
+      }
+      if (enemyGroup.length > 1) {
+        enemyGroup.sort((a, b) => (a.name < b.name ? -1 : 1));
+      }
+      arr.push(enemyGroup);
+      return arr;
+    }, []);
 
   return (
     <EnemyButtonsView
@@ -50,6 +48,9 @@ const EnemyButtonContainer = props => {
   );
 };
 
-const ConnectedEnemyButtonContainer = connect(mapStateToProps, mapDispatchToProps)(EnemyButtonContainer);
+const ConnectedEnemyButtonContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(EnemyButtonContainer);
 
 export default ConnectedEnemyButtonContainer;

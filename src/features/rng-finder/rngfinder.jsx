@@ -25,9 +25,9 @@ const RNGFinder = ({ areas }) => {
     const area = data.value;
     setFightList(area === selectedArea ? fightList : []);
     setSelectedArea(area);
-  }
+  };
 
-  const handleStart = _event => {
+  const handleStart = (_event) => {
     if (fightList.length < 2) {
       return;
     }
@@ -41,10 +41,10 @@ const RNGFinder = ({ areas }) => {
     const workerParams = {
       areaType: area.areaType,
       tableLength: area.encounterTable.length,
-      encounterRate: area.encounterRate
+      encounterRate: area.encounterRate,
     };
 
-    webworker.onmessage = m => {
+    webworker.onmessage = (m) => {
       const { done, message, progress, result } = m.data;
       setStatus({ done, message, progress, result });
       setRunning(!done);
@@ -53,54 +53,54 @@ const RNGFinder = ({ areas }) => {
     setWorker(webworker);
     setRunning(true);
     webworker.postMessage({ workerParams, encounters: fightList, rng: parseInt(rng) });
-  }
+  };
 
   const killWorker = () => {
     worker.terminate();
     setWorker(undefined);
-  }
+  };
 
-  const handleStop = event => {
+  const handleStop = (event) => {
     event.preventDefault();
     setRunning(false);
     setStatus(initialStatus);
     killWorker();
-  }
+  };
 
   return (
     <Container textAlign="center">
       <Form size="large" onSubmit={() => handleStart()}>
-        <InputRNG
-          value={rng}
-          onChange={e => setRNG(Helpers.numToHexString(e.target.value))}
-        />
+        <InputRNG value={rng} onChange={(e) => setRNG(Helpers.numToHexString(e.target.value))} />
         <Form.Dropdown
           label="Areas"
           placeholder="Area"
-          options={Helpers.areaNamesWithRandomEncounters.map(name =>
-            ({ key: name, value: name, text: areas[name].name })
-          )}
+          options={Helpers.areaNamesWithRandomEncounters.map((name) => ({
+            key: name,
+            value: name,
+            text: areas[name].name,
+          }))}
           value={selectedArea}
           onChange={handleAreaChange}
           search={true}
           selection={true}
         />
         <DoubleListSelector
-          handleChange={list => setFightList(list)}
+          handleChange={(list) => setFightList(list)}
           list={fightList}
-          options={areas[selectedArea].encounterTable.map(group => group.name)}
+          options={areas[selectedArea].encounterTable.map((group) => group.name)}
         />
-        <Form.Button style={{ marginBottom: '1em' }} type="submit" content="Find RNG Seed" primary={true}/>
+        <Form.Button
+          style={{ marginBottom: '1em' }}
+          type="submit"
+          content="Find RNG Seed"
+          primary={true}
+        />
       </Form>
-        {status.message !== '' &&
-          <RNGFinderStatus
-            running={running}
-            cancel={handleStop}
-            {...status}
-          />
-        }
+      {status.message !== '' && (
+        <RNGFinderStatus running={running} cancel={handleStop} {...status} />
+      )}
     </Container>
   );
-}
+};
 
 export default RNGFinder;

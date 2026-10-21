@@ -7,49 +7,53 @@ import Filter from './Filter';
 import ColumnDropdown from './ColumnDropdown';
 import ExportModal from './export-modal';
 
-const createDefaultRowsToRender = (data => data.map((_row, index) => index));
+const createDefaultRowsToRender = (data) => data.map((_row, index) => index);
 
 export default class TableContainer extends React.Component {
   constructor(props) {
     super();
     this.state = {
       rowsToRender: createDefaultRowsToRender(props.data),
-      columns: props.columns
-    }
+      columns: props.columns,
+    };
   }
 
   render() {
-    const data = this.state.rowsToRender.map(rowIndex => this.props.data[rowIndex]).filter(row => row !== undefined);
+    const data = this.state.rowsToRender
+      .map((rowIndex) => this.props.data[rowIndex])
+      .filter((row) => row !== undefined);
 
-    const dataForFilter = this.props.filterFromData ?
-      this.props.data.map(row =>
-        Helpers.filterPropertiesFromObject(row, this.props.filterFromData)) :
-      this.props.data;
+    const dataForFilter = this.props.filterFromData
+      ? this.props.data.map((row) =>
+          Helpers.filterPropertiesFromObject(row, this.props.filterFromData),
+        )
+      : this.props.data;
 
     return (
       <AutoSizer>
         {({ height, width }) => (
           <React.Fragment>
-            <div style={{ display: 'flex', 'justifyContent': 'space-between', width, height: 38 }}>
-              { this.props.filter !== false ?
+            <div style={{ display: 'flex', justifyContent: 'space-between', width, height: 38 }}>
+              {this.props.filter !== false ? (
                 <div style={{ marginRight: 'auto' }}>
                   <Filter
-                    data={
-                      this.props.filterFromData !== undefined ?
-                      dataForFilter :
-                      this.props.data
-                    }
+                    data={this.props.filterFromData !== undefined ? dataForFilter : this.props.data}
                     setRowsToRender={(rows) => this.setState({ rowsToRender: rows })}
                   />
-                </div> : null }
-              <ExportModal columns={this.props.columns} data={data} trigger={<Button primary>Export</Button>}/>
+                </div>
+              ) : null}
+              <ExportModal
+                columns={this.props.columns}
+                data={data}
+                trigger={<Button primary>Export</Button>}
+              />
               <ColumnDropdown
                 columns={this.props.columns}
-                toggleColumn={(columnIndex => {
+                toggleColumn={(columnIndex) => {
                   const columns = this.props.columns;
                   columns[columnIndex].show = columns[columnIndex].show === false ? true : false;
                   this.setState({ columns });
-                })}
+                }}
               />
             </div>
             <Table

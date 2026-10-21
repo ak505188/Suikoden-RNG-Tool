@@ -1,36 +1,60 @@
 .roll {
-  --roll-triple-win: #5BC0A7;
-  --roll-double-win: #85D3A4;
-  --roll-triple-lose: #E68781;
-  --roll-double-lose: #EFB9B7;
-  --roll-1: #F1D1A3;
-  --roll-2: #F6E3A1;
-  --roll-3: #FFF3B0;
-  --roll-4: #E3F2A1;
-  --roll-5: #C8E6A0;
-  --roll-6: #A8DFA0;
-  --roll-piss: #FDE2E1;
+  --roll-triple-win: #5bc0a7;
+  --roll-double-win: #85d3a4;
+  --roll-triple-lose: #e68781;
+  --roll-double-lose: #efb9b7;
+  --roll-1: #f1d1a3;
+  --roll-2: #f6e3a1;
+  --roll-3: #fff3b0;
+  --roll-4: #e3f2a1;
+  --roll-5: #c8e6a0;
+  --roll-6: #a8dfa0;
+  --roll-piss: #fde2e1;
   --roll-miss: white;
-  padding: .25rem;
+  padding: 0.25rem;
   line-height: 1rem;
-  border-radius: .25rem;
+  border-radius: 0.25rem;
   width: 100%;
   display: inline-block;
 }
 
 .roll.player {
-  &.roll_1 { background: var(--roll-miss); }
-  &.roll_2 { background: var(--roll-2); }
-  &.roll_3 { background: var(--roll-3); }
-  &.roll_4 { background: var(--roll-4); }
-  &.roll_5 { background: var(--roll-5); }
-  &.roll_6 { background: var(--roll-6); }
-  &.roll_double_win { background: var(--roll-double-win); }
-  &.roll_triple_win { background: var(--roll-triple-win); }
-  &.roll_double_lose { background: var(--roll-double-lose); }
-  &.roll_triple_lose { background: var(--roll-triple-lose); }
-  &.roll_piss { background: var(--roll-piss); }
-  &.roll_miss { background: var(--roll-miss); }
+  &.roll_1 {
+    background: var(--roll-miss);
+  }
+  &.roll_2 {
+    background: var(--roll-2);
+  }
+  &.roll_3 {
+    background: var(--roll-3);
+  }
+  &.roll_4 {
+    background: var(--roll-4);
+  }
+  &.roll_5 {
+    background: var(--roll-5);
+  }
+  &.roll_6 {
+    background: var(--roll-6);
+  }
+  &.roll_double_win {
+    background: var(--roll-double-win);
+  }
+  &.roll_triple_win {
+    background: var(--roll-triple-win);
+  }
+  &.roll_double_lose {
+    background: var(--roll-double-lose);
+  }
+  &.roll_triple_lose {
+    background: var(--roll-triple-lose);
+  }
+  &.roll_piss {
+    background: var(--roll-piss);
+  }
+  &.roll_miss {
+    background: var(--roll-miss);
+  }
 }
 
 .roll.gaspar {

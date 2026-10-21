@@ -21,7 +21,7 @@ const EnemyButtonImage = styled.div`
     margin: 2px 0;
     flex: 0 0 auto;
     border: none;
-    border-radius: .28571429rem;
+    border-radius: 0.28571429rem;
     padding: 2px;
     display: flex;
     justify-content: center;
@@ -46,7 +46,7 @@ const CompactEnemyButtonImage = styled.div`
     margin: 0 2px;
     flex: 1;
     border: none;
-    border-radius: .28571429rem;
+    border-radius: 0.28571429rem;
     padding: 2px;
     display: flex;
     justify-content: center;
@@ -54,49 +54,37 @@ const CompactEnemyButtonImage = styled.div`
   }
 `;
 
-export const CompactEnemyButton = props => {
+export const CompactEnemyButton = (props) => {
   const { useImages, enemyGroup } = props;
   if (useImages) {
     return (
-      <CompactEnemyButtonImage
-        className="ui button"
-        role="button"
-        {...props}
-      >
-        {enemyGroup.enemies.map((enemy, index) => <EnemyImage key={index} src={enemy.img}/>)}
+      <CompactEnemyButtonImage className="ui button" role="button" {...props}>
+        {enemyGroup.enemies.map((enemy, index) => (
+          <EnemyImage key={index} src={enemy.img} />
+        ))}
       </CompactEnemyButtonImage>
     );
   }
   return (
-    <CompactEnemyButtonText
-      className="ui button"
-      role="button"
-      {...props}
-    >
+    <CompactEnemyButtonText className="ui button" role="button" {...props}>
       {enemyGroup.name}
     </CompactEnemyButtonText>
   );
 };
 
-const EnemyButton = props => {
+const EnemyButton = (props) => {
   const { useImages, enemyGroup } = props;
   if (useImages) {
     return (
-      <EnemyButtonImage
-        className="ui button"
-        role="button"
-        {...props}
-      >
-        {enemyGroup.enemies.map((enemy, index) => <EnemyImage key={index} src={`data:image/png;base64, ${enemy.img}`}/>)}
+      <EnemyButtonImage className="ui button" role="button" {...props}>
+        {enemyGroup.enemies.map((enemy, index) => (
+          <EnemyImage key={index} src={`data:image/png;base64, ${enemy.img}`} />
+        ))}
       </EnemyButtonImage>
     );
   } else {
     return (
-      <EnemyButtonText
-        className="ui button"
-        role="button"
-        {...props}
-      >
+      <EnemyButtonText className="ui button" role="button" {...props}>
         {enemyGroup.name}
       </EnemyButtonText>
     );

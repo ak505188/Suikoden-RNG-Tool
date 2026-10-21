@@ -10,11 +10,7 @@ const EnemyButtonsView = ({ enemiesByEnemyCount, useImages, enemyButtonOnClick }
         <EvenColumnContainer>
           {enemiesByEnemyCount.map((enemiesGroup, index) => {
             return (
-              <Button.Group
-                style={{ width: '100%', margin: '2px' }}
-                vertical={true}
-                key={index}
-              >
+              <Button.Group style={{ width: '100%', margin: '2px' }} vertical={true} key={index}>
                 {enemiesGroup.map((enemyGroup) => {
                   return (
                     <EnemyButton

@@ -9,25 +9,22 @@ const NPCalcForm = ({ history }) => {
   const [iterations, setIterations] = useState(1000);
   const [npcs, setNpcs] = useState(1);
 
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     const params = new URLSearchParams();
     params.append('rng', rng);
     params.append('iterations', iterations);
     params.append('npcs', npcs);
     history.push(`/npc/result?${params.toString()}`);
-  }
+  };
 
   return (
     <Container textAlign="center">
       <Form onSubmit={handleSubmit}>
-        <InputRNG
-          value={rng}
-          onChange={event => setRNG(event.target.value)}
-        />
+        <InputRNG value={rng} onChange={(event) => setRNG(event.target.value)} />
         <InputIterations
           value={iterations}
-          onChange={event => setIterations(event.target.value)}
+          onChange={(event) => setIterations(event.target.value)}
         />
         <Form.Input
           label="Number of NPCs"
@@ -35,12 +32,12 @@ const NPCalcForm = ({ history }) => {
           step="1"
           type="number"
           value={npcs}
-          onChange={event => setNpcs(event.target.value)}
+          onChange={(event) => setNpcs(event.target.value)}
         />
-        <Form.Button type="submit" content="Calculate NPC Movements" primary={true}/>
+        <Form.Button type="submit" content="Calculate NPC Movements" primary={true} />
       </Form>
     </Container>
   );
-}
+};
 
 export default withRouter(NPCalcForm);

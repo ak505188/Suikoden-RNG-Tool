@@ -4,5 +4,4 @@ export const mapSizesToProps = ({ width }) => ({
   isMobile: width < 480,
 });
 
-export const withSizesHOC = component =>
-  withSizes(mapSizesToProps)(component);
+export const withSizesHOC = (component) => withSizes(mapSizesToProps)(component);

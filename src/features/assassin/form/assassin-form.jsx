@@ -9,28 +9,25 @@ const AssassinForm = ({ history }) => {
   const [rangeStart, setRangeStart] = useState(0);
   const [rangeEnd, setRangeEnd] = useState(1000);
 
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     const params = new URLSearchParams();
     params.append('rng', rng);
     params.append('range_start', rangeStart);
     params.append('range_end', rangeEnd);
     history.push(`/assassin/result?${params.toString()}`);
-  }
+  };
 
   return (
     <Container textAlign="center">
       <Form size="large" onSubmit={handleSubmit}>
-        <InputRNG
-          value={rng}
-          onChange={event => setRNG(event.target.value)}
-        />
+        <InputRNG value={rng} onChange={(event) => setRNG(event.target.value)} />
         <Form.Input
           label="Index Range Start"
           name="Index Range Start"
           type="number"
           value={rangeStart}
-          onChange={event => setRangeStart(event.target.value)}
+          onChange={(event) => setRangeStart(event.target.value)}
           min={0}
           max={rangeEnd}
         />
@@ -39,13 +36,13 @@ const AssassinForm = ({ history }) => {
           name="Index Range End"
           type="number"
           value={rangeEnd}
-          onChange={event => setRangeEnd(event.target.value)}
+          onChange={(event) => setRangeEnd(event.target.value)}
           min={0}
         />
-        <Form.Button type="submit" content="Simulate Assassin Fights" primary={true}/>
+        <Form.Button type="submit" content="Simulate Assassin Fights" primary={true} />
       </Form>
     </Container>
   );
-}
+};
 
 export default withRouter(AssassinForm);

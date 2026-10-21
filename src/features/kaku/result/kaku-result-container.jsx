@@ -15,26 +15,26 @@ const KakuResult = ({ location }) => {
   let events = [];
 
   for (let i = 1; i <= frames_to_simulate; i++) {
-    const frame_events = kaku.simulateMovement(rng).map(event => ({ frame: i, ...event }));
+    const frame_events = kaku.simulateMovement(rng).map((event) => ({ frame: i, ...event }));
     events = [...events, ...frame_events];
   }
 
-  const data = events.map(event => {
+  const data = events.map((event) => {
     const description =
-      event.name === 'Mina' && event.event === 'Start Mina Timer' ?
-      'Mina Timer Start' :
-      `${event.name} ${event.event} ${event.direction}`;
+      event.name === 'Mina' && event.event === 'Start Mina Timer'
+        ? 'Mina Timer Start'
+        : `${event.name} ${event.event} ${event.direction}`;
     return {
       ...event,
-      description
-    }
+      description,
+    };
   });
 
   return (
     <Container style={{ flex: 1 }} textAlign="center">
-      <KakuTable events={data}/>
+      <KakuTable events={data} />
     </Container>
   );
-}
+};
 
 export default withRouter(KakuResult);

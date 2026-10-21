@@ -10,22 +10,27 @@ const EncountersContainer = ({ areas, location }) => {
   const iterations = parseInt(params.get('iterations'));
   const offset = parseInt(params.get('offset')) || 0;
   const partylevel = parseInt(params.get('partylevel'));
-  const selectedAreas = params.get('areas').split(',').map((name) => areas[name]);
+  const selectedAreas = params
+    .get('areas')
+    .split(',')
+    .map((name) => areas[name]);
   const realistic = params.get('realistic') === 'true';
 
   const encounters = selectedAreas
-    .map(area => area.generateEncounters(rng.clone().jump(offset), iterations, partylevel, realistic))
+    .map((area) =>
+      area.generateEncounters(rng.clone().jump(offset), iterations, partylevel, realistic),
+    )
     .reduce((fights, areaFights) => fights.concat(areaFights), [])
-    .map(fight => ({
-        area: fight.area,
-        enemy: fight.enemyGroup.name,
-        index: fight.index,
-        run: fight.run ? 'Run' : 'Fail',
-        startRNG: Helpers.numToHexString(fight.startRNG),
-        battleRNG: Helpers.numToHexString(fight.battleRNG),
-        wheel: fight.wheel,
-        champVal: fight.enemyGroup.champVal,
-        isBattleValue: fight.isBattleValue
+    .map((fight) => ({
+      area: fight.area,
+      enemy: fight.enemyGroup.name,
+      index: fight.index,
+      run: fight.run ? 'Run' : 'Fail',
+      startRNG: Helpers.numToHexString(fight.startRNG),
+      battleRNG: Helpers.numToHexString(fight.battleRNG),
+      wheel: fight.wheel,
+      champVal: fight.enemyGroup.champVal,
+      isBattleValue: fight.isBattleValue,
     }))
     .sort((a, b) => {
       if (a.index !== b.index) {
@@ -36,9 +41,9 @@ const EncountersContainer = ({ areas, location }) => {
 
   return (
     <Container style={{ flex: 1 }} textAlign="center">
-      <EncountersTable encounters={encounters}/>
+      <EncountersTable encounters={encounters} />
     </Container>
   );
-}
+};
 
 export default withRouter(EncountersContainer);

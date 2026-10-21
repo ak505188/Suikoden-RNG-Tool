@@ -13,18 +13,19 @@ export default class Status {
     this.progress = status.progress || this.progress;
     this.message = status.message || this.message;
     this.foundEncounterRNG = status.foundEncounterRNG || this.foundEncounterRNG;
-    this.foundEncounterRNGPrevious = status.foundEncounterRNGPrevious || this.foundEncounterRNGPrevious;
+    this.foundEncounterRNGPrevious =
+      status.foundEncounterRNGPrevious || this.foundEncounterRNGPrevious;
     return this;
   }
 
   export() {
     const { done, progress, message } = this;
-    const result = this.foundEncounterRNG ?
-      {
-        foundEncounterRNG: this.foundEncounterRNG,
-        foundEncounterRNGPrevious: this.foundEncounterRNGPrevious
-      } :
-      null;
+    const result = this.foundEncounterRNG
+      ? {
+          foundEncounterRNG: this.foundEncounterRNG,
+          foundEncounterRNGPrevious: this.foundEncounterRNGPrevious,
+        }
+      : null;
     return { done, progress, message, result };
   }
 
@@ -32,4 +33,3 @@ export default class Status {
     this.progressCallback(this.export());
   }
 }
-

@@ -16,12 +16,12 @@ const ImportModal = ({ local_storage_prefix, importData, trigger }) => {
 
   const refresh = () => setImports(getLocalStorageByPrefix(local_storage_prefix));
 
-  const clearLocalStorageKey = key => {
+  const clearLocalStorageKey = (key) => {
     localStorage.removeItem(key);
     refresh();
   };
 
-  const handleImport = data => importData(data);
+  const handleImport = (data) => importData(data);
 
   const fileInputHandleChange = (e) => {
     const file = e.target.files[0];
@@ -30,39 +30,38 @@ const ImportModal = ({ local_storage_prefix, importData, trigger }) => {
       reader.onload = (event) => {
         const json = JSON.parse(event.target.result);
         handleImport(json);
-      }
+      };
       reader.readAsText(file);
     }
-  }
+  };
 
   return (
     <Modal onOpen={refresh} trigger={trigger}>
-      <Modal.Header>
-        Import
-      </Modal.Header>
+      <Modal.Header>Import</Modal.Header>
       <Modal.Content>
         <Form>
-          {Object.keys(imports).length > 0 ?
+          {Object.keys(imports).length > 0 ? (
             <Table celled definition>
               <TableBody>
-              {Object.entries(imports).map(([name, data], index)=> (
-                <TableRow key={index}>
-                  <TableCell collapsing>{stripPrefix(name, local_storage_prefix)}</TableCell>
-                  <TableCell>
-                    {data.characters.map(character => character.name).join(', ')}
-                  </TableCell>
-                  <TableCell collapsing>
-                    <Button content="Import" onClick={() => handleImport(data)}/>
-                  </TableCell>
-                  <TableCell collapsing>
-                    <Button content="Delete" onClick={() => clearLocalStorageKey(name)}/>
-                  </TableCell>
-                </TableRow>
-              ))}
+                {Object.entries(imports).map(([name, data], index) => (
+                  <TableRow key={index}>
+                    <TableCell collapsing>{stripPrefix(name, local_storage_prefix)}</TableCell>
+                    <TableCell>
+                      {data.characters.map((character) => character.name).join(', ')}
+                    </TableCell>
+                    <TableCell collapsing>
+                      <Button content="Import" onClick={() => handleImport(data)} />
+                    </TableCell>
+                    <TableCell collapsing>
+                      <Button content="Delete" onClick={() => clearLocalStorageKey(name)} />
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
-            </Table> :
+            </Table>
+          ) : (
             <Message>Nothing saved in Local Storage.</Message>
-          }
+          )}
           <Form.Group inline={true}>
             <Button
               content="Import JSON File"
@@ -78,7 +77,7 @@ const ImportModal = ({ local_storage_prefix, importData, trigger }) => {
               accept=".json"
               onChange={fileInputHandleChange}
             />
-            <Form.Button content='Refresh' primary={true} onClick={refresh}/>
+            <Form.Button content="Refresh" primary={true} onClick={refresh} />
           </Form.Group>
         </Form>
       </Modal.Content>
@@ -105,8 +104,8 @@ function getLocalStorageByPrefix(prefix, stripPrefix = false) {
         // not JSON, keep the raw string
       }
 
-      // const finalKey = stripPrefix ? key.slice(prefix.length + 1) : key;
-      // table[finalKey] = value;
+      const finalKey = stripPrefix ? key.slice(prefix.length + 1) : key;
+      table[finalKey] = value;
       table[key] = value;
     }
   }

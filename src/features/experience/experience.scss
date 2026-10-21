@@ -5,7 +5,7 @@
 
   * {
     display: inline-block;
-    margin: .1em 0;
+    margin: 0.1em 0;
   }
 
   .experience-remove-fight {
@@ -35,8 +35,9 @@
 table {
   font-size: 16px;
 
-  td, th {
-    padding: .5rem .25rem;
+  td,
+  th {
+    padding: 0.5rem 0.25rem;
     text-align: right;
   }
 
@@ -45,16 +46,17 @@ table {
   }
 
   tbody tr td:first-child > div {
-    margin-bottom: .25rem;
+    margin-bottom: 0.25rem;
   }
 
-  input[type="number"] {
+  input[type='number'] {
     -moz-appearance: textfield;
     border: none;
     box-shadow: 0 0 1px 1px lightgrey;
-    border-radius: .5rem;
+    border-radius: 0.5rem;
 
-    &::-webkit-outer-spin-button, &::-webkit-outer-spin-button {
+    &::-webkit-outer-spin-button,
+    &::-webkit-outer-spin-button {
       -webkit-appearance: none;
       margin: 0;
     }
@@ -63,7 +65,7 @@ table {
   th {
     div.character_name {
       display: flex;
-      margin-bottom: .5rem;
+      margin-bottom: 0.5rem;
     }
   }
 
@@ -73,9 +75,9 @@ table {
     input {
       background: white;
       border: none;
-      border-radius: .25rem;
+      border-radius: 0.25rem;
       box-shadow: 0 0 1px 1px lightgrey;
-      padding: 0 .25rem;
+      padding: 0 0.25rem;
       width: 2.5rem;
     }
 
@@ -96,14 +98,13 @@ table {
     }
   }
 
-
   button {
     background: transparent;
     border: none;
-    border-radius: .25rem;
+    border-radius: 0.25rem;
     box-shadow: 0 0 1px 1px lightgrey;
-    padding: 0 .25rem;
-    margin-left: .25rem;
+    padding: 0 0.25rem;
+    margin-left: 0.25rem;
   }
 
   td.toggle {

@@ -13,12 +13,22 @@ import {
 import ExportModal from 'shared/table/export-modal';
 import { calculateLevels } from './lib';
 
-const ExperienceContainer = ({ characters, changeCharacters, changeFight, changeFights, disabledCharacters, fights, removeFight, toggleFight, toggleDisabledCharacter }) => {
+const ExperienceContainer = ({
+  characters,
+  changeCharacters,
+  changeFight,
+  changeFights,
+  disabledCharacters,
+  fights,
+  removeFight,
+  toggleFight,
+  toggleDisabledCharacter,
+}) => {
   const results = calculateLevels(characters, fights, disabledCharacters);
   const export_data = {
     characters,
     fights,
-    disabled_characters: disabledCharacters
+    disabled_characters: disabledCharacters,
   };
 
   // --- Drag state ---
@@ -110,16 +120,13 @@ const ExperienceContainer = ({ characters, changeCharacters, changeFight, change
     const new_characters = [
       ...characters.slice(0, index),
       { ...characters[index], level },
-      ...characters.slice(index + 1)
+      ...characters.slice(index + 1),
     ];
     changeCharacters(new_characters);
   };
 
-  const removeCharacter = index => {
-    changeCharacters([
-      ...characters.slice(0, index),
-      ...characters.slice(index + 1)
-    ]);
+  const removeCharacter = (index) => {
+    changeCharacters([...characters.slice(0, index), ...characters.slice(index + 1)]);
   };
 
   const changeFightPartySize = (party_size, index) => {
@@ -137,7 +144,11 @@ const ExperienceContainer = ({ characters, changeCharacters, changeFight, change
           <TableRow>
             {/* Export cell — not draggable */}
             <TableHeaderCell>
-              <ExportModal data={export_data} local_storage_prefix={'exp'} trigger={<Button primary>Export</Button>}/>
+              <ExportModal
+                data={export_data}
+                local_storage_prefix={'exp'}
+                trigger={<Button primary>Export</Button>}
+              />
             </TableHeaderCell>
 
             {characters.map((character, index) => (
@@ -175,9 +186,7 @@ const ExperienceContainer = ({ characters, changeCharacters, changeFight, change
                 onDrop={() => onRowDrop(index)}
                 onDragEnd={onRowDragEnd}
               >
-                <div>
-                  {result.enemy_group.name}
-                </div>
+                <div>{result.enemy_group.name}</div>
                 <div className="cell_controls">
                   {/* Stop drag from firing when interacting with controls */}
                   <input
@@ -193,8 +202,12 @@ const ExperienceContainer = ({ characters, changeCharacters, changeFight, change
                   <button
                     className={`toggle ${result.enabled ? 'fight_enabled' : 'fight_disabled'}`}
                     onClick={() => toggleFight(index)}
-                  >●</button>
-                  <button className="remove" onClick={() => removeFight(index)}>⊖</button>
+                  >
+                    ●
+                  </button>
+                  <button className="remove" onClick={() => removeFight(index)}>
+                    ⊖
+                  </button>
                 </div>
               </TableCell>
 
@@ -255,9 +268,7 @@ const HeaderCell = ({
         cursor: 'grab',
       }}
     >
-      <div className="character_name">
-        {character.name}
-      </div>
+      <div className="character_name">{character.name}</div>
       <div className="cell_controls">
         <input
           type="number"
@@ -269,10 +280,9 @@ const HeaderCell = ({
           draggable={false}
           onChange={(e) => changeCharacterLevel(e.target.value, index)}
         />
-        <button
-          className="remove"
-          onClick={() => removeCharacter(index)}
-        >⊖</button>
+        <button className="remove" onClick={() => removeCharacter(index)}>
+          ⊖
+        </button>
       </div>
     </TableHeaderCell>
   );

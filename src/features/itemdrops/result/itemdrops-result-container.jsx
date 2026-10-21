@@ -10,17 +10,15 @@ const ItemdropsContainer = ({ areas, location }) => {
   const iterations = parseInt(params.get('iterations'));
   const area = areas[params.get('area')];
   const group = area.encounterTable[params.get('enemyGroup')];
-  const drops =
-    group.calculateDrops(rng, iterations).map((drop, index) => ({
-      drop: drop.drop,
-      index,
-      rng: Helpers.numToHexString(drop.rng)
-    })
-  );
+  const drops = group.calculateDrops(rng, iterations).map((drop, index) => ({
+    drop: drop.drop,
+    index,
+    rng: Helpers.numToHexString(drop.rng),
+  }));
 
   return (
     <Container style={{ flex: 1 }} textAlign="center">
-      <ItemdropsTable drops={drops}/>
+      <ItemdropsTable drops={drops} />
     </Container>
   );
 };

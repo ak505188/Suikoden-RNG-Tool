@@ -6,7 +6,7 @@ export const ListButton = styled.button`
   &&& {
     width: 100%;
     border: 0;
-    border-radius: .28571429rem;
+    border-radius: 0.28571429rem;
     background-color: white;
     color: black;
   }
@@ -22,9 +22,9 @@ export const ListContainer = styled.div`
 
 export const Label = styled.label`
   &&& {
-    margin: 0 0 .28571429rem 0;
-    color: rgba(0,0,0,.87);
-    font-size: .92857143em;
+    margin: 0 0 0.28571429rem 0;
+    color: rgba(0, 0, 0, 0.87);
+    font-size: 0.92857143em;
     font-weight: 700;
     text-transform: none;
   }
@@ -32,8 +32,8 @@ export const Label = styled.label`
 
 export const ListInnerContainer = styled.div`
   &&& {
-    border: 1px solid rgba(34,36,38,.15);
-    border-radius: .28571429rem;
+    border: 1px solid rgba(34, 36, 38, 0.15);
+    border-radius: 0.28571429rem;
     width: 100%;
     flex: 1;
   }
@@ -52,27 +52,17 @@ export class ListSelector extends React.Component {
   handleClick = (index, event) => {
     event.preventDefault();
     this.props.click(index, event);
-  }
+  };
 
   render() {
     return (
       <ListContainer>
-        <Label>
-          {this.props.label}
-        </Label>
+        <Label>{this.props.label}</Label>
         <ListInnerContainer>
           {this.props.list.map((value, index) => {
             return (
-              <ListButton
-                onClick={this.handleClick.bind(this, index)}
-                key={index}
-                value={index}
-              >
-                {
-                  this.props.optionNames ?
-                    this.props.optionNames[index] :
-                    value
-                }
+              <ListButton onClick={this.handleClick.bind(this, index)} key={index} value={index}>
+                {this.props.optionNames ? this.props.optionNames[index] : value}
               </ListButton>
             );
           })}
@@ -85,16 +75,19 @@ export class ListSelector extends React.Component {
 export default class DoubleListSelector extends React.Component {
   addItem = (_index, event) => {
     this.props.handleChange([...this.props.list, parseInt(event.currentTarget.value)]);
-  }
+  };
 
   removeItem = (index, _event) => {
-    this.props.handleChange([...this.props.list.slice(0, index), ...this.props.list.slice(index + 1)]);
-  }
+    this.props.handleChange([
+      ...this.props.list.slice(0, index),
+      ...this.props.list.slice(index + 1),
+    ]);
+  };
 
   render() {
     return (
       <DoubleListSelectorDiv>
-        <ListSelector list={this.props.options} label="Add Enemies" click={this.addItem}/>
+        <ListSelector list={this.props.options} label="Add Enemies" click={this.addItem} />
         <ListSelector
           label="Remove Enemies"
           list={this.props.list.map((val, _index) => {

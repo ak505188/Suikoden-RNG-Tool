@@ -8,7 +8,11 @@ export default class SearchIndex {
   }
 
   tokenize(text) {
-    return text.trim().toLocaleLowerCase().split(this.tokenizePattern).filter(token => token);
+    return text
+      .trim()
+      .toLocaleLowerCase()
+      .split(this.tokenizePattern)
+      .filter((token) => token);
   }
 
   indexDocument(uid, text) {
@@ -20,7 +24,8 @@ export default class SearchIndex {
     const queryTokens = this.tokenize(query);
     const uids = this.documents
       .filter(({ tokens }) =>
-        queryTokens.every(queryToken => tokens.some(token => token.includes(queryToken))))
+        queryTokens.every((queryToken) => tokens.some((token) => token.includes(queryToken))),
+      )
       .map(({ uid }) => uid);
     return Promise.resolve(uids);
   }

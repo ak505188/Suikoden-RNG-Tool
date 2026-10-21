@@ -11,7 +11,8 @@ div.enemyGroupImage {
   width: 100%;
 }
 
-div.enemyGroupImage, img.enemyImage {
+div.enemyGroupImage,
+img.enemyImage {
   height: 100%;
   object-fit: scale-down;
 }

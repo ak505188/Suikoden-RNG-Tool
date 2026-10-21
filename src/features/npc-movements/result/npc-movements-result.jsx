@@ -49,9 +49,9 @@ const NPCMovementsResult = ({ location }) => {
 
   return (
     <Container style={{ flex: 1 }} textAlign="center">
-      <Table NPCInfo={result}/>
+      <Table NPCInfo={result} />
     </Container>
   );
-}
+};
 
 export default withRouter(NPCMovementsResult);

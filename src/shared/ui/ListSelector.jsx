@@ -3,19 +3,28 @@ import { Label, ListContainer, ListInnerContainer, ListButton } from './DoubleLi
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import arrayMove from 'array-move';
 
-const SelectedFight = ({ enemyGroupName, index, partySize, onPartySizeChange, onSelectedFightDelete }) => (
+const SelectedFight = ({
+  enemyGroupName,
+  index,
+  partySize,
+  onPartySizeChange,
+  onSelectedFightDelete,
+}) => (
   <span className="experience-selected-fight-container">
-    <span
-      className="experience-remove-fight"
-      onClick={onSelectedFightDelete}
-    >
+    <span className="experience-remove-fight" onClick={onSelectedFightDelete}>
       X
     </span>
-    <input className="experience-party-size" type="number" min="0" max="6" value={partySize} onChange={e => onPartySizeChange(e.target.value, index)}/>
+    <input
+      className="experience-party-size"
+      type="number"
+      min="0"
+      max="6"
+      value={partySize}
+      onChange={(e) => onPartySizeChange(e.target.value, index)}
+    />
     <span className="experience-fight-name">{enemyGroupName}</span>
   </span>
 );
-
 
 const SortableItem = SortableElement(({ value, listItemHandlers, sortIndex }) => {
   return (
@@ -25,7 +34,8 @@ const SortableItem = SortableElement(({ value, listItemHandlers, sortIndex }) =>
         partySize={value.partySize}
         onPartySizeChange={listItemHandlers.onPartySizeChange}
         index={sortIndex}
-        onSelectedFightDelete={() => listItemHandlers.onSelectedFightDelete(sortIndex)}/>
+        onSelectedFightDelete={() => listItemHandlers.onSelectedFightDelete(sortIndex)}
+      />
     </ListButton>
   );
 });
@@ -33,7 +43,7 @@ const SortableItem = SortableElement(({ value, listItemHandlers, sortIndex }) =>
 const SortableList = SortableContainer(({ list, listItemHandlers }) => {
   return (
     <ListInnerContainer>
-      { list.map((value, index) => (
+      {list.map((value, index) => (
         <SortableItem
           key={`item-${index}`}
           index={index}
@@ -47,17 +57,15 @@ const SortableList = SortableContainer(({ list, listItemHandlers }) => {
   );
 });
 
-const SortableComponent = props => {
-  const onSortEnd = ({oldIndex, newIndex}) => {
+const SortableComponent = (props) => {
+  const onSortEnd = ({ oldIndex, newIndex }) => {
     const newArr = arrayMove(props.list, oldIndex, newIndex);
     props.handleDrag(newArr);
   };
 
   return (
     <ListContainer>
-      <Label>
-        {props.label} (Hold to drag)
-      </Label>
+      <Label>{props.label} (Hold to drag)</Label>
       <SortableList
         list={props.list}
         listItemHandlers={props.listItemHandlers}
@@ -68,6 +76,6 @@ const SortableComponent = props => {
       />
     </ListContainer>
   );
-}
+};
 
 export default SortableComponent;

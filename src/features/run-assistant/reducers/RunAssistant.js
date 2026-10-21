@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions';
-import { Helpers } from  'suikoden-rng-lib';
+import { Helpers } from 'suikoden-rng-lib';
 
 const initialState = {
   currentArea: 0,
@@ -7,7 +7,7 @@ const initialState = {
   fightsList: [],
   index: 0,
   pattern: [],
-  patternMode: false
+  patternMode: false,
 };
 
 function calcFightIndexAfterRNGChange(fights, index) {
@@ -22,7 +22,9 @@ function calcFightIndexAfterRNGChange(fights, index) {
 export default handleActions(
   {
     SWITCH_AREA: (state, action) => {
-      const currentArea = state.areas.map(area => area.name).findIndex(name => action.area === name);
+      const currentArea = state.areas
+        .map((area) => area.name)
+        .findIndex((name) => action.area === name);
       const rngIndex = getCurrentFight(state).index;
       if (currentArea === -1) {
         return state;
@@ -40,8 +42,10 @@ export default handleActions(
       }
 
       // Then increment index until rng is 1 higher than current
-      while (state.fightsList[currentArea][index].index < rngIndex
-        && index < state.fightsList[currentArea].length - 1) {
+      while (
+        state.fightsList[currentArea][index].index < rngIndex &&
+        index < state.fightsList[currentArea].length - 1
+      ) {
         index++;
       }
 
@@ -49,7 +53,7 @@ export default handleActions(
         ...state,
         currentArea,
         pattern: [],
-        index
+        index,
       };
     },
     PREVIOUS_FIGHT: (state, _action) => {
@@ -57,7 +61,7 @@ export default handleActions(
         return {
           ...state,
           pattern: [],
-          index: state.index - 1
+          index: state.index - 1,
         };
       }
       return state;
@@ -67,7 +71,7 @@ export default handleActions(
         return {
           ...state,
           pattern: [],
-          index: state.index + 1
+          index: state.index + 1,
         };
       }
       return state;
@@ -77,7 +81,7 @@ export default handleActions(
         return {
           ...state,
           pattern: [],
-          index: action.index
+          index: action.index,
         };
       }
       return state;
@@ -89,7 +93,7 @@ export default handleActions(
         return {
           ...state,
           pattern: [],
-          index
+          index,
         };
       }
       const currentArea = getCurrentArea(state);
@@ -97,41 +101,48 @@ export default handleActions(
       const pattern = state.pattern.concat([encounterTableIndex]);
       const searchStartIndex = Math.max(0, state.index - pattern.length + 2);
       const fights = getCurrentFights(state)
-        .map(fight => (getEnemyGroupEncounterIndex(fight.enemyGroup.name, currentArea.enemies)))
+        .map((fight) => getEnemyGroupEncounterIndex(fight.enemyGroup.name, currentArea.enemies))
         .slice(searchStartIndex);
       if (pattern.length > 1) {
-        const searchMatchIndex = Helpers.encounterSequenceToString(fights).search(Helpers.encounterSequenceToString(pattern));
+        const searchMatchIndex = Helpers.encounterSequenceToString(fights).search(
+          Helpers.encounterSequenceToString(pattern),
+        );
         if (searchMatchIndex >= 0) {
           return {
             ...state,
             pattern,
-            index: searchStartIndex + searchMatchIndex + pattern.length - 1
+            index: searchStartIndex + searchMatchIndex + pattern.length - 1,
           };
         } else {
           return state;
         }
       }
-      const index = findFight({...state, index: searchStartIndex }, action.name);
+      const index = findFight({ ...state, index: searchStartIndex }, action.name);
       return {
         ...state,
         pattern,
-        index: index !== -1 ? index : searchStartIndex
+        index: index !== -1 ? index : searchStartIndex,
       };
     },
     JUMP_RNG: (state, action) => {
       const fights = getCurrentFights(state);
-      const index = calcFightIndexAfterRNGChange(fights, getCurrentFight(state).index + action.jump);
+      const index = calcFightIndexAfterRNGChange(
+        fights,
+        getCurrentFight(state).index + action.jump,
+      );
       return {
         ...state,
         pattern: [],
-        index
+        index,
       };
     },
     TOGGLE_PATTERN_MODE: (state, _action) => ({
-      ...state, patternMode: !state.patternMode
-    })
+      ...state,
+      patternMode: !state.patternMode,
+    }),
   },
-  initialState);
+  initialState,
+);
 
 // Returns { name: string, enemies: EnemyGroupData[] }
 export function getCurrentArea(state) {
@@ -161,7 +172,7 @@ export function getFight(state, index) {
 // Returns index of next fight of an enemy group
 export function findFight(state, enemyGroup) {
   return getCurrentFights(state).findIndex((fight, index) => {
-    return (fight.enemyGroup.name === enemyGroup && index > state.index);
+    return fight.enemyGroup.name === enemyGroup && index > state.index;
   });
 }
 
@@ -172,7 +183,7 @@ export function findNextFight(state) {
 }
 
 function getEnemyGroupEncounterIndex(name, enemies) {
-  return enemies.findIndex(group => {
-    return (group.name === name);
+  return enemies.findIndex((group) => {
+    return group.name === name;
   });
 }

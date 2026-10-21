@@ -22,15 +22,17 @@ const SequenceResult = ({ location }) => {
 
   return (
     <Container style={{ flex: 1 }} textAlign="center">
-      <SequenceTable sequence={sequence.map((rng, index) => ({
-        rng,
-        index,
-        wheelAttempts: wheelAttempts[index],
-        marieText: marieText[index],
-        cliveAppearance: cliveAppearance[index]
-      }))}/>
+      <SequenceTable
+        sequence={sequence.map((rng, index) => ({
+          rng,
+          index,
+          wheelAttempts: wheelAttempts[index],
+          marieText: marieText[index],
+          cliveAppearance: cliveAppearance[index],
+        }))}
+      />
     </Container>
   );
-}
+};
 
 export default withRouter(SequenceResult);

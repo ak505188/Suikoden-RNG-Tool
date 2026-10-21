@@ -4,22 +4,13 @@ import { Helpers } from 'suikoden-rng-lib';
 
 const RNGFinderStatus = ({ cancel, message, progress, done, result, running }) => (
   <Container textAlign="center">
-    {result &&
+    {result && (
       <Segment>
-        <p>
-          First Battle RNG: {Helpers.numToHexString(result.foundEncounterRNG)}
-        </p>
-        <p>
-          Previous Battle RNG: {Helpers.numToHexString(result.foundEncounterRNGPrevious)}
-        </p>
+        <p>First Battle RNG: {Helpers.numToHexString(result.foundEncounterRNG)}</p>
+        <p>Previous Battle RNG: {Helpers.numToHexString(result.foundEncounterRNGPrevious)}</p>
       </Segment>
-    }
-    <Progress
-      percent={done ? 100 : progress}
-      progress={true}
-      indicating={true}
-      label={message}
-    />
+    )}
+    <Progress percent={done ? 100 : progress} progress={true} indicating={true} label={message} />
     <Button
       type="button"
       onClick={cancel}

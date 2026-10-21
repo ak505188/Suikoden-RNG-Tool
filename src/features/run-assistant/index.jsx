@@ -11,26 +11,26 @@ class RunAssistantForm extends React.Component {
       iterations: 1000,
       partylevel: 0,
       realistic: true,
-      areas: []
+      areas: [],
     };
   }
 
   handleInputChange = (_event, { checked, name, value }) => {
-    this.setState(prevState => ({ ...prevState, [name]: checked || value }));
-  }
+    this.setState((prevState) => ({ ...prevState, [name]: checked || value }));
+  };
 
   handleAreaChange = (_event, data) => {
     this.setState({ areas: data.value });
-  }
+  };
 
-  handleSubmit = event => {
+  handleSubmit = (event) => {
     event.preventDefault();
     const params = new URLSearchParams();
     Object.keys(this.state).forEach((key) => {
       params.append(key, this.state[key]);
     });
     this.props.history.push(`/runassist/result?${params.toString()}`);
-  }
+  };
 
   render() {
     return (
@@ -61,9 +61,11 @@ class RunAssistantForm extends React.Component {
           <Form.Dropdown
             label="Areas"
             placeholder="Area"
-            options={Helpers.areaNamesWithRandomEncounters.map(name =>
-              ({ key: name, value: name, text: this.props.areas[name].name })
-            )}
+            options={Helpers.areaNamesWithRandomEncounters.map((name) => ({
+              key: name,
+              value: name,
+              text: this.props.areas[name].name,
+            }))}
             value={this.state.areas}
             onChange={this.handleAreaChange}
             multiple={true}
@@ -76,7 +78,7 @@ class RunAssistantForm extends React.Component {
             checked={this.state.realistic}
             onChange={this.handleInputChange}
           />
-          <Form.Button type="submit" content="Generate Encounters" primary={true}/>
+          <Form.Button type="submit" content="Generate Encounters" primary={true} />
         </Form>
       </Container>
     );

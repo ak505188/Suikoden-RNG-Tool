@@ -6,37 +6,44 @@ import { selectFight } from './actions/RunAssistant';
 import { getCurrentFights } from './reducers/RunAssistant';
 import { Helpers } from 'suikoden-rng-lib';
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   fights: getCurrentFights(state.RunAssistant),
   currentRow: state.RunAssistant.index,
   columns: state.config.columns,
   headerHeight: state.config.table.headerHeight,
   rowHeight: state.config.table.rowHeight,
-  rowStyle: { ...state.config.table.rowStyle, fontSize: `${state.config.table.rowStyle.fontSize}px` }
+  rowStyle: {
+    ...state.config.table.rowStyle,
+    fontSize: `${state.config.table.rowStyle.fontSize}px`,
+  },
 });
 
 const mapDispatchToProps = {
-  selectFight
+  selectFight,
 };
 
-const RunAssistantTable = props => {
-  const columns =  props.columns;
-  const fights = props.fights.map(fight => ({
+const RunAssistantTable = (props) => {
+  const columns = props.columns;
+  const fights = props.fights.map((fight) => ({
     ...fight,
     enemyGroup: fight.enemyGroup.name,
     enemyGroupImage: (
       <div style={{ height: props.rowHeight }} className="enemyGroupImage">
-        {
-          fight.enemyGroup.enemies.map((enemy, index) => (
-            <img style={{ height: props.rowHeight }} className="enemyImage" alt="" key={index} src={`data:image/png;base64, ${enemy.img}`}/>
-          ))
-        }
+        {fight.enemyGroup.enemies.map((enemy, index) => (
+          <img
+            style={{ height: props.rowHeight }}
+            className="enemyImage"
+            alt=""
+            key={index}
+            src={`data:image/png;base64, ${enemy.img}`}
+          />
+        ))}
       </div>
     ),
     run: fight.run ? 'Run' : 'Fail',
     startRNG: Helpers.numToHexString(fight.startRNG),
     battleRNG: Helpers.numToHexString(fight.battleRNG),
-    champVal: fight.enemyGroup.champVal
+    champVal: fight.enemyGroup.champVal,
   }));
 
   return (
@@ -48,7 +55,7 @@ const RunAssistantTable = props => {
         filter={true}
         filterFromData={['enemyGroupImage']}
         headerHeight={props.headerHeight}
-        onRowClick={index => props.selectFight(index)}
+        onRowClick={(index) => props.selectFight(index)}
         rowHeight={props.rowHeight}
         rowStyle={props.rowStyle}
       />

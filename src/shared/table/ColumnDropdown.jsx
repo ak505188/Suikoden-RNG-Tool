@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Checkbox, Dropdown } from 'semantic-ui-react';
 
-const ColumnToggle = props => {
+const ColumnToggle = (props) => {
   return (
     <Dropdown
       selection={true}
@@ -12,7 +12,7 @@ const ColumnToggle = props => {
             as={Dropdown.Item}
             key={column.key}
             label={column.label}
-            onMouseDown={e => {
+            onMouseDown={(e) => {
               e.preventDefault();
               props.toggleColumn(index);
             }}

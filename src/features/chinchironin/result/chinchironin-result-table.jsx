@@ -3,15 +3,15 @@ import VirtTable from 'shared/table';
 import './chinchironin.css';
 
 const speed_columns = Array.from({ length: 17 }).map((_, index) => ({
-  key: `speed_${index*4}`,
-  label: `S${index*4}`,
-  width: 50
+  key: `speed_${index * 4}`,
+  label: `S${index * 4}`,
+  width: 50,
 }));
 
-const getRollClass = roll => {
+const getRollClass = (roll) => {
   if (roll === 'OUT') return 'roll_piss';
-  if (roll === '123') return 'roll_double_lose'
-  if (roll === '456') return 'roll_double_win'
+  if (roll === '123') return 'roll_double_lose';
+  if (roll === '456') return 'roll_double_win';
 
   const rolls = roll.split('');
   if (rolls[0] === rolls[1] && rolls[1] === rolls[2]) {
@@ -22,19 +22,19 @@ const getRollClass = roll => {
   if (rolls[1] === rolls[2]) return `roll_${rolls[0]}`;
 
   return 'roll_miss';
-}
+};
 
 const generateColumns = (player) => {
   const columns = [
     { key: 'index', label: 'Index', width: 100 },
     { key: 'rng', label: 'RNG', width: 150 },
   ];
-  player !== 'Player' ?
-    columns.push({ key: 'wait', label: 'Wait', width: 50 }) :
-    columns.push({ key: 'cursor', label: 'Cur', width: 50 });
+  player !== 'Player'
+    ? columns.push({ key: 'wait', label: 'Wait', width: 50 })
+    : columns.push({ key: 'cursor', label: 'Cur', width: 50 });
   columns.push(...speed_columns);
   return columns;
-}
+};
 
 const Presenter = ({ player, data }) => {
   const columns = generateColumns(player);
@@ -52,10 +52,10 @@ const Presenter = ({ player, data }) => {
       >
         {roll.roll}
       </span>
-    )
+    );
   };
 
-  return <VirtTable columns={columns} data={data} cellRenderer={cellRenderer}/>;
+  return <VirtTable columns={columns} data={data} cellRenderer={cellRenderer} />;
 };
 
 export default Presenter;

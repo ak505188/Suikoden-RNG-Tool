@@ -26,12 +26,14 @@ export function findRNG(area, encounters, rngSeed, progress) {
         const searchMatchIndex = generatedEncounters.search(encountersPattern);
 
         if (searchMatchIndex >= 0) {
-          status.update({
-            done: true,
-            message: `Runtime: ${(new Date().getTime() - startTime) / 1000} seconds.`,
-            foundEncounterRNG: generatedEncounters.get(searchMatchIndex).rngSeed,
-            foundEncounterRNGPrevious: generatedEncounters.get(searchMatchIndex - 1).rngSeed
-          }).log();
+          status
+            .update({
+              done: true,
+              message: `Runtime: ${(new Date().getTime() - startTime) / 1000} seconds.`,
+              foundEncounterRNG: generatedEncounters.get(searchMatchIndex).rngSeed,
+              foundEncounterRNGPrevious: generatedEncounters.get(searchMatchIndex - 1).rngSeed,
+            })
+            .log();
           return generatedEncounters.get(searchMatchIndex).rngSeed;
         }
 

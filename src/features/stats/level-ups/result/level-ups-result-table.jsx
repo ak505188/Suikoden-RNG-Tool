@@ -1,7 +1,7 @@
 import * as React from 'react';
 import VirtTable from 'shared/table';
 
-const Presenter = props => {
+const Presenter = (props) => {
   const columns = [
     { label: 'Index', key: 'index', width: 50 },
     { label: 'Character', key: 'character', width: 200 },
@@ -12,7 +12,7 @@ const Presenter = props => {
     { label: 'MGC', key: 'MGC', width: 50 },
     { label: 'LUK', key: 'LUK', width: 50 },
   ];
-  return <VirtTable columns={columns} data={props.levelUps}/>;
+  return <VirtTable columns={columns} data={props.levelUps} />;
 };
 
 export default Presenter;

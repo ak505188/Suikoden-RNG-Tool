@@ -1,52 +1,52 @@
-export const changeUseImages = useImages => ({
+export const changeUseImages = (useImages) => ({
   type: 'CHANGE_USE_IMAGES',
-  useImages
+  useImages,
 });
 
-export const changeCompactMode = compactMode => ({
+export const changeCompactMode = (compactMode) => ({
   type: 'CHANGE_COMPACT_MODE',
-  compactMode
+  compactMode,
 });
 
 export const changeColumnVisibility = (index, show) => ({
   type: 'CHANGE_COLUMN_VISIBILITY',
   index,
-  show
+  show,
 });
 
 export const changeColumnWidth = (index, width) => ({
   type: 'CHANGE_COLUMN_WIDTH',
   index,
-  width
+  width,
 });
 
-export const changeTableRowHeight = height => ({
+export const changeTableRowHeight = (height) => ({
   type: 'CHANGE_TABLE_ROW_HEIGHT',
-  height
+  height,
 });
 
-export const changeTableHeaderHeight = height => ({
+export const changeTableHeaderHeight = (height) => ({
   type: 'CHANGE_TABLE_HEADER_HEIGHT',
-  height
+  height,
 });
 
 export const resetToDefault = () => ({
-  type: 'RESET_TO_DEFAULT'
+  type: 'RESET_TO_DEFAULT',
 });
 
-export const changeRowFontSize = size => ({
+export const changeRowFontSize = (size) => ({
   type: 'CHANGE_ROW_FONT_SIZE',
-  size
+  size,
 });
 
 export const changeHotkey = (action, key) => ({
   type: 'CHANGE_HOTKEY',
   action,
-  key
-})
+  key,
+});
 
 export const changeCompactModeEnemyButtonsHotkey = (index, key) => ({
   type: 'CHANGE_COMPACT_MODE_ENEMY_BUTTONS_HOTKEY',
   index,
-  key
+  key,
 });

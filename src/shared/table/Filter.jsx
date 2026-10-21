@@ -40,14 +40,15 @@ export default class Filter extends React.Component {
 
   filter = () => {
     this.setState({ filtering: true }, () => {
-      this.state.searchApi.search(this.state.filter)
+      this.state.searchApi
+        .search(this.state.filter)
         .then((result) => {
           this.props.setRowsToRender(result);
           this.setState({ filtering: false });
         })
         .catch((error) => console.error(error));
     });
-  }
+  };
 
   render() {
     return (
@@ -55,9 +56,7 @@ export default class Filter extends React.Component {
         placeholder="Filter"
         loading={this.state.filtering}
         type="text"
-        onChange={e =>
-          this.setState({ filter: e.currentTarget.value }, () => this.filter())
-        }
+        onChange={(e) => this.setState({ filter: e.currentTarget.value }, () => this.filter())}
         value={this.state.filter}
       />
     );
