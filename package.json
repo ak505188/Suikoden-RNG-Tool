@@ -29,15 +29,26 @@
     "test": "vitest run --passWithNoTests",
     "script": "node -r esm",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.5",
     "@types/file-saver": "^2.0.1",
     "@vitejs/plugin-react": "^6.1.2",
     "esbuild": "^0.28.2",
+    "eslint": "^9.39.5",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
     "esm": "^3.2.22",
     "gh-pages": "^2.0.1",
+    "globals": "^17.13.0",
     "jsdom": "^29.1.1",
+    "prettier": "^3.9.10",
     "sass": "^1.105.2",
     "vite": "^8.3.4",
     "vitest": "^5.0.5"

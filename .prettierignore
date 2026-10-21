@@ -1,0 +1,8 @@
+node_modules
+build
+coverage
+package-lock.json
+src/shared/table/interfaces.js
+src/shared/search-attempt-table
+src/features/chinchironin/result/lib/cursor.js
+*.md
