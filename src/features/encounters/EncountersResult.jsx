@@ -1,29 +1,28 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { Container } from 'semantic-ui-react';
-import { Helpers, RNG } from 'suikoden-rng-lib';
+import { Helpers } from 'suikoden-rng-lib';
+import { RNG, generateEncounters } from 'suikoden-rng-lib/encounters';
+import { findAreaById, formationName } from 'shared/lib/encounters';
 import EncountersTable from './EncountersTable';
 
-const EncountersContainer = ({ areas, location }) => {
+const EncountersContainer = ({ location }) => {
   const params = new URLSearchParams(location.search);
   const rng = new RNG(parseInt(params.get('rng')));
   const iterations = parseInt(params.get('iterations'));
   const offset = parseInt(params.get('offset')) || 0;
-  const partylevel = parseInt(params.get('partylevel'));
-  const selectedAreas = params
-    .get('areas')
-    .split(',')
-    .map((name) => areas[name]);
+  const partyLevel = parseInt(params.get('partylevel')) || 0;
+  const selectedAreas = (params.get('areas') ?? '').split(',').map(findAreaById).filter(Boolean);
   const realistic = params.get('realistic') === 'true';
 
   const encounters = selectedAreas
     .map((area) =>
-      area.generateEncounters(rng.clone().jump(offset), iterations, partylevel, realistic),
+      generateEncounters(rng.clone().jump(offset), area, { iterations, partyLevel, realistic }),
     )
     .reduce((fights, areaFights) => fights.concat(areaFights), [])
     .map((fight) => ({
       area: fight.area,
-      enemy: fight.enemyGroup.name,
+      enemy: formationName(fight.enemyGroup.formation),
       index: fight.index,
       run: fight.run ? 'Run' : 'Fail',
       startRNG: Helpers.numToHexString(fight.startRNG),

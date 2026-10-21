@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Helpers } from 'suikoden-rng-lib';
 import { Container, Form } from 'semantic-ui-react';
+import { ENCOUNTER_AREAS, areaId } from 'shared/lib/encounters';
 import { InputRNG, InputIterations, InputPartyLevel } from 'shared/form/inputs';
 
-const EncountersForm = ({ areas, history }) => {
+const EncountersForm = ({ history }) => {
   const [rng, setRNG] = useState(Helpers.numToHexString(0x12));
   const [iterations, setIterations] = useState(1000);
   const [offset, setOffset] = useState(0);
@@ -41,10 +42,10 @@ const EncountersForm = ({ areas, history }) => {
         <Form.Dropdown
           label="Areas"
           placeholder="Area"
-          options={Helpers.areaNamesWithRandomEncounters.map((name) => ({
-            key: name,
-            value: name,
-            text: areas[name].name,
+          options={ENCOUNTER_AREAS.map((area) => ({
+            key: areaId(area),
+            value: areaId(area),
+            text: area.name,
           }))}
           value={selectedAreas}
           onChange={(_e, data) => setSelectedAreas(data.value)}

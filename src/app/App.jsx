@@ -27,12 +27,8 @@ const App = () => {
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100vh' }}>
       <Navbar />
       <Route path="/" component={Home} exact={true} />
-      <Route path="/encounters" exact={true} render={() => <EncountersForm areas={Areas} />} />
-      <Route
-        path="/encounters/result"
-        exact={true}
-        render={() => <EncounterResult areas={Areas} />}
-      />
+      <Route path="/encounters" exact={true} render={() => <EncountersForm />} />
+      <Route path="/encounters/result" exact={true} render={() => <EncounterResult />} />
       <Route path="/stats" exact={true} render={() => <StatsInfo />} />
       <Route path="/stats/starting-stats" exact={true} render={() => <StartingStatsForm />} />
       <Route
