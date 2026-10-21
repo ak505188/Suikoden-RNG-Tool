@@ -1,29 +1,24 @@
 import * as React from 'react';
 import Navbar from './Navbar';
 import Home from './Home';
-import EncountersForm from 'features/encounters/form';
-import EncounterResult from 'features/encounters/result';
-import ItemDropsForm from 'features/itemdrops/form';
-import ItemDropsResult from 'features/itemdrops/result';
-import SequenceForm from 'features/sequence/form';
-import SequenceResult from 'features/sequence/result';
-import NPCForm from 'features/npc-movements/form/';
-import NPCResult from 'features/npc-movements/result/';
+import { Form as EncountersForm, Result as EncounterResult } from 'features/encounters';
+import { Form as ItemDropsForm, Result as ItemDropsResult } from 'features/itemdrops';
+import { Form as SequenceForm, Result as SequenceResult } from 'features/sequence';
+import { Form as NPCForm, Result as NPCResult } from 'features/npc-movements';
 import RNGFinder from 'features/rng-finder';
 import Experience from 'features/experience';
 import RunAssistantForm from 'features/run-assistant';
 import RunAssistantResult from 'features/run-assistant/RunAssistantTool';
-import StatsInfo from 'features/stats/';
-import StartingStatsForm from 'features/stats/starting-stats/form';
-import StartingStatsResult from 'features/stats/starting-stats/result';
-import LevelUpsForm from 'features/stats/level-ups/form';
-import LevelUpsResult from 'features/stats/level-ups/result';
-import ChinchironinForm from 'features/chinchironin/form/chinchironin-form';
-import ChinchironinResult from 'features/chinchironin/result';
-import AssassinForm from 'features/assassin/form';
-import AssassinResult from 'features/assassin/result';
-import KakuForm from 'features/kaku/form';
-import KakuResult from 'features/kaku/result';
+import {
+  StatsInfo,
+  StartingStatsForm,
+  StartingStatsResult,
+  LevelUpsForm,
+  LevelUpsResult,
+} from 'features/stats';
+import { Form as ChinchironinForm, Result as ChinchironinResult } from 'features/chinchironin';
+import { Form as AssassinForm, Result as AssassinResult } from 'features/assassin';
+import { Form as KakuForm, Result as KakuResult } from 'features/kaku';
 import { Areas } from 'suikoden-rng-lib';
 import { Route } from 'react-router-dom';
 import './index.css';

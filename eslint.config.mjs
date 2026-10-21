@@ -12,7 +12,7 @@ export default [
       // Unused and not valid JS (TypeScript syntax / stray top-level return)
       'src/shared/table/interfaces.js',
       'src/shared/search-attempt-table/**',
-      'src/features/chinchironin/result/lib/cursor.js',
+      'src/features/chinchironin/cursor.js',
     ],
   },
   js.configs.recommended,
