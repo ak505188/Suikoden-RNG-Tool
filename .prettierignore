@@ -2,7 +2,4 @@ node_modules
 build
 coverage
 package-lock.json
-src/shared/table/interfaces.js
-src/shared/search-attempt-table
-src/features/chinchironin/cursor.js
 *.md

@@ -6,14 +6,7 @@ import prettier from 'eslint-config-prettier';
 
 export default [
   {
-    ignores: [
-      'build/**',
-      'node_modules/**',
-      // Unused and not valid JS (TypeScript syntax / stray top-level return)
-      'src/shared/table/interfaces.js',
-      'src/shared/search-attempt-table/**',
-      'src/features/chinchironin/cursor.js',
-    ],
+    ignores: ['build/**', 'node_modules/**'],
   },
   js.configs.recommended,
   react.configs.flat.recommended,

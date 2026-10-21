@@ -19,14 +19,14 @@ Live at https://ak505188.github.io/Suikoden-RNG-Tool/ (GitHub Pages, `npm run de
 ## Layout
 - `index.html` – Vite entry page. `src/app/` – `index.jsx` (app entry, HashRouter), `App.jsx` (all routes), `Navbar.jsx`, `Home.jsx`, `index.css`.
 - `src/features/<tool>/` – one flat folder per tool: `<Tool>Form.jsx` (inputs → push URL), `<Tool>Result.jsx` (parse URL params, compute) + `<Tool>Table.jsx` (display), plus tool-specific `lib.js`/CSS. `index.js` exports `{ Form, Result }` (`experience` exports its single page as default). Tools: `encounters`, `itemdrops`, `sequence`, `npc-movements`, `experience`, `chinchironin`, `assassin`, `kaku`, and `stats` (sub-tools `starting-stats/`, `level-ups/` with the same file pattern; `stats/index.js` exports `StatsInfo` hub page and the sub-tool `*Form`/`*Result`).
-- `src/features/rng-finder/` – the RNG finder page (`RngFinder.jsx`, `Status.jsx`) plus the brute-force seed finder (iterates up to 2^32 states matching an observed encounter sequence): `findRNG.js`, web worker wrapper (`findRNG.worker.js`, `WebWorker.js`) and progress class `SearchStatus.js`.
+- `src/features/rng-finder/` – the RNG finder page (`RngFinder.jsx`, `Status.jsx`) plus the brute-force seed finder (iterates up to 2^32 states matching an observed encounter sequence): `findRNG.js`, the web worker entry (`findRNG.worker.js`) and progress class `SearchStatus.js`.
 - `src/features/run-assistant/` – the largest tool: live run companion with Redux (`actions/`, `reducers/`, `controls/` incl. hotkeys + config modal, `Table.jsx`).
-- `src/shared/` – reusable code: `form/` (`InputRNG`, `InputIterations`, ...), `ui/` (`ListSelector`, `DoubleListSelector`, `ImportModal`), `lib/` (`withSizes` helpers), `table/` (generic searchable/filterable/exportable virtualized table used by results), `search-attempt-table/` (related search table).
+- `src/shared/` – reusable code: `form/` (`InputRNG`, `InputIterations`, ...), `ui/` (`DoubleListSelector`, `ImportModal`), `table/` (generic searchable/filterable/exportable virtualized table used by results).
 - `public/` – static files (includes a `service-worker.js` that unregisters the old CRA service worker in returning browsers). `build/` – generated output (gitignored).
 
 ## Adding a tool
 Create `features/<tool>/` with `<Tool>Form.jsx`, `<Tool>Result.jsx`, `<Tool>Table.jsx` and an `index.js` exporting `Form`/`Result`, then add two `<Route>`s in `app/App.jsx` and a link in `Navbar.jsx`/`Home.jsx`.
 
 ## Notes
-- Tests: Vitest; only `src/App.test.jsx` (render smoke test) exists, no real coverage yet.
+- Tests: Vitest; only `src/app/App.test.jsx` (render smoke test) exists, no real coverage yet.
 - Recent work: Assassin, Kaku, Chinchironin simulators and an encounter offset option.

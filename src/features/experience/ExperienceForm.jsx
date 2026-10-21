@@ -4,7 +4,7 @@ import { Button, Container, Form } from 'semantic-ui-react';
 import { Characters } from 'suikoden-rng-lib';
 import ImportModal from 'shared/ui/ImportModal';
 
-import ExperienceResult from './ExperienceResultVibe';
+import ExperienceResult from './ExperienceResult';
 import './Experience.scss';
 
 const ExperienceForm = ({ areas }) => {
@@ -182,6 +182,7 @@ const ExperienceForm = ({ areas }) => {
           changeCharacters={changeCharacters}
           changeFight={changeFight}
           changeFights={(fights) => setFights(fights)}
+          changeDisabledCharacters={setDisabledCharacters}
           fights={fights}
           disabledCharacters={disabledCharacters}
           removeFight={removeFight}

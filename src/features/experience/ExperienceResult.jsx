@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import {
   Button,
@@ -17,6 +17,8 @@ const ExperienceContainer = ({
   characters,
   changeCharacters,
   changeFight,
+  changeFights,
+  changeDisabledCharacters,
   disabledCharacters,
   fights,
   removeFight,
@@ -30,6 +32,86 @@ const ExperienceContainer = ({
     disabled_characters: disabledCharacters,
   };
 
+  // --- Drag state ---
+  const dragColIndex = useRef(null);
+  const dragRowIndex = useRef(null);
+  const [dragOverCol, setDragOverCol] = useState(null);
+  const [dragOverRow, setDragOverRow] = useState(null);
+
+  // --- Column (character) drag handlers ---
+  const onColDragStart = (index) => {
+    dragColIndex.current = index;
+  };
+
+  const onColDragOver = (e, index) => {
+    e.preventDefault();
+    setDragOverCol(index);
+  };
+
+  const onColDrop = (toIndex) => {
+    const fromIndex = dragColIndex.current;
+    if (fromIndex === null || fromIndex === toIndex) {
+      dragColIndex.current = null;
+      setDragOverCol(null);
+      return;
+    }
+
+    const reordered = [...characters];
+    const [moved] = reordered.splice(fromIndex, 1);
+    reordered.splice(toIndex, 0, moved);
+    changeCharacters(reordered);
+
+    dragColIndex.current = null;
+    setDragOverCol(null);
+  };
+
+  const onColDragEnd = () => {
+    dragColIndex.current = null;
+    setDragOverCol(null);
+  };
+
+  // --- Row (fight) drag handlers ---
+  const onRowDragStart = (index) => {
+    dragRowIndex.current = index;
+  };
+
+  const onRowDragOver = (e, index) => {
+    e.preventDefault();
+    setDragOverRow(index);
+  };
+
+  const onRowDrop = (toIndex) => {
+    const fromIndex = dragRowIndex.current;
+    if (fromIndex === null || fromIndex === toIndex) {
+      dragRowIndex.current = null;
+      setDragOverRow(null);
+      return;
+    }
+
+    // Reorder fights array
+    const reorderedFights = [...fights];
+    const [movedFight] = reorderedFights.splice(fromIndex, 1);
+    reorderedFights.splice(toIndex, 0, movedFight);
+
+    // Reorder disabledCharacters array in sync
+    const reorderedDisabled = [...disabledCharacters];
+    const [movedDisabled] = reorderedDisabled.splice(fromIndex, 1);
+    reorderedDisabled.splice(toIndex, 0, movedDisabled);
+
+    // Disabled characters are stored per fight, so they move with the fights
+    changeFights(reorderedFights);
+    changeDisabledCharacters(reorderedDisabled);
+
+    dragRowIndex.current = null;
+    setDragOverRow(null);
+  };
+
+  const onRowDragEnd = () => {
+    dragRowIndex.current = null;
+    setDragOverRow(null);
+  };
+
+  // --- Character level / remove ---
   const changeCharacterLevel = (level, index) => {
     if (level.isNaN || level < 1) level = 1;
     if (level > 99) level = 99;
@@ -58,6 +140,7 @@ const ExperienceContainer = ({
       <Table striped>
         <TableHeader>
           <TableRow>
+            {/* Export cell — not draggable */}
             <TableHeaderCell>
               <ExportModal
                 data={export_data}
@@ -65,6 +148,7 @@ const ExperienceContainer = ({
                 trigger={<Button primary>Export</Button>}
               />
             </TableHeaderCell>
+
             {characters.map((character, index) => (
               <HeaderCell
                 key={index}
@@ -72,16 +156,37 @@ const ExperienceContainer = ({
                 index={index}
                 changeCharacterLevel={changeCharacterLevel}
                 removeCharacter={removeCharacter}
+                isDragOver={dragOverCol === index}
+                onDragStart={() => onColDragStart(index)}
+                onDragOver={(e) => onColDragOver(e, index)}
+                onDrop={() => onColDrop(index)}
+                onDragEnd={onColDragEnd}
               />
             ))}
           </TableRow>
         </TableHeader>
+
         <TableBody>
           {results.map((result, index) => (
-            <TableRow key={index}>
-              <TableCell key={`${result.enemy_group.name}-${index}`}>
+            <TableRow
+              key={index}
+              style={{
+                opacity: dragRowIndex.current === index ? 0.4 : 1,
+                outline: dragOverRow === index ? '1px dashed #2185d0' : undefined,
+                cursor: 'grab',
+              }}
+            >
+              <TableCell
+                key={`${result.enemy_group.name}-${index}`}
+                draggable
+                onDragStart={() => onRowDragStart(index)}
+                onDragOver={(e) => onRowDragOver(e, index)}
+                onDrop={() => onRowDrop(index)}
+                onDragEnd={onRowDragEnd}
+              >
                 <div>{result.enemy_group.name}</div>
                 <div className="cell_controls">
+                  {/* Stop drag from firing when interacting with controls */}
                   <input
                     type="number"
                     size={2}
@@ -90,6 +195,7 @@ const ExperienceContainer = ({
                     step={1}
                     value={result.party_size}
                     onChange={(e) => changeFightPartySize(e.target.value, index)}
+                    onDragStart={(e) => e.stopPropagation()}
                   />
                   <button
                     className={`toggle ${result.enabled ? 'fight_enabled' : 'fight_disabled'}`}
@@ -102,13 +208,15 @@ const ExperienceContainer = ({
                   </button>
                 </div>
               </TableCell>
-              {result.characters.map((character) => (
+
+              {result.characters.map((character, charIdx) => (
                 <RowCell
                   key={character.name}
                   character={character}
                   index={index}
                   enabled={result.enabled && !disabledCharacters[index].includes(character.name)}
                   toggleDisabledCharacter={toggleDisabledCharacter}
+                  isDragOver={dragOverCol === charIdx}
                 />
               ))}
             </TableRow>
@@ -119,24 +227,45 @@ const ExperienceContainer = ({
   );
 };
 
-const RowCell = ({ character, index, enabled, toggleDisabledCharacter }) => {
-  // I don't know why I need to parseFloat character.level,
-  // but it crashes in some cases if I don't.
+const RowCell = ({ character, index, enabled, toggleDisabledCharacter, isDragOver }) => {
   return (
     <TableCell
       className={`toggle ${enabled ? 'char_enabled' : 'char_disabled'}`}
       key={character.name}
       role="button"
       onClick={() => toggleDisabledCharacter(character.name, index)}
+      style={{
+        outline: isDragOver ? '1px dashed #2185d0' : undefined,
+      }}
     >
       {parseFloat(character.level).toFixed(3)} <span className="indicator">●</span>
     </TableCell>
   );
 };
 
-const HeaderCell = ({ character, index, changeCharacterLevel, removeCharacter }) => {
+const HeaderCell = ({
+  character,
+  index,
+  changeCharacterLevel,
+  removeCharacter,
+  isDragOver,
+  onDragStart,
+  onDragOver,
+  onDrop,
+  onDragEnd,
+}) => {
   return (
-    <TableHeaderCell>
+    <TableHeaderCell
+      draggable
+      onDragStart={onDragStart}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+      onDragEnd={onDragEnd}
+      style={{
+        outline: isDragOver ? '1px dashed #2185d0' : undefined,
+        cursor: 'grab',
+      }}
+    >
       <div className="character_name">{character.name}</div>
       <div className="cell_controls">
         <input
@@ -146,6 +275,7 @@ const HeaderCell = ({ character, index, changeCharacterLevel, removeCharacter })
           max={99.999}
           step={1}
           value={character.level}
+          draggable={false}
           onChange={(e) => changeCharacterLevel(e.target.value, index)}
         />
         <button className="remove" onClick={() => removeCharacter(index)}>
