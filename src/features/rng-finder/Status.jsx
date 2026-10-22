@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { Button, Container, Progress, Segment, Table } from 'semantic-ui-react';
-import { Helpers } from 'suikoden-rng-lib';
-
-const hex = Helpers.numToHexString;
+import { formatPair } from './rngPair';
 
 const Matches = ({ matches, done }) => (
   <Segment>
@@ -25,8 +23,8 @@ const Matches = ({ matches, done }) => (
             {matches.map((match, index) => (
               <Table.Row key={match.foundEncounterRNG}>
                 <Table.Cell>{index + 1}</Table.Cell>
-                <Table.Cell>{hex(match.foundEncounterRNG)}</Table.Cell>
-                <Table.Cell>{hex(match.firstPossibleRNG)}</Table.Cell>
+                <Table.Cell>{formatPair(match.foundEncounterRNG)}</Table.Cell>
+                <Table.Cell>{formatPair(match.firstPossibleRNG)}</Table.Cell>
                 <Table.Cell>{match.gap}</Table.Cell>
               </Table.Row>
             ))}
@@ -53,9 +51,9 @@ const RNGFinderStatus = ({
     ) : (
       result && (
         <Segment>
-          <p>First Battle RNG: {hex(result.foundEncounterRNG)}</p>
+          <p>First Battle RNG: {formatPair(result.foundEncounterRNG)}</p>
           <p>
-            First Possible RNG: {hex(result.firstPossibleRNG)} (gap of {result.gap})
+            First Possible RNG: {formatPair(result.firstPossibleRNG)} (gap of {result.gap})
           </p>
         </Segment>
       )

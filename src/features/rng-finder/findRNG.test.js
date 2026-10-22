@@ -1,7 +1,14 @@
 import { beforeAll, describe, expect, test } from 'vitest';
-import { RNG, generateEncounters, isBattle } from 'suikoden-rng-lib/encounters';
+import {
+  LCG,
+  RNG,
+  encounterIndex,
+  generateEncounters,
+  isBattle,
+} from 'suikoden-rng-lib/encounters';
 import { ENCOUNTER_AREAS } from 'shared/lib/encounters';
-import { findFirstPossible, findRNG } from './findRNG';
+import { findFirstPossible, findRNG, tablesFor } from './findRNG';
+import { twinOf } from './rngPair';
 
 const BUFFER = 0xffff; // fights findRNG collects before it searches them
 
@@ -151,6 +158,62 @@ describe.each([false, true])('findRNG (realistic: %s)', (realistic) => {
     expect(last.matches).toHaveLength(3);
     expect(last.message).toMatch(/Stopped at 3 matches/);
   });
+
+  test('searches the last, part-filled buffer too', () => {
+    // Steps run out when the second buffer is only partly full. A run of fights at the very end
+    // of those steps is only in that part-filled buffer.
+    const maxSteps = 2_500_000;
+    const seen = generateEncounters(new RNG(0x12), area, { iterations: maxSteps, realistic });
+    const seenIds = seen.map((fight) => fight.encounterIndex);
+    expect(seen.length).toBeGreaterThan(BUFFER + 100);
+    expect(seen.length).toBeLessThan(BUFFER * 2 - 100);
+
+    const wanted = seenIds.slice(-8);
+    const first = firstOccurrence(seenIds, wanted);
+    expect(first).toBeGreaterThan(BUFFER); // not in the first, full buffer
+
+    const matches = findRNG(area, wanted, 0x12, () => {}, { realistic, maxSteps });
+    expect(matches.map((m) => m.foundEncounterRNG)).toEqual([seen[first].startRNG]);
+  });
+
+  // maxSteps ends the scan just after the battle at fights[i]
+  const stepsThrough = (i) => fights[i].index + (realistic ? 2 : 1);
+
+  test('a match that starts before the end of the steps is found even though it finishes after', () => {
+    const k = 30000;
+    const wanted = ids.slice(k, k + 6);
+    const first = firstOccurrence(ids, wanted);
+    expect(first).toBe(k); // unique, so the only place to look
+
+    // the steps end after the third of its six battles
+    const matches = findRNG(area, wanted, 0x12, () => {}, {
+      realistic,
+      maxSteps: stepsThrough(k + 2),
+    });
+    expect(matches.map((m) => m.foundEncounterRNG)).toEqual([fights[k].startRNG]);
+  });
+
+  test('a match that starts after the end of the steps is not reported', () => {
+    const k = 30000;
+    const wanted = ids.slice(k + 3, k + 9);
+    expect(firstOccurrence(ids, wanted)).toBe(k + 3);
+
+    // the steps end after battle k + 2: the match starts with battle k + 3
+    const matches = findRNG(area, wanted, 0x12, () => {}, {
+      realistic,
+      maxSteps: stepsThrough(k + 2),
+    });
+    expect(matches).toEqual([]);
+  });
+
+  test('a match that starts on the very last battle of the steps is found', () => {
+    const k = 30000;
+    const wanted = ids.slice(k, k + 6);
+    expect(firstOccurrence(ids, wanted)).toBe(k);
+
+    const matches = findRNG(area, wanted, 0x12, () => {}, { realistic, maxSteps: stepsThrough(k) });
+    expect(matches.map((m) => m.foundEncounterRNG)).toEqual([fights[k].startRNG]);
+  });
 });
 
 describe('findFirstPossible', () => {
@@ -205,5 +268,78 @@ describe('findRNG', () => {
 
   test('needs at least two fights to go on', () => {
     expect(findRNG(ENCOUNTER_AREAS[0], [3], 0x12, () => {})).toEqual([]);
+  });
+});
+
+describe("the scan's inlined RNG step", () => {
+  test("steps exactly as the lib's RNG does", () => {
+    for (const seed of [0, 0x12, 0x7fffffff, 0x80000000, 0xdeadbeef, 0xffffffff]) {
+      const rng = new RNG(seed);
+      let raw = seed | 0;
+      for (let i = 0; i < 100_000; i++) {
+        rng.next();
+        raw = (Math.imul(raw, LCG.MULTIPLIER) + LCG.INCREMENT) | 0;
+        if (rng.raw !== raw >>> 0) throw new Error(`diverged from the lib at step ${i + 1}`);
+      }
+    }
+  });
+});
+
+describe('tablesFor', () => {
+  // one world map area and one dungeon, since the battle check differs between them
+  const areas = ['Moravia Area', "Lepant's Mansion", 'Cave of the Past'].map((name) =>
+    ENCOUNTER_AREAS.find((a) => a.name === name),
+  );
+
+  test.each(areas.map((area) => [area.name, area]))(
+    "%s: agrees with the lib's own checks on real RNG states",
+    (_name, area) => {
+      expect(new Set(areas.map((a) => a.areaType)).size).toBe(2);
+      const { battle, group } = tablesFor(area);
+      const rng = new RNG(0x12);
+      for (let i = 0; i < 300_000; i++) {
+        const rand = (rng.raw >>> 16) & 0x7fff;
+        if (battle[rand] !== (isBattle(rng, area) ? 1 : 0)) throw new Error(`battle, step ${i}`);
+        if (battle[rand] === 1 && group[rng.peek().rand] !== encounterIndex(rng, area)) {
+          throw new Error(`group, step ${i}`);
+        }
+        rng.next();
+      }
+    },
+  );
+
+  test('every group in a table is a real group of the area', () => {
+    for (const area of areas) {
+      const { group } = tablesFor(area);
+      expect(Math.max(...group)).toBeLessThan(area.encounters.length);
+    }
+  });
+});
+
+describe('a half search', () => {
+  test('finds each match once, and the twin of each match plays out the same fights', () => {
+    const area = ENCOUNTER_AREAS.find((a) => a.name === 'Cave of the Past');
+    const realistic = true;
+    const seen = generateEncounters(new RNG(0x12), area, { iterations: 5_000_000, realistic });
+    const wanted = seen.slice(1500, 1506).map((fight) => fight.encounterIndex);
+
+    const matches = findRNG(area, wanted, 0x12, () => {}, {
+      realistic,
+      findAll: true,
+      maxMatches: 1e9,
+    });
+    expect(matches.length).toBeGreaterThan(1);
+    expect(new Set(matches.map((m) => m.foundEncounterRNG)).size).toBe(matches.length);
+    // no match is the twin of another: each pair is reported once
+    const found = new Set(matches.map((m) => m.foundEncounterRNG));
+    for (const m of matches) expect(found.has(twinOf(m.foundEncounterRNG))).toBe(false);
+
+    for (const m of matches) {
+      for (const raw of [m.foundEncounterRNG, twinOf(m.foundEncounterRNG)]) {
+        const fights = generateEncounters(new RNG(raw), area, { iterations: 200_000, realistic });
+        expect(fights[0].startRNG).toBe(raw);
+        expect(fights.slice(0, wanted.length).map((f) => f.encounterIndex)).toEqual(wanted);
+      }
+    }
   });
 });

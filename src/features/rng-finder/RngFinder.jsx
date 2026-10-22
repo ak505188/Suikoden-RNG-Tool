@@ -107,7 +107,7 @@ const RNGFinder = () => {
         />
         <Form.Checkbox
           label="Find all matches"
-          title="Scan the whole RNG cycle and list every match, instead of stopping at the first. Takes up to about a minute."
+          title="Scan the whole RNG cycle and list every match, instead of stopping at the first. Takes a few seconds."
           checked={findAll}
           onChange={(_e, data) => setFindAll(data.checked)}
         />
