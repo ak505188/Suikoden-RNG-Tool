@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Container, Input } from 'semantic-ui-react';
+import { Container, Input, Label } from 'semantic-ui-react';
 import { RNG, Cursor, simulateRoll, simulateOpponentRollsFromGameStart } from 'suikoden-rng-lib';
+import DraftNumberInput from 'shared/form/DraftNumberInput';
 import { int, oneOf } from 'shared/lib/params';
 import { useQueryParams } from 'shared/lib/useQueryParams';
 import InvalidLink from 'shared/ui/InvalidLink';
@@ -74,15 +75,17 @@ const GenerateRollsResult = () => {
   return (
     <Container style={{ flex: 1 }} textAlign="center">
       {player === PLAYERS[2] && (
-        <Input
-          type="number"
-          value={startIndex}
-          label="RNG Index at Start"
-          onChange={(e) => setStartIndex(parseInt(e.target.value))}
-          max={iterations}
-          min={0}
-          step={1}
-        />
+        <Input labelPosition="left">
+          <Label>RNG Index at Start</Label>
+          <DraftNumberInput
+            value={startIndex}
+            min={0}
+            max={iterations}
+            step={1}
+            accepts={(text) => parseInt(text) >= 0}
+            onCommit={(text) => setStartIndex(parseInt(text))}
+          />
+        </Input>
       )}
       <ChinchironinTable data={data} player={player} />
     </Container>

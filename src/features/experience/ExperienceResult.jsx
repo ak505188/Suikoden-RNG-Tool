@@ -8,7 +8,7 @@ import {
   TableRow,
   TableCell,
 } from 'semantic-ui-react';
-import DraftNumberInput from './DraftNumberInput';
+import DraftNumberInput from 'shared/form/DraftNumberInput';
 import {
   MAX_LEVEL,
   MAX_PARTY_SIZE,

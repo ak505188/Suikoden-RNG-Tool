@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Container, Form } from 'semantic-ui-react';
 import { RNG, simulateAssassinFight, characterLevelUps } from 'suikoden-rng-lib';
+import DraftNumberInput from 'shared/form/DraftNumberInput';
 import { int } from 'shared/lib/params';
 import { useQueryParams } from 'shared/lib/useQueryParams';
 import InvalidLink from 'shared/ui/InvalidLink';
@@ -17,6 +18,9 @@ const KIRKIS_STARTING_STATS = {
 };
 
 const SCHEMA = { rng: int(), range_start: int(), range_end: int() };
+
+// A filter box takes a whole number from 0, and an empty box means no filter (0)
+const isDamageFilter = (text) => text === '' || parseInt(text) >= 0;
 
 const AssassinResult = () => {
   const { params, problems } = useQueryParams(SCHEMA);
@@ -77,37 +81,41 @@ const AssassinResult = () => {
     <Container style={{ flex: 1 }} textAlign="center">
       <Form>
         <Form.Group>
-          <Form.Input
+          <Form.Field
+            control={DraftNumberInput}
             label="McDohl Armor"
             value={heroArmor}
-            type="number"
             min={18}
             step={1}
-            onChange={(e) => setHeroArmor(parseInt(e.target.value))}
+            accepts={(text) => parseInt(text) >= 18}
+            onCommit={(text) => setHeroArmor(parseInt(text))}
           />
-          <Form.Input
+          <Form.Field
+            control={DraftNumberInput}
             label="Turn 1 Damage"
             value={dmg1}
-            type="number"
             min={0}
             step={1}
-            onChange={(e) => setDmg1(parseInt(e.target.value))}
+            accepts={isDamageFilter}
+            onCommit={(text) => setDmg1(parseInt(text) || 0)}
           />
-          <Form.Input
+          <Form.Field
+            control={DraftNumberInput}
             label="Turn 2 Damage"
             value={dmg2}
-            type="number"
             min={0}
             step={1}
-            onChange={(e) => setDmg2(parseInt(e.target.value))}
+            accepts={isDamageFilter}
+            onCommit={(text) => setDmg2(parseInt(text) || 0)}
           />
-          <Form.Input
+          <Form.Field
+            control={DraftNumberInput}
             label="Kirkis HP"
             value={kirkisHP}
-            type="number"
             min={0}
             step={1}
-            onChange={(e) => setKirkisHP(parseInt(e.target.value))}
+            accepts={isDamageFilter}
+            onCommit={(text) => setKirkisHP(parseInt(text) || 0)}
           />
         </Form.Group>
       </Form>
