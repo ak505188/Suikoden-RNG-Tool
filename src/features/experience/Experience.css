@@ -1,3 +1,11 @@
+/* The level-up toggle and the Undo button, grouped at the right end of the form's button row. */
+.ui.form .fields > .field.experience-end {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
 /* Scoped to the result table (className="experience-table"): bare element rules like these would
    otherwise restyle every table, button and number input in the app. */
 
@@ -24,6 +32,7 @@
   --grip-color-hover: #555;
   --grip-bg-hover: #eef2f7;
   --grip-header-extra: 8px; /* room above a column's header text for its grip */
+  --level-up-bg: #fff3bf; /* a cell where the character reaches a new whole level */
   --header-top: 0px; /* where the header row sticks: the top of the viewport */
   --grip-row-gap: 8px; /* gap kept between one row's grip and the next */
 
@@ -113,6 +122,10 @@
 
 .experience-table td.toggle.char_enabled span.indicator {
   color: var(--on-color);
+}
+
+.experience-table td.toggle.level_up {
+  background-color: var(--level-up-bg);
 }
 
 .experience-table td.toggle.char_disabled {
@@ -205,4 +218,15 @@
   position: sticky;
   top: var(--header-top);
   z-index: 2;
+}
+
+/* Top-left cell: the fight count, in the same text as the fight names. Its left padding matches the
+   fight cells so the two line up. The extra .ui.table beats Semantic's th text-align and font
+   rules. */
+.experience-table.ui.table thead th.summary-cell {
+  text-align: left;
+  vertical-align: middle;
+  padding-left: 0.78571429rem; /* the same 11px as the fight cells below */
+  font-weight: normal;
+  white-space: nowrap;
 }

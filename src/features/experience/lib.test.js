@@ -6,6 +6,8 @@ import {
   normalizeImport,
   parseLevel,
   parsePartySize,
+  pushUndo,
+  UNDO_LIMIT,
 } from './lib';
 
 const fight = (levels, party_size = 6, enabled = true) => ({
@@ -115,5 +117,54 @@ describe('input normalization', () => {
       imported.disabled_characters,
     );
     expect(result.characters[0].level).toBe(10.15);
+  });
+});
+
+describe('pushUndo', () => {
+  test('appends entries in order', () => {
+    expect(pushUndo(pushUndo([], 'a'), 'b')).toEqual(['a', 'b']);
+  });
+
+  test('keeps only the newest UNDO_LIMIT entries', () => {
+    let history = [];
+    for (let i = 0; i < UNDO_LIMIT + 5; i++) history = pushUndo(history, i);
+    expect(history).toHaveLength(UNDO_LIMIT);
+    expect(history[0]).toBe(5);
+    expect(history[history.length - 1]).toBe(UNDO_LIMIT + 4);
+  });
+
+  test('does not change the history it was given', () => {
+    const history = ['a'];
+    pushUndo(history, 'b');
+    expect(history).toEqual(['a']);
+  });
+});
+
+describe('levelsGained', () => {
+  const gains = (characters, fights, disabled) =>
+    calculateLevels(characters, fights, disabled).map((r) =>
+      r.characters.map((c) => c.levelsGained),
+    );
+
+  test('is 0 within a level and 1 when a fight crosses a whole level', () => {
+    // 10.15 -> 10.3 stays inside level 10; 9.95 + 0.266 crosses into level 10
+    expect(gains([{ name: 'A', level: 10 }], [fight([12])], [[]])).toEqual([[0]]);
+    expect(gains([{ name: 'A', level: 9.95 }], [fight([12])], [[]])).toEqual([[1]]);
+  });
+
+  test('counts every level a big fight skips', () => {
+    expect(gains([{ name: 'A', level: 1 }], [fight([40], 1)], [[]])).toEqual([[10]]);
+  });
+
+  test('is 0 for a character sitting out, and does not carry over to the next fight', () => {
+    const characters = [
+      { name: 'A', level: 9.95 },
+      { name: 'B', level: 9.95 },
+    ];
+    expect(gains(characters, [fight([12]), fight([12])], [['B'], ['A']])).toEqual([
+      [1, 0],
+      [0, 1],
+    ]);
+    expect(gains(characters, [fight([12], 6, false)], [[]])).toEqual([[0, 0]]);
   });
 });

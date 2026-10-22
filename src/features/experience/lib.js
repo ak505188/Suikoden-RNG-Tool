@@ -7,6 +7,11 @@ const offset = 14;
 const EXP_PER_LEVEL = 1000;
 const MIN_BATTLE_EXP = 5;
 
+export const UNDO_LIMIT = 20;
+
+// The undo history with `entry` added, keeping only the newest UNDO_LIMIT entries.
+export const pushUndo = (history, entry) => [...history, entry].slice(-UNDO_LIMIT);
+
 export const MIN_LEVEL = 1;
 export const MAX_LEVEL = 99;
 export const MIN_PARTY_SIZE = 1;
@@ -59,11 +64,17 @@ export function calculateLevels(characters, fights, disabled_characters) {
 }
 
 // Returns new characters
+// Each character also gets `levelsGained`: how many whole levels this fight took them past (0 for
+// most fights, and for characters sitting it out). It is always reset, so it never carries over
+// from the fight before.
 function levelupCharacters(characters, fight, disabled_characters) {
   return characters.map((character) => {
-    if (!fight.enabled || disabled_characters.includes(character.name)) return character;
+    if (!fight.enabled || disabled_characters.includes(character.name)) {
+      return { ...character, levelsGained: 0 };
+    }
     const new_level = levelupCharacter(character.level, fight.enemy_group, fight.party_size);
-    return { ...character, level: new_level };
+    const levelsGained = Math.floor(new_level) - Math.floor(character.level);
+    return { ...character, level: new_level, levelsGained };
   });
 }
 

@@ -1,7 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import {
-  Button,
   Container,
   Table,
   TableBody,
@@ -10,7 +9,6 @@ import {
   TableRow,
   TableCell,
 } from 'semantic-ui-react';
-import ExportModal from 'shared/table/export-modal';
 import DraftNumberInput from './DraftNumberInput';
 import {
   MAX_LEVEL,
@@ -31,15 +29,13 @@ const ExperienceContainer = ({
   disabledCharacters,
   fights,
   removeFight,
+  removeCharacter,
   toggleFight,
   toggleDisabledCharacter,
+  highlightLevelUps,
 }) => {
   const results = calculateLevels(characters, fights, disabledCharacters);
-  const export_data = {
-    characters,
-    fights,
-    disabled_characters: disabledCharacters,
-  };
+  const enabledFights = fights.filter((fight) => fight.enabled).length;
 
   // --- Drag state ---
   const dragColIndex = useRef(null);
@@ -139,10 +135,6 @@ const ExperienceContainer = ({
     changeCharacters(new_characters);
   };
 
-  const removeCharacter = (index) => {
-    changeCharacters([...characters.slice(0, index), ...characters.slice(index + 1)]);
-  };
-
   const changeFightPartySize = (party_size, index) => {
     if (!isValidPartySize(party_size)) return;
     const new_fight = { ...fights[index], party_size: Number(party_size) };
@@ -156,13 +148,12 @@ const ExperienceContainer = ({
       <Table striped className="experience-table">
         <TableHeader>
           <TableRow>
-            {/* Export cell — not draggable */}
-            <TableHeaderCell>
-              <ExportModal
-                data={export_data}
-                local_storage_prefix={'exp'}
-                trigger={<Button primary>Export</Button>}
-              />
+            {/* Summary cell */}
+            <TableHeaderCell className="summary-cell">
+              <div>
+                {fights.length} {fights.length === 1 ? 'fight' : 'fights'}
+              </div>
+              <div>{enabledFights} enabled</div>
             </TableHeaderCell>
 
             {characters.map((character, index) => (
@@ -238,6 +229,7 @@ const ExperienceContainer = ({
                   index={index}
                   enabled={result.enabled && !disabledCharacters[index].includes(character.name)}
                   toggleDisabledCharacter={toggleDisabledCharacter}
+                  levelUp={highlightLevelUps && character.levelsGained > 0}
                   isDragOver={dragOverCol === charIdx}
                   onDragOver={(e) => onColDragOver(e, charIdx)}
                   onDrop={() => onColDrop(charIdx)}
@@ -271,9 +263,18 @@ const DragHandle = ({ orientation, label, onDragStart, onDragEnd }) => (
   />
 );
 
+// Hover text for a level cell: the level-up, if this fight causes one, then what a click does.
+const cellTitle = (character, enabled, levelUp) => {
+  const toggle = `${enabled ? 'Disable' : 'Enable'} ${character.name} for this fight`;
+  if (!levelUp) return toggle;
+  const level = Math.floor(character.level);
+  return `Level ${level - character.levelsGained} → ${level} · ${toggle}`;
+};
+
 const RowCell = ({
   character,
   index,
+  levelUp,
   enabled,
   toggleDisabledCharacter,
   isDragOver,
@@ -284,11 +285,13 @@ const RowCell = ({
     <TableCell
       onDragOver={onDragOver}
       onDrop={onDrop}
-      className={`toggle ${enabled ? 'char_enabled' : 'char_disabled'}`}
+      className={`toggle ${enabled ? 'char_enabled' : 'char_disabled'}${
+        levelUp ? ' level_up' : ''
+      }`}
       key={character.name}
       role="button"
       aria-pressed={enabled}
-      title={`${enabled ? 'Disable' : 'Enable'} ${character.name} for this fight`}
+      title={cellTitle(character, enabled, levelUp)}
       onClick={() => toggleDisabledCharacter(character.name, index)}
       style={{
         outline: isDragOver ? '1px dashed #2185d0' : undefined,

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { unstable_batchedUpdates } from 'react-dom';
 import { withRouter } from 'react-router-dom';
-import { Button, Container, Form } from 'semantic-ui-react';
+import { Button, Checkbox, Container, Form } from 'semantic-ui-react';
 import { Characters } from 'suikoden-rng-lib';
 import {
   FIGHT_AREAS,
@@ -10,10 +11,11 @@ import {
   formationLevels,
   formationName,
 } from 'shared/lib/encounters';
+import ExportModal from 'shared/table/export-modal';
 import ImportModal from 'shared/ui/ImportModal';
 
 import ExperienceResult from './ExperienceResult';
-import { MAX_PARTY_SIZE, MIN_PARTY_SIZE, isValidPartySize, normalizeImport } from './lib';
+import { MAX_PARTY_SIZE, MIN_PARTY_SIZE, isValidPartySize, normalizeImport, pushUndo } from './lib';
 import './Experience.css';
 
 const ExperienceForm = () => {
@@ -25,12 +27,36 @@ const ExperienceForm = () => {
   const [partySize, setPartySize] = useState(6);
   const [disabledCharacters, setDisabledCharacters] = useState([]);
 
+  // Each entry is the whole plan as it was before a removal or an import, so undoing restores
+  // exactly what was there (including which characters were disabled in each fight).
+  const [undoStack, setUndoStack] = useState([]);
+  const [highlightLevelUps, setHighlightLevelUps] = useState(false);
+
+  // Nothing to undo on a fresh page, but if the last character was just removed the table is empty
+  // and Undo is the way back, so it stays while there is anything to undo.
+  const showUndo = characters.length > 0 || undoStack.length > 0;
+
   const partySizeValid = isValidPartySize(partySize);
   const selected_character_names = characters.map((character) => character.name);
 
   const changeCharacters = (chars) => setCharacters(chars);
 
+  const rememberForUndo = (label) =>
+    setUndoStack((stack) => pushUndo(stack, { label, characters, fights, disabledCharacters }));
+
+  const undo = () => {
+    const entry = undoStack[undoStack.length - 1];
+    if (!entry) return;
+    unstable_batchedUpdates(() => {
+      setCharacters(entry.characters);
+      setDisabledCharacters(entry.disabledCharacters);
+      setFights(entry.fights);
+      setUndoStack((stack) => stack.slice(0, -1));
+    });
+  };
+
   const importData = (imported) => {
+    if (characters.length > 0 || fights.length > 0) rememberForUndo('import');
     const data = normalizeImport(imported);
     setCharacters(data.characters);
     setDisabledCharacters(data.disabled_characters);
@@ -85,7 +111,13 @@ const ExperienceForm = () => {
     }
   };
 
+  const removeCharacter = (index) => {
+    rememberForUndo(`removed ${characters[index].name}`);
+    setCharacters([...characters.slice(0, index), ...characters.slice(index + 1)]);
+  };
+
   const removeFight = (index) => {
+    rememberForUndo(`removed ${fights[index].enemy_group.name}`);
     setFights((prevFights) => [...prevFights.slice(0, index), ...prevFights.slice(index + 1)]);
     setDisabledCharacters((prevDisabledCharacters) => [
       ...prevDisabledCharacters.slice(0, index),
@@ -201,6 +233,37 @@ const ExperienceForm = () => {
             importData={importData}
             trigger={<Button primary>Import</Button>}
           />
+          {(characters.length > 0 || showUndo) && (
+            <Form.Field className="experience-end">
+              {characters.length > 0 && (
+                <Checkbox
+                  toggle
+                  label="Highlight level-ups"
+                  title="Highlight the cells where a character reaches a new whole level"
+                  checked={highlightLevelUps}
+                  onChange={(_e, data) => setHighlightLevelUps(data.checked)}
+                />
+              )}
+              {characters.length > 0 && (
+                <ExportModal
+                  data={{ characters, fights, disabled_characters: disabledCharacters }}
+                  local_storage_prefix="exp"
+                  trigger={<Button primary>Export</Button>}
+                />
+              )}
+              {showUndo && (
+                <Button
+                  type="button"
+                  content="Undo"
+                  title={
+                    undoStack.length > 0 ? `Undo: ${undoStack[undoStack.length - 1].label}` : ''
+                  }
+                  disabled={undoStack.length === 0}
+                  onClick={undo}
+                />
+              )}
+            </Form.Field>
+          )}
         </Form.Group>
       </Form>
       {characters.length > 0 && (
@@ -213,6 +276,8 @@ const ExperienceForm = () => {
           fights={fights}
           disabledCharacters={disabledCharacters}
           removeFight={removeFight}
+          removeCharacter={removeCharacter}
+          highlightLevelUps={highlightLevelUps}
           toggleDisabledCharacter={toggleDisabledCharacter}
           toggleFight={toggleFight}
         />
