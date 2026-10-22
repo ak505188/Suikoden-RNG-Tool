@@ -2,8 +2,8 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { Container } from 'semantic-ui-react';
 import { Helpers } from 'suikoden-rng-lib';
-import { RNG, generateEncounters } from 'suikoden-rng-lib/encounters';
-import { findAreaById, formationName } from 'shared/lib/encounters';
+import { RNG, formationName, generateEncounters } from 'suikoden-rng-lib/encounters';
+import { findAreaById } from 'shared/lib/encounters';
 import EncountersTable from './EncountersTable';
 
 const EncountersContainer = ({ location }) => {

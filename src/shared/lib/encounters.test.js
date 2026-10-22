@@ -6,7 +6,6 @@ import {
   areaId,
   findAreaById,
   formationLevels,
-  formationName,
 } from './encounters';
 import { itemName } from './items';
 
@@ -25,15 +24,6 @@ describe('encounter areas', () => {
       expect(findAreaById(id)).toBeDefined();
     }
     expect(findAreaById("Dragon's Den")).toBeUndefined();
-  });
-});
-
-describe('formationName', () => {
-  test('counts each enemy in order of first appearance', () => {
-    expect(formationName(['BANSHEE', null, 'BANSHEE', null, 'CLAY_DOLL'])).toBe(
-      '2 Banshee 1 Clay Doll',
-    );
-    expect(formationName([null, 'BANSHEE'])).toBe('1 Banshee');
   });
 });
 

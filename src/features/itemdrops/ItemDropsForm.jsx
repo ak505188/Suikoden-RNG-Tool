@@ -2,14 +2,9 @@ import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Container, Form } from 'semantic-ui-react';
 import { Helpers } from 'suikoden-rng-lib';
+import { formationName } from 'suikoden-rng-lib/encounters';
 import { InputRNG, InputIterations } from 'shared/form/inputs';
-import {
-  FIGHT_AREAS,
-  areaFormations,
-  areaId,
-  findAreaById,
-  formationName,
-} from 'shared/lib/encounters';
+import { FIGHT_AREAS, areaFormations, areaId, findAreaById } from 'shared/lib/encounters';
 
 const ItemDropsForm = ({ history }) => {
   const [rng, setRNG] = useState(Helpers.numToHexString(0x12));

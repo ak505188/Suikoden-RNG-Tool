@@ -35,7 +35,7 @@ const RunAssistantTable = (props) => {
             className="enemyImage"
             alt=""
             key={index}
-            src={`data:image/png;base64, ${enemy.img}`}
+            src={enemy.img}
           />
         ))}
       </div>

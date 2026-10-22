@@ -3,13 +3,13 @@ import { unstable_batchedUpdates } from 'react-dom';
 import { withRouter } from 'react-router-dom';
 import { Button, Checkbox, Container, Form } from 'semantic-ui-react';
 import { Characters } from 'suikoden-rng-lib';
+import { formationName } from 'suikoden-rng-lib/encounters';
 import {
   FIGHT_AREAS,
   areaFormations,
   areaId,
   findAreaById,
   formationLevels,
-  formationName,
 } from 'shared/lib/encounters';
 import ExportModal from 'shared/table/export-modal';
 import ImportModal from 'shared/ui/ImportModal';

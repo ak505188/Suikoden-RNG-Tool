@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
 import { Helpers } from 'suikoden-rng-lib';
+import { ENCOUNTER_AREAS, areaId } from 'shared/lib/encounters';
 import { Container, Form } from 'semantic-ui-react';
 
 class RunAssistantForm extends React.Component {
@@ -61,10 +62,10 @@ class RunAssistantForm extends React.Component {
           <Form.Dropdown
             label="Areas"
             placeholder="Area"
-            options={Helpers.areaNamesWithRandomEncounters.map((name) => ({
-              key: name,
-              value: name,
-              text: this.props.areas[name].name,
+            options={ENCOUNTER_AREAS.map((area) => ({
+              key: areaId(area),
+              value: areaId(area),
+              text: area.name,
             }))}
             value={this.state.areas}
             onChange={this.handleAreaChange}

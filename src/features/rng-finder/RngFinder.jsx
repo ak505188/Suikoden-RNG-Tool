@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import DoubleListSelector from 'shared/ui/DoubleListSelector';
 import { InputRNG } from 'shared/form/inputs';
-import { ENCOUNTER_AREAS, areaId, findAreaById, formationName } from 'shared/lib/encounters';
+import { formationName } from 'suikoden-rng-lib/encounters';
+import { ENCOUNTER_AREAS, areaId, findAreaById } from 'shared/lib/encounters';
 import { Helpers } from 'suikoden-rng-lib';
 import { Container, Form } from 'semantic-ui-react';
 import RNGFinderStatus from './Status';

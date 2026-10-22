@@ -78,7 +78,7 @@ const EnemyButton = (props) => {
     return (
       <EnemyButtonImage className="ui button" role="button" {...props}>
         {enemyGroup.enemies.map((enemy, index) => (
-          <EnemyImage key={index} src={`data:image/png;base64, ${enemy.img}`} />
+          <EnemyImage key={index} src={enemy.img} />
         ))}
       </EnemyButtonImage>
     );

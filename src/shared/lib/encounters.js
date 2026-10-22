@@ -21,19 +21,6 @@ const areasById = new Map(FIGHT_AREAS.map((area) => [areaId(area), area]));
 export const findAreaById = (id) => areasById.get(id);
 
 /**
- * A formation's display name: each distinct enemy with its count, in order of first appearance
- * ("2 Banshee 1 Clay Doll").
- * @param {import('suikoden-rng-lib/encounters').Formation} formation
- */
-export function formationName(formation) {
-  const counts = new Map();
-  for (const { name } of formationEnemies(formation)) {
-    counts.set(name, (counts.get(name) ?? 0) + 1);
-  }
-  return [...counts].map(([name, count]) => `${count} ${name}`).join(' ');
-}
-
-/**
  * The level of each enemy in a formation, in slot order.
  * @param {import('suikoden-rng-lib/encounters').Formation} formation
  */

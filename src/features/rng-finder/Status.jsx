@@ -22,7 +22,7 @@ const Matches = ({ matches, done, stopped, limitReached }) => (
     </p>
     {matches.length > 0 && (
       <div style={{ maxHeight: '22rem', overflowY: 'auto' }}>
-      <Table compact basic="very" textAlign="center">
+        <Table compact basic="very" textAlign="center">
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>#</Table.HeaderCell>

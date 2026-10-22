@@ -18,7 +18,6 @@ import {
 import { Form as ChinchironinForm, Result as ChinchironinResult } from 'features/chinchironin';
 import { Form as AssassinForm, Result as AssassinResult } from 'features/assassin';
 import { Form as KakuForm, Result as KakuResult } from 'features/kaku';
-import { Areas } from 'suikoden-rng-lib';
 import { Route } from 'react-router-dom';
 import './index.css';
 
@@ -46,12 +45,8 @@ const App = () => {
       <Route path="/drops/result" exact={true} render={() => <ItemDropsResult />} />
       <Route path="/rngfinder" render={() => <RNGFinder />} />
       <Route path="/experience" exact={true} render={() => <Experience />} />
-      <Route path="/runassist" exact={true} render={() => <RunAssistantForm areas={Areas} />} />
-      <Route
-        path="/runassist/result"
-        exact={true}
-        render={() => <RunAssistantTool areas={Areas} />}
-      />
+      <Route path="/runassist" exact={true} render={() => <RunAssistantForm />} />
+      <Route path="/runassist/result" exact={true} render={() => <RunAssistantTool />} />
       <Route path="/chinchironin" exact={true} render={() => <ChinchironinForm />} />
       <Route path="/chinchironin/result" exact={true} render={() => <ChinchironinResult />} />
       <Route path="/assassin" exact={true} render={() => <AssassinForm />} />
