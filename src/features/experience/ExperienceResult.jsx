@@ -11,7 +11,16 @@ import {
   TableCell,
 } from 'semantic-ui-react';
 import ExportModal from 'shared/table/export-modal';
-import { calculateLevels, isValidPartySize, parseLevel } from './lib';
+import DraftNumberInput from './DraftNumberInput';
+import {
+  MAX_LEVEL,
+  MAX_PARTY_SIZE,
+  MIN_LEVEL,
+  MIN_PARTY_SIZE,
+  calculateLevels,
+  isValidPartySize,
+  parseLevel,
+} from './lib';
 
 const ExperienceContainer = ({
   characters,
@@ -186,14 +195,14 @@ const ExperienceContainer = ({
                 <div>{result.enemy_group.name}</div>
                 <div className="cell_controls">
                   {/* Stop drag from firing when interacting with controls */}
-                  <input
-                    type="number"
+                  <DraftNumberInput
                     size={2}
-                    min={1}
-                    max={99.999}
+                    min={MIN_PARTY_SIZE}
+                    max={MAX_PARTY_SIZE}
                     step={1}
                     value={result.party_size}
-                    onChange={(e) => changeFightPartySize(e.target.value, index)}
+                    accepts={isValidPartySize}
+                    onCommit={(text) => changeFightPartySize(text, index)}
                     onDragStart={(e) => e.stopPropagation()}
                   />
                   <button
@@ -267,15 +276,15 @@ const HeaderCell = ({
     >
       <div className="character_name">{character.name}</div>
       <div className="cell_controls">
-        <input
-          type="number"
+        <DraftNumberInput
           size={5}
-          min={1}
-          max={99.999}
+          min={MIN_LEVEL}
+          max={MAX_LEVEL}
           step={1}
           value={character.level}
+          accepts={(text) => !Number.isNaN(parseFloat(text))}
+          onCommit={(text) => changeCharacterLevel(text, index)}
           draggable={false}
-          onChange={(e) => changeCharacterLevel(e.target.value, index)}
         />
         <button className="remove" onClick={() => removeCharacter(index)}>
           ⊖
