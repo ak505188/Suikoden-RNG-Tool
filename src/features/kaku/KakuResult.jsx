@@ -1,14 +1,20 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom';
 import { Container } from 'semantic-ui-react';
-import KakuTable from './KakuTable';
 import { RNG, Kaku } from 'suikoden-rng-lib';
+import { int } from 'shared/lib/params';
+import { useQueryParams } from 'shared/lib/useQueryParams';
+import InvalidLink from 'shared/ui/InvalidLink';
+import KakuTable from './KakuTable';
 
-const KakuResult = ({ location }) => {
-  const params = new URLSearchParams(location.search);
-  const rng = new RNG(parseInt(params.get('rng')));
-  const start_index = parseInt(params.get('start_index'));
-  const frames_to_simulate = parseInt(params.get('frames'));
+const SCHEMA = { rng: int(), start_index: int(), frames: int() };
+
+const KakuResult = () => {
+  const { params, problems } = useQueryParams(SCHEMA);
+  if (problems.length > 0) return <InvalidLink problems={problems} formPath="/kaku" />;
+
+  const rng = new RNG(params.rng);
+  const start_index = params.start_index;
+  const frames_to_simulate = params.frames;
 
   const kaku = new Kaku();
   rng.jump(start_index);
@@ -37,4 +43,4 @@ const KakuResult = ({ location }) => {
   );
 };
 
-export default withRouter(KakuResult);
+export default KakuResult;

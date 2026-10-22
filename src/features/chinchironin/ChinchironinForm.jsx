@@ -2,24 +2,23 @@ import React, { useState } from 'react';
 import { Helpers } from 'suikoden-rng-lib';
 import { Container, Form } from 'semantic-ui-react';
 import { InputRNG, InputIterations } from 'shared/form/inputs';
-import { withRouter } from 'react-router-dom';
+import { submitTo } from 'shared/form/submitTo';
+import { useHistory } from 'react-router-dom';
 import { PLAYERS } from './lib';
 
-const ChinchironinForm = ({ history }) => {
+const ChinchironinForm = () => {
+  const history = useHistory();
   const [rng, setRNG] = useState(Helpers.numToHexString(0x12));
   const [iterations, setIterations] = useState(1000);
   const [framesToWait, setFramesToAdvance] = useState(203);
   const [player, setPlayer] = useState(PLAYERS[0]);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const params = new URLSearchParams();
-    params.append('rng', rng);
-    params.append('iterations', iterations);
-    params.append('frames_to_wait', framesToWait);
-    params.append('player', player);
-    history.push(`/chinchironin/result?${params.toString()}`);
-  };
+  const handleSubmit = submitTo(history, '/chinchironin/result', {
+    rng,
+    iterations,
+    frames_to_wait: framesToWait,
+    player,
+  });
 
   return (
     <Container textAlign="center">
@@ -31,6 +30,7 @@ const ChinchironinForm = ({ history }) => {
         />
         <Form.Input
           label="Frames to Advance"
+          type="number"
           value={framesToWait}
           min={0}
           onChange={(event) => setFramesToAdvance(event.target.value)}
@@ -52,4 +52,4 @@ const ChinchironinForm = ({ history }) => {
   );
 };
 
-export default withRouter(ChinchironinForm);
+export default ChinchironinForm;

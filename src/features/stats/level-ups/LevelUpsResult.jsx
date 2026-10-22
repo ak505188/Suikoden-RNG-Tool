@@ -1,15 +1,23 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom';
 import { Container } from 'semantic-ui-react';
-import { RNG, generateCharacterMultipleLevelup } from 'suikoden-rng-lib';
+import { Characters, RNG, generateCharacterMultipleLevelup } from 'suikoden-rng-lib';
+import { int, list } from 'shared/lib/params';
+import { useQueryParams } from 'shared/lib/useQueryParams';
+import InvalidLink from 'shared/ui/InvalidLink';
 import LevelUpsTable from './LevelUpsTable';
 
-const LevelUpsContainer = ({ location }) => {
-  const params = new URLSearchParams(location.search);
-  const characters = params.get('characters').split(',');
-  const rng = parseInt(params.get('rng'));
-  const iterations = parseInt(params.get('iterations'));
-  const startingLevel = parseInt(params.get('startingLevel'));
+const SCHEMA = { characters: list(), rng: int(), iterations: int(), startingLevel: int() };
+
+const LevelUpsContainer = () => {
+  const { params, problems: parseProblems } = useQueryParams(SCHEMA);
+  const problems = [...parseProblems];
+  const unknown = params.characters?.filter((name) => !(name in Characters)) ?? [];
+  if (unknown.length > 0) problems.push(`unknown character: ${unknown.join(', ')}`);
+  if (problems.length > 0) {
+    return <InvalidLink problems={problems} formPath="/stats/level-ups" />;
+  }
+
+  const { characters, rng, iterations, startingLevel } = params;
   let levelUps = [];
   characters.forEach((character) => {
     const charLevelUps = generateCharacterMultipleLevelup(
@@ -28,4 +36,4 @@ const LevelUpsContainer = ({ location }) => {
   );
 };
 
-export default withRouter(LevelUpsContainer);
+export default LevelUpsContainer;

@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { withRouter } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Helpers } from 'suikoden-rng-lib';
 import { Container, Form } from 'semantic-ui-react';
 import { ENCOUNTER_AREAS, areaId } from 'shared/lib/encounters';
 import { InputRNG, InputIterations, InputPartyLevel } from 'shared/form/inputs';
+import { submitTo } from 'shared/form/submitTo';
 
-const EncountersForm = ({ history }) => {
+const EncountersForm = () => {
+  const history = useHistory();
   const [rng, setRNG] = useState(Helpers.numToHexString(0x12));
   const [iterations, setIterations] = useState(1000);
   const [offset, setOffset] = useState(0);
@@ -13,17 +15,14 @@ const EncountersForm = ({ history }) => {
   const [realistic, setRealistic] = useState(true);
   const [selectedAreas, setSelectedAreas] = useState([]);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const params = new URLSearchParams();
-    params.append('rng', rng);
-    params.append('iterations', iterations);
-    params.append('offset', offset);
-    params.append('partylevel', partylevel);
-    params.append('realistic', realistic);
-    params.append('areas', selectedAreas);
-    history.push(`/encounters/result?${params.toString()}`);
-  };
+  const handleSubmit = submitTo(history, '/encounters/result', {
+    rng,
+    iterations,
+    offset,
+    partylevel,
+    realistic,
+    areas: selectedAreas,
+  });
 
   return (
     <Container textAlign="center">
@@ -57,12 +56,17 @@ const EncountersForm = ({ history }) => {
           label="Realistic Mode"
           name="realistic"
           checked={realistic}
-          onChange={(e) => setRealistic(e.target.checked)}
+          onChange={(_e, data) => setRealistic(data.checked)}
         />
-        <Form.Button type="submit" content="Generate Encounters" primary={true} />
+        <Form.Button
+          type="submit"
+          content="Generate Encounters"
+          primary={true}
+          disabled={selectedAreas.length === 0}
+        />
       </Form>
     </Container>
   );
 };
 
-export default withRouter(EncountersForm);
+export default EncountersForm;

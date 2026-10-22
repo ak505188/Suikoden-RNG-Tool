@@ -1,22 +1,17 @@
 import React, { useState } from 'react';
-import { withRouter } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Container, Form } from 'semantic-ui-react';
 import { Helpers } from 'suikoden-rng-lib';
 import { InputRNG, InputIterations } from 'shared/form/inputs';
+import { submitTo } from 'shared/form/submitTo';
 
-const NPCalcForm = ({ history }) => {
+const NPCalcForm = () => {
+  const history = useHistory();
   const [rng, setRNG] = useState(Helpers.numToHexString(0x12));
   const [iterations, setIterations] = useState(1000);
   const [npcs, setNpcs] = useState(1);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const params = new URLSearchParams();
-    params.append('rng', rng);
-    params.append('iterations', iterations);
-    params.append('npcs', npcs);
-    history.push(`/npc/result?${params.toString()}`);
-  };
+  const handleSubmit = submitTo(history, '/npc/result', { rng, iterations, npcs });
 
   return (
     <Container textAlign="center">
@@ -40,4 +35,4 @@ const NPCalcForm = ({ history }) => {
   );
 };
 
-export default withRouter(NPCalcForm);
+export default NPCalcForm;

@@ -1,5 +1,4 @@
 import React, { useRef, useState } from 'react';
-import { withRouter } from 'react-router-dom';
 import {
   Container,
   Table,
@@ -352,4 +351,4 @@ const HeaderCell = ({
   );
 };
 
-export default withRouter(ExperienceContainer);
+export default ExperienceContainer;

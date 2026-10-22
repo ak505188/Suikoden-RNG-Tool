@@ -2,21 +2,20 @@ import React, { useState } from 'react';
 import { Helpers } from 'suikoden-rng-lib';
 import { Container, Form } from 'semantic-ui-react';
 import { InputRNG } from 'shared/form/inputs';
-import { withRouter } from 'react-router-dom';
+import { submitTo } from 'shared/form/submitTo';
+import { useHistory } from 'react-router-dom';
 
-const AssassinForm = ({ history }) => {
+const AssassinForm = () => {
+  const history = useHistory();
   const [rng, setRNG] = useState(Helpers.numToHexString(0x12));
   const [rangeStart, setRangeStart] = useState(0);
   const [rangeEnd, setRangeEnd] = useState(1000);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const params = new URLSearchParams();
-    params.append('rng', rng);
-    params.append('range_start', rangeStart);
-    params.append('range_end', rangeEnd);
-    history.push(`/assassin/result?${params.toString()}`);
-  };
+  const handleSubmit = submitTo(history, '/assassin/result', {
+    rng,
+    range_start: rangeStart,
+    range_end: rangeEnd,
+  });
 
   return (
     <Container textAlign="center">
@@ -45,4 +44,4 @@ const AssassinForm = ({ history }) => {
   );
 };
 
-export default withRouter(AssassinForm);
+export default AssassinForm;

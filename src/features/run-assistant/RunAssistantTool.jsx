@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { createStore, applyMiddleware } from 'redux';
 import { createLogger } from 'redux-logger';
 import { Divider } from 'semantic-ui-react';
+import InvalidLink from 'shared/ui/InvalidLink';
 import { ConnectedTable as Table } from './Table';
 import ConnectedControls from './controls';
 import reducer from './reducers';
@@ -16,6 +17,12 @@ const logger = createLogger({});
 class RunAssistantTool extends React.Component {
   constructor(props) {
     super(props);
+    const { state, problems } = buildRunAssistantState(this.props.location.search);
+    if (problems.length > 0) {
+      this.state = { problems };
+      return;
+    }
+
     let config = window.localStorage.getItem('config');
     config =
       config === null
@@ -38,7 +45,7 @@ class RunAssistantTool extends React.Component {
           };
 
     const initialState = {
-      RunAssistant: buildRunAssistantState(this.props.location.search),
+      RunAssistant: state,
       config: config,
       controls: controlsDefault,
     };
@@ -47,6 +54,9 @@ class RunAssistantTool extends React.Component {
   }
 
   render() {
+    if (this.state.problems) {
+      return <InvalidLink problems={this.state.problems} formPath="/runassist" />;
+    }
     return (
       <Provider store={this.state.store}>
         <React.Fragment>

@@ -1,16 +1,29 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom';
 import { Container } from 'semantic-ui-react';
-import { RNG, characterLevelUps } from 'suikoden-rng-lib';
+import { Characters, RNG, characterLevelUps } from 'suikoden-rng-lib';
+import { int, list } from 'shared/lib/params';
+import { useQueryParams } from 'shared/lib/useQueryParams';
+import InvalidLink from 'shared/ui/InvalidLink';
 import StartingStatsTable from './StartingStatsTable';
 
-const StartingStatsContainer = ({ location }) => {
-  const params = new URLSearchParams(location.search);
-  const characters = params.get('characters').split(',');
-  const rng = parseInt(params.get('rng'));
-  const iterations = parseInt(params.get('iterations'));
-  const startingLevel = parseInt(params.get('startingLevel'));
-  const levelsGained = parseInt(params.get('levelsGained'));
+const SCHEMA = {
+  characters: list(),
+  rng: int(),
+  iterations: int(),
+  startingLevel: int(),
+  levelsGained: int(),
+};
+
+const StartingStatsContainer = () => {
+  const { params, problems: parseProblems } = useQueryParams(SCHEMA);
+  const problems = [...parseProblems];
+  const unknown = params.characters?.filter((name) => !(name in Characters)) ?? [];
+  if (unknown.length > 0) problems.push(`unknown character: ${unknown.join(', ')}`);
+  if (problems.length > 0) {
+    return <InvalidLink problems={problems} formPath="/stats/starting-stats" />;
+  }
+
+  const { characters, rng, iterations, startingLevel, levelsGained } = params;
   const startingStats = [];
   characters.forEach((character) => {
     const currentRNG = new RNG(rng);
@@ -32,4 +45,4 @@ const StartingStatsContainer = ({ location }) => {
   );
 };
 
-export default withRouter(StartingStatsContainer);
+export default StartingStatsContainer;

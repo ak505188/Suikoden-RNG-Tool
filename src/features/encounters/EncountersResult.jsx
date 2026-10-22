@@ -1,19 +1,32 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom';
 import { Container } from 'semantic-ui-react';
 import { Helpers } from 'suikoden-rng-lib';
 import { RNG, formationName, generateEncounters } from 'suikoden-rng-lib/encounters';
 import { findAreaById } from 'shared/lib/encounters';
+import { bool, int, list } from 'shared/lib/params';
+import { useQueryParams } from 'shared/lib/useQueryParams';
+import InvalidLink from 'shared/ui/InvalidLink';
 import EncountersTable from './EncountersTable';
 
-const EncountersContainer = ({ location }) => {
-  const params = new URLSearchParams(location.search);
-  const rng = new RNG(parseInt(params.get('rng')));
-  const iterations = parseInt(params.get('iterations'));
-  const offset = parseInt(params.get('offset')) || 0;
-  const partyLevel = parseInt(params.get('partylevel')) || 0;
-  const selectedAreas = (params.get('areas') ?? '').split(',').map(findAreaById).filter(Boolean);
-  const realistic = params.get('realistic') === 'true';
+const SCHEMA = {
+  rng: int(),
+  iterations: int(),
+  offset: int({ default: 0 }),
+  partylevel: int({ default: 0 }),
+  realistic: bool({ default: false }),
+  areas: list(),
+};
+
+const EncountersContainer = () => {
+  const { params, problems: parseProblems } = useQueryParams(SCHEMA);
+  const problems = [...parseProblems];
+  const selectedAreas = (params.areas ?? []).map(findAreaById);
+  const unknown = (params.areas ?? []).filter((_id, i) => !selectedAreas[i]);
+  if (unknown.length > 0) problems.push(`unknown area: ${unknown.join(', ')}`);
+  if (problems.length > 0) return <InvalidLink problems={problems} formPath="/encounters" />;
+
+  const rng = new RNG(params.rng);
+  const { iterations, offset, partylevel: partyLevel, realistic } = params;
 
   const encounters = selectedAreas
     .map((area) =>
@@ -45,4 +58,4 @@ const EncountersContainer = ({ location }) => {
   );
 };
 
-export default withRouter(EncountersContainer);
+export default EncountersContainer;

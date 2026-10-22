@@ -2,19 +2,15 @@ import React, { useState } from 'react';
 import { Helpers } from 'suikoden-rng-lib';
 import { Container, Form } from 'semantic-ui-react';
 import { InputRNG, InputIterations } from 'shared/form/inputs';
-import { withRouter } from 'react-router-dom';
+import { submitTo } from 'shared/form/submitTo';
+import { useHistory } from 'react-router-dom';
 
-const SequenceForm = ({ history }) => {
+const SequenceForm = () => {
+  const history = useHistory();
   const [rng, setRNG] = useState(Helpers.numToHexString(0x12));
   const [iterations, setIterations] = useState(1000);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const params = new URLSearchParams();
-    params.append('rng', rng);
-    params.append('iterations', iterations);
-    history.push(`/sequence/result?${params.toString()}`);
-  };
+  const handleSubmit = submitTo(history, '/sequence/result', { rng, iterations });
 
   return (
     <Container textAlign="center">
@@ -30,4 +26,4 @@ const SequenceForm = ({ history }) => {
   );
 };
 
-export default withRouter(SequenceForm);
+export default SequenceForm;

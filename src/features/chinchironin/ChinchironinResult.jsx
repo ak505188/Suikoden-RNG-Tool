@@ -1,21 +1,29 @@
 import React, { useState } from 'react';
-import { withRouter } from 'react-router-dom';
 import { Container, Input } from 'semantic-ui-react';
-import ChinchironinTable from './ChinchironinTable';
 import { RNG, Cursor, simulateRoll, simulateOpponentRollsFromGameStart } from 'suikoden-rng-lib';
+import { int, oneOf } from 'shared/lib/params';
+import { useQueryParams } from 'shared/lib/useQueryParams';
+import InvalidLink from 'shared/ui/InvalidLink';
+import ChinchironinTable from './ChinchironinTable';
 import { PLAYERS } from './lib';
 
-const GenerateRollsResult = ({ location }) => {
-  const params = new URLSearchParams(location.search);
-  const rng = new RNG(parseInt(params.get('rng')));
-  const iterations = parseInt(params.get('iterations'));
-  const player_param = params.get('player');
-  const player = PLAYERS.includes(player_param) ? player_param : PLAYERS[PLAYERS.length];
-  const is_tai_ho = player === PLAYERS[0];
-  const frames_to_advance = parseInt(params.get('frames_to_wait'));
-  const data = [];
+const SCHEMA = {
+  rng: int(),
+  iterations: int(),
+  frames_to_wait: int({ default: 203 }),
+  player: oneOf(PLAYERS),
+};
 
+const GenerateRollsResult = () => {
+  const { params, problems } = useQueryParams(SCHEMA);
   const [startIndex, setStartIndex] = useState(0);
+  if (problems.length > 0) return <InvalidLink problems={problems} formPath="/chinchironin" />;
+
+  const rng = new RNG(params.rng);
+  const { iterations, player } = params;
+  const is_tai_ho = player === PLAYERS[0];
+  const frames_to_advance = params.frames_to_wait;
+  const data = [];
 
   if (player !== PLAYERS[2]) {
     for (let i = 0; i < iterations; i++) {
@@ -81,4 +89,4 @@ const GenerateRollsResult = ({ location }) => {
   );
 };
 
-export default withRouter(GenerateRollsResult);
+export default GenerateRollsResult;

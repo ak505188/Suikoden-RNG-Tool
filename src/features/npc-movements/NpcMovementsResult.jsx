@@ -1,8 +1,10 @@
 import * as React from 'react';
-import { withRouter } from 'react-router-dom';
 import { Container } from 'semantic-ui-react';
-import Table from './NpcMovementsTable';
 import { Helpers, RNG } from 'suikoden-rng-lib';
+import { int } from 'shared/lib/params';
+import { useQueryParams } from 'shared/lib/useQueryParams';
+import InvalidLink from 'shared/ui/InvalidLink';
+import Table from './NpcMovementsTable';
 
 function directionToString(num) {
   const dir = num % 4;
@@ -20,11 +22,14 @@ function directionToString(num) {
   }
 }
 
-const NPCMovementsResult = ({ location }) => {
-  const params = new URLSearchParams(location.search);
-  const rng = new RNG(parseInt(params.get('rng')));
-  const iterations = parseInt(params.get('iterations'));
-  const npcCount = parseInt(params.get('npcs'));
+const SCHEMA = { rng: int(), iterations: int(), npcs: int({ default: 1 }) };
+
+const NPCMovementsResult = () => {
+  const { params, problems } = useQueryParams(SCHEMA);
+  if (problems.length > 0) return <InvalidLink problems={problems} formPath="/npc" />;
+
+  const rng = new RNG(params.rng);
+  const { iterations, npcs: npcCount } = params;
   const result = [];
   let currentNPC = 0;
   for (let i = 0; i < iterations; i++) {
@@ -54,4 +59,4 @@ const NPCMovementsResult = ({ location }) => {
   );
 };
 
-export default withRouter(NPCMovementsResult);
+export default NPCMovementsResult;

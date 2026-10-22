@@ -16,7 +16,7 @@ const query = (extra = {}) =>
   }).toString();
 
 describe('buildRunAssistantState', () => {
-  const state = buildRunAssistantState(query());
+  const { state } = buildRunAssistantState(query());
 
   test('has one area per id in the URL, found by the same ids as before (no apostrophes)', () => {
     expect(state.areas.map((area) => area.name)).toEqual(['Cave of the Past', "Dragon's Den"]);
@@ -43,21 +43,21 @@ describe('buildRunAssistantState', () => {
   test('starts on the first fight of the first area, or at the index in the URL', () => {
     expect(state.currentArea).toBe(0);
     expect(state.index).toBe(0);
-    expect(buildRunAssistantState(query({ index: '5' })).index).toBe(5);
-    expect(buildRunAssistantState(query({ index: '999999' })).index).toBe(0); // past the end
+    expect(buildRunAssistantState(query({ index: '5' })).state.index).toBe(5);
+    expect(buildRunAssistantState(query({ index: '999999' })).state.index).toBe(0); // past the end
   });
 
   test('a missing party level counts as 0', () => {
     const params = new URLSearchParams(query());
     params.delete('partylevel');
-    const withoutLevel = buildRunAssistantState(params.toString());
+    const withoutLevel = buildRunAssistantState(params.toString()).state;
     expect(withoutLevel.fightsList[0].length).toBe(state.fightsList[0].length);
   });
 });
 
 // The reducers find groups by name and fights by index; check they cope with the new groups
 describe('the reducers with the new groups', () => {
-  const state = buildRunAssistantState(query());
+  const { state } = buildRunAssistantState(query());
 
   test('findFight finds the next fight with the same group, by name', () => {
     const name = getCurrentFight(state).enemyGroup.name;
@@ -80,7 +80,7 @@ describe('the reducers with the new groups', () => {
   });
 
   test('pattern mode matches a run of groups, also in an area that lists a group twice', () => {
-    const island = buildRunAssistantState(query({ areas: 'Magicians Island' }));
+    const { state: island } = buildRunAssistantState(query({ areas: 'Magicians Island' }));
     const withPattern = { ...island, patternMode: true };
     const fights = getCurrentFights(withPattern);
     // enter the names of fights 40 to 42 one by one

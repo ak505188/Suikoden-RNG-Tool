@@ -1,26 +1,25 @@
 import React, { useState } from 'react';
-import { withRouter } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Characters, Helpers } from 'suikoden-rng-lib';
 import { Container, Form } from 'semantic-ui-react';
 import { InputRNG, InputIterations } from 'shared/form/inputs';
+import { submitTo } from 'shared/form/submitTo';
 
-const StartingStatsForm = ({ history }) => {
+const StartingStatsForm = () => {
+  const history = useHistory();
   const [characters, setCharacters] = useState([]);
   const [startingLevel, setStartingLevel] = useState(1);
   const [levelsGained, setLevelsGained] = useState(1);
   const [rng, setRNG] = useState(Helpers.numToHexString(0x12));
   const [iterations, setIterations] = useState(1000);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const params = new URLSearchParams();
-    params.append('characters', characters);
-    params.append('rng', rng);
-    params.append('iterations', iterations);
-    params.append('startingLevel', startingLevel);
-    params.append('levelsGained', levelsGained);
-    history.push(`/stats/starting-stats/result?${params.toString()}`);
-  };
+  const handleSubmit = submitTo(history, '/stats/starting-stats/result', {
+    characters,
+    rng,
+    iterations,
+    startingLevel,
+    levelsGained,
+  });
 
   return (
     <Container textAlign="center">
@@ -55,10 +54,15 @@ const StartingStatsForm = ({ history }) => {
           min={1}
           max={98}
         />
-        <Form.Button type="submit" content="Generate Starting Stats" primary={true} />
+        <Form.Button
+          type="submit"
+          content="Generate Starting Stats"
+          primary={true}
+          disabled={characters.length === 0}
+        />
       </Form>
     </Container>
   );
 };
 
-export default withRouter(StartingStatsForm);
+export default StartingStatsForm;

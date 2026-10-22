@@ -1,0 +1,204 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { act, Simulate } from 'react-dom/test-utils';
+import { MemoryRouter } from 'react-router-dom';
+import { afterEach, describe, expect, test, vi } from 'vitest';
+import App from './App';
+import ErrorBoundary from './ErrorBoundary';
+
+const containers = [];
+afterEach(() => {
+  while (containers.length > 0) {
+    const container = containers.pop();
+    ReactDOM.unmountComponentAtNode(container);
+    container.remove();
+  }
+  vi.restoreAllMocks();
+});
+
+const render = (element) => {
+  const container = document.createElement('div');
+  document.body.appendChild(container);
+  containers.push(container);
+  vi.spyOn(console, 'error').mockImplementation(() => {}); // React logs what the boundary catches
+  act(() => {
+    ReactDOM.render(element, container);
+  });
+  return container;
+};
+
+const page = (url) =>
+  render(
+    <MemoryRouter initialEntries={[url]}>
+      <App />
+    </MemoryRouter>,
+  );
+
+const query = (params) => '?' + new URLSearchParams(params).toString();
+const BROKEN = "This link doesn't work";
+const CRASHED = 'Something went wrong';
+
+// Each result page: a link that works, and the links a form or a stale bookmark could leave
+const base = { rng: '0x12', iterations: 20 };
+const results = {
+  '/sequence/result': { good: base },
+  '/npc/result': { good: { ...base, npcs: 2 } },
+  '/stats/starting-stats/result': {
+    good: { ...base, characters: 'Cleo', startingLevel: 1, levelsGained: 1 },
+    bad: { ...base, characters: '', startingLevel: 1, levelsGained: 1 },
+    unknown: { ...base, characters: 'Nobody', startingLevel: 1, levelsGained: 1 },
+  },
+  '/stats/level-ups/result': {
+    good: { ...base, characters: 'Cleo', startingLevel: 1 },
+    bad: { ...base, characters: '', startingLevel: 1 },
+    unknown: { ...base, characters: 'Nobody', startingLevel: 1 },
+  },
+  '/encounters/result': {
+    good: { ...base, offset: 0, partylevel: 0, realistic: true, areas: 'Cave of the Past' },
+    bad: { ...base, offset: 0, partylevel: 0, realistic: true, areas: '' },
+    unknown: { ...base, areas: 'Nowhere' },
+  },
+  '/drops/result': {
+    good: { ...base, area: 'Cave of the Past', enemyGroup: 0 },
+    bad: { ...base, area: '', enemyGroup: 0 },
+    unknown: { ...base, area: 'Nowhere', enemyGroup: 0 },
+  },
+  '/runassist/result': {
+    good: { ...base, iterations: 2000, partylevel: 0, realistic: true, areas: 'Cave of the Past' },
+    bad: { ...base, partylevel: 0, realistic: true, areas: '' },
+    unknown: { ...base, areas: 'Nowhere' },
+  },
+  '/chinchironin/result': {
+    good: { ...base, frames_to_wait: 203, player: 'Tai Ho' },
+    bad: { ...base, frames_to_wait: 203, player: '' },
+    unknown: { ...base, frames_to_wait: 203, player: 'Nobody' },
+  },
+  '/assassin/result': { good: { rng: '0x12', range_start: 0, range_end: 20 } },
+  '/kaku/result': { good: { rng: '0x12', start_index: 0, frames: 20 } },
+};
+
+describe.each(Object.entries(results))('%s', (path, { good, bad, unknown }) => {
+  test('shows its result for a good link', () => {
+    const text = page(path + query(good)).textContent;
+    expect(text).not.toContain(BROKEN);
+    expect(text).not.toContain(CRASHED);
+  });
+
+  test('says the link is broken, instead of crashing, when it has no parameters at all', () => {
+    const text = page(path).textContent;
+    expect(text).toContain(BROKEN);
+    expect(text).not.toContain(CRASHED);
+  });
+
+  test('says the link is broken when a value is not a number', () => {
+    const text = page(path + query({ ...good, rng: 'soon' })).textContent;
+    expect(text).toContain(BROKEN);
+    expect(text).toContain('rng is not a number');
+  });
+
+  if (bad) {
+    test('says the link is broken when nothing was chosen', () => {
+      const text = page(path + query(bad)).textContent;
+      expect(text).toContain(BROKEN);
+      expect(text).not.toContain(CRASHED);
+    });
+  }
+
+  if (unknown) {
+    test('says the link is broken when it names something that does not exist', () => {
+      const text = page(path + query(unknown)).textContent;
+      expect(text).toContain(BROKEN);
+      expect(text).not.toContain(CRASHED);
+    });
+  }
+
+  test('offers a way back to the form', () => {
+    const container = page(path);
+    const back = [...container.querySelectorAll('a')].find((a) =>
+      /back to the form/i.test(a.textContent),
+    );
+    expect(back).toBeTruthy();
+  });
+});
+
+describe('ErrorBoundary', () => {
+  const Broken = () => {
+    throw new Error('this page broke');
+  };
+
+  test('shows the error instead of a blank page', () => {
+    const text = render(
+      <MemoryRouter>
+        <ErrorBoundary resetKey="a">
+          <Broken />
+        </ErrorBoundary>
+      </MemoryRouter>,
+    ).textContent;
+    expect(text).toContain(CRASHED);
+    expect(text).toContain('this page broke');
+  });
+
+  test('works again once the page changes', () => {
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    containers.push(container);
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    const show = (resetKey, child) =>
+      act(() => {
+        ReactDOM.render(
+          <MemoryRouter>
+            <ErrorBoundary resetKey={resetKey}>{child}</ErrorBoundary>
+          </MemoryRouter>,
+          container,
+        );
+      });
+
+    show('/a', <Broken />);
+    expect(container.textContent).toContain(CRASHED);
+    show('/b', <p>fine now</p>);
+    expect(container.textContent).toContain('fine now');
+  });
+});
+
+describe('forms that need a selection', () => {
+  const submit = (path) => {
+    const button = page(path).querySelector('button[type=submit]');
+    return button;
+  };
+
+  test.each(['/stats/starting-stats', '/stats/level-ups', '/encounters', '/runassist'])(
+    '%s keeps its submit button off until something is chosen',
+    (path) => {
+      expect(submit(path).disabled).toBe(true);
+    },
+  );
+
+  test.each(['/sequence', '/npc', '/drops', '/chinchironin', '/assassin', '/kaku'])(
+    '%s can be submitted straight away',
+    (path) => {
+      expect(submit(path).disabled).toBe(false);
+    },
+  );
+});
+
+describe('the Realistic Mode checkbox', () => {
+  // Clicking the label, as a person does: a click on the label itself, not on the input
+  const clickLabel = (container) => {
+    const label = container.querySelector('.ui.checkbox label');
+    act(() => {
+      Simulate.mouseDown(label);
+      Simulate.mouseUp(label);
+      Simulate.click(label);
+    });
+  };
+
+  test.each(['/encounters', '/runassist'])('%s: clicking its label unticks it', (path) => {
+    const container = page(path);
+    const input = container.querySelector('.ui.checkbox input');
+    expect(input.checked).toBe(true);
+    clickLabel(container);
+    expect(input.checked).toBe(false);
+    clickLabel(container);
+    expect(input.checked).toBe(true);
+  });
+});

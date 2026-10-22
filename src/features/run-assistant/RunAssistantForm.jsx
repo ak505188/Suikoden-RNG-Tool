@@ -1,89 +1,62 @@
-import * as React from 'react';
-import { withRouter } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Helpers } from 'suikoden-rng-lib';
-import { ENCOUNTER_AREAS, areaId } from 'shared/lib/encounters';
 import { Container, Form } from 'semantic-ui-react';
+import { InputIterations, InputPartyLevel, InputRNG } from 'shared/form/inputs';
+import { submitTo } from 'shared/form/submitTo';
+import { ENCOUNTER_AREAS, areaId } from 'shared/lib/encounters';
 
-class RunAssistantForm extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      rng: Helpers.numToHexString(0x12),
-      iterations: 1000,
-      partylevel: 0,
-      realistic: true,
-      areas: [],
-    };
-  }
+const RunAssistantForm = () => {
+  const history = useHistory();
+  const [rng, setRNG] = useState(Helpers.numToHexString(0x12));
+  const [iterations, setIterations] = useState(1000);
+  const [partylevel, setPartylevel] = useState(0);
+  const [realistic, setRealistic] = useState(true);
+  const [areas, setAreas] = useState([]);
 
-  handleInputChange = (_event, { checked, name, value }) => {
-    this.setState((prevState) => ({ ...prevState, [name]: checked || value }));
-  };
+  const handleSubmit = submitTo(history, '/runassist/result', {
+    rng,
+    iterations,
+    partylevel,
+    realistic,
+    areas,
+  });
 
-  handleAreaChange = (_event, data) => {
-    this.setState({ areas: data.value });
-  };
+  return (
+    <Container textAlign="center">
+      <Form size="large" onSubmit={handleSubmit}>
+        <InputRNG value={rng} onChange={(e) => setRNG(e.target.value)} />
+        <InputIterations value={iterations} onChange={(e) => setIterations(e.target.value)} />
+        <InputPartyLevel value={partylevel} onChange={(e) => setPartylevel(e.target.value)} />
+        <Form.Dropdown
+          label="Areas"
+          placeholder="Area"
+          options={ENCOUNTER_AREAS.map((area) => ({
+            key: areaId(area),
+            value: areaId(area),
+            text: area.name,
+          }))}
+          value={areas}
+          onChange={(_e, data) => setAreas(data.value)}
+          multiple={true}
+          search={true}
+          selection={true}
+        />
+        <Form.Checkbox
+          label="Realistic Mode"
+          name="realistic"
+          checked={realistic}
+          onChange={(_e, data) => setRealistic(data.checked)}
+        />
+        <Form.Button
+          type="submit"
+          content="Generate Encounters"
+          primary={true}
+          disabled={areas.length === 0}
+        />
+      </Form>
+    </Container>
+  );
+};
 
-  handleSubmit = (event) => {
-    event.preventDefault();
-    const params = new URLSearchParams();
-    Object.keys(this.state).forEach((key) => {
-      params.append(key, this.state[key]);
-    });
-    this.props.history.push(`/runassist/result?${params.toString()}`);
-  };
-
-  render() {
-    return (
-      <Container textAlign="center">
-        <Form size="large" onSubmit={this.handleSubmit}>
-          <Form.Input
-            label="Initial RNG Value"
-            name="rng"
-            type="text"
-            value={this.state.rng}
-            onChange={this.handleInputChange}
-          />
-          <Form.Input
-            label="Iterations"
-            name="iterations"
-            type="number"
-            step={500}
-            value={this.state.iterations}
-            onChange={this.handleInputChange}
-          />
-          <Form.Input
-            label="Party Level"
-            name="partylevel"
-            type="number"
-            value={this.state.partylevel}
-            onChange={this.handleInputChange}
-          />
-          <Form.Dropdown
-            label="Areas"
-            placeholder="Area"
-            options={ENCOUNTER_AREAS.map((area) => ({
-              key: areaId(area),
-              value: areaId(area),
-              text: area.name,
-            }))}
-            value={this.state.areas}
-            onChange={this.handleAreaChange}
-            multiple={true}
-            search={true}
-            selection={true}
-          />
-          <Form.Checkbox
-            label="Realistic Mode"
-            name="realistic"
-            checked={this.state.realistic}
-            onChange={this.handleInputChange}
-          />
-          <Form.Button type="submit" content="Generate Encounters" primary={true} />
-        </Form>
-      </Container>
-    );
-  }
-}
-
-export default withRouter(RunAssistantForm);
+export default RunAssistantForm;

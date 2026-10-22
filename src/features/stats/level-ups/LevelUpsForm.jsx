@@ -1,24 +1,23 @@
 import React, { useState } from 'react';
-import { withRouter } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Characters, Helpers } from 'suikoden-rng-lib';
 import { Container, Form } from 'semantic-ui-react';
 import { InputRNG } from 'shared/form/inputs';
+import { submitTo } from 'shared/form/submitTo';
 
-const LevelUpsForm = ({ history }) => {
+const LevelUpsForm = () => {
+  const history = useHistory();
   const [characters, setCharacters] = useState([]);
   const [startingLevel, setStartingLevel] = useState(1);
   const [rng, setRNG] = useState(Helpers.numToHexString(0x12));
   const [iterations, setIterations] = useState(10);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const params = new URLSearchParams();
-    params.append('characters', characters);
-    params.append('rng', rng);
-    params.append('iterations', iterations);
-    params.append('startingLevel', startingLevel);
-    history.push(`/stats/level-ups/result?${params.toString()}`);
-  };
+  const handleSubmit = submitTo(history, '/stats/level-ups/result', {
+    characters,
+    rng,
+    iterations,
+    startingLevel,
+  });
 
   return (
     <Container textAlign="center">
@@ -52,10 +51,15 @@ const LevelUpsForm = ({ history }) => {
           min={1}
           max={99}
         />
-        <Form.Button type="submit" content="Generate Level Ups" primary={true} />
+        <Form.Button
+          type="submit"
+          content="Generate Level Ups"
+          primary={true}
+          disabled={characters.length === 0}
+        />
       </Form>
     </Container>
   );
 };
 
-export default withRouter(LevelUpsForm);
+export default LevelUpsForm;

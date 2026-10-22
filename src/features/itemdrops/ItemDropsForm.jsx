@@ -1,26 +1,20 @@
 import React, { useState } from 'react';
-import { withRouter } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Container, Form } from 'semantic-ui-react';
 import { Helpers } from 'suikoden-rng-lib';
 import { formationName } from 'suikoden-rng-lib/encounters';
 import { InputRNG, InputIterations } from 'shared/form/inputs';
+import { submitTo } from 'shared/form/submitTo';
 import { FIGHT_AREAS, areaFormations, areaId, findAreaById } from 'shared/lib/encounters';
 
-const ItemDropsForm = ({ history }) => {
+const ItemDropsForm = () => {
+  const history = useHistory();
   const [rng, setRNG] = useState(Helpers.numToHexString(0x12));
   const [iterations, setIterations] = useState(1000);
   const [area, setArea] = useState('Cave of the Past');
   const [enemyGroup, setEnemyGroup] = useState(0);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const params = new URLSearchParams();
-    params.append('rng', rng);
-    params.append('iterations', iterations);
-    params.append('area', area);
-    params.append('enemyGroup', enemyGroup);
-    history.push(`/drops/result?${params.toString()}`);
-  };
+  const handleSubmit = submitTo(history, '/drops/result', { rng, iterations, area, enemyGroup });
 
   return (
     <Container textAlign="center">
@@ -62,4 +56,4 @@ const ItemDropsForm = ({ history }) => {
   );
 };
 
-export default withRouter(ItemDropsForm);
+export default ItemDropsForm;

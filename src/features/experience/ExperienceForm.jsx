@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { unstable_batchedUpdates } from 'react-dom';
-import { withRouter } from 'react-router-dom';
 import { Button, Checkbox, Container, Form } from 'semantic-ui-react';
 import { Characters } from 'suikoden-rng-lib';
 import { formationName } from 'suikoden-rng-lib/encounters';
@@ -286,4 +285,4 @@ const ExperienceForm = () => {
   );
 };
 
-export default withRouter(ExperienceForm);
+export default ExperienceForm;

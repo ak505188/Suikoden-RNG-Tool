@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { withRouter } from 'react-router-dom';
 import { Container, Form } from 'semantic-ui-react';
-import AssassinTable from './AssassinTable';
 import { RNG, simulateAssassinFight, characterLevelUps } from 'suikoden-rng-lib';
+import { int } from 'shared/lib/params';
+import { useQueryParams } from 'shared/lib/useQueryParams';
+import InvalidLink from 'shared/ui/InvalidLink';
+import AssassinTable from './AssassinTable';
 
 const KIRKIS_STARTING_STATS = {
   HP: 20,
@@ -14,16 +16,19 @@ const KIRKIS_STARTING_STATS = {
   LUK: 12,
 };
 
-const AssassinResult = ({ location }) => {
-  const params = new URLSearchParams(location.search);
-  const rng = new RNG(parseInt(params.get('rng')));
-  const rangeStart = parseInt(params.get('range_start'));
-  const rangeEnd = parseInt(params.get('range_end'));
+const SCHEMA = { rng: int(), range_start: int(), range_end: int() };
 
+const AssassinResult = () => {
+  const { params, problems } = useQueryParams(SCHEMA);
   const [heroArmor, setHeroArmor] = useState(80);
   const [dmg1, setDmg1] = useState(25);
   const [dmg2, setDmg2] = useState(25);
   const [kirkisHP, setKirkisHP] = useState(0);
+  if (problems.length > 0) return <InvalidLink problems={problems} formPath="/assassin" />;
+
+  const rng = new RNG(params.rng);
+  const rangeStart = params.range_start;
+  const rangeEnd = params.range_end;
 
   const sim_results = [];
 
@@ -111,4 +116,4 @@ const AssassinResult = ({ location }) => {
   );
 };
 
-export default withRouter(AssassinResult);
+export default AssassinResult;
