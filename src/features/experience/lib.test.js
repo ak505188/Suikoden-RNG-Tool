@@ -1,5 +1,12 @@
 import { describe, expect, test } from 'vitest';
-import { calculateLevels } from './lib';
+import {
+  calculateLevels,
+  clampNumber,
+  isValidPartySize,
+  normalizeImport,
+  parseLevel,
+  parsePartySize,
+} from './lib';
 
 const fight = (levels, party_size = 6, enabled = true) => ({
   enemy_group: { name: 'test', levels },
@@ -59,5 +66,54 @@ describe('calculateLevels', () => {
     );
     expect(first.characters.map((c) => c.level)).toEqual([10.15, 10]);
     expect(second.characters.map((c) => c.level)).toEqual([10.15, 10]);
+  });
+});
+
+describe('input normalization', () => {
+  test('clampNumber parses strings, clamps, and falls back on junk', () => {
+    expect(clampNumber('05', 1, 99, 1)).toBe(5);
+    expect(clampNumber('10.', 1, 99, 1)).toBe(10);
+    expect(clampNumber('120', 1, 99, 1)).toBe(99);
+    expect(clampNumber('0', 1, 99, 1)).toBe(1);
+    expect(clampNumber('', 1, 99, 7)).toBe(7);
+    expect(clampNumber('abc', 1, 99, 7)).toBe(7);
+  });
+
+  test('parseLevel keeps levels in range to the thousandth', () => {
+    expect(parseLevel('10.12345')).toBe(10.123);
+    expect(parseLevel('99.9')).toBe(99);
+    expect(parseLevel('')).toBe(1);
+    expect(typeof parseLevel('10')).toBe('number');
+  });
+
+  test('isValidPartySize accepts whole numbers 1-6 only', () => {
+    for (const ok of [1, 6, '3', '6']) expect(isValidPartySize(ok)).toBe(true);
+    for (const bad of ['', '0', 0, 7, '2.5', 'abc', null, undefined, -1]) {
+      expect(isValidPartySize(bad)).toBe(false);
+    }
+  });
+
+  test('parsePartySize clamps to a whole number 1-6', () => {
+    expect(parsePartySize('4')).toBe(4);
+    expect(parsePartySize('9')).toBe(6);
+    expect(parsePartySize('0')).toBe(1);
+    expect(parsePartySize('')).toBe(6);
+  });
+
+  test('normalizeImport turns string levels and party sizes from old exports into numbers', () => {
+    const imported = normalizeImport({
+      characters: [{ name: 'A', level: '10' }],
+      fights: [{ ...fight([12], '6') }],
+      disabled_characters: [[]],
+    });
+    expect(imported.characters[0].level).toBe(10);
+    expect(imported.fights[0].party_size).toBe(6);
+    expect(imported.disabled_characters).toEqual([[]]);
+    const [result] = calculateLevels(
+      imported.characters,
+      imported.fights,
+      imported.disabled_characters,
+    );
+    expect(result.characters[0].level).toBe(10.15);
   });
 });

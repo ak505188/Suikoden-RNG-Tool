@@ -11,7 +11,7 @@ import {
   TableCell,
 } from 'semantic-ui-react';
 import ExportModal from 'shared/table/export-modal';
-import { calculateLevels } from './lib';
+import { calculateLevels, isValidPartySize, parseLevel } from './lib';
 
 const ExperienceContainer = ({
   characters,
@@ -112,9 +112,8 @@ const ExperienceContainer = ({
   };
 
   // --- Character level / remove ---
-  const changeCharacterLevel = (level, index) => {
-    if (level.isNaN || level < 1) level = 1;
-    if (level > 99) level = 99;
+  const changeCharacterLevel = (value, index) => {
+    const level = parseLevel(value);
     const new_characters = [
       ...characters.slice(0, index),
       { ...characters[index], level },
@@ -128,8 +127,8 @@ const ExperienceContainer = ({
   };
 
   const changeFightPartySize = (party_size, index) => {
-    if (party_size < 1 || party_size > 6) return;
-    const new_fight = { ...fights[index], party_size: parseInt(party_size) };
+    if (!isValidPartySize(party_size)) return;
+    const new_fight = { ...fights[index], party_size: Number(party_size) };
     changeFight(new_fight, index);
   };
 

@@ -5,6 +5,7 @@ import { Characters } from 'suikoden-rng-lib';
 import ImportModal from 'shared/ui/ImportModal';
 
 import ExperienceResult from './ExperienceResult';
+import { MAX_PARTY_SIZE, MIN_PARTY_SIZE, isValidPartySize, normalizeImport } from './lib';
 import './Experience.scss';
 
 const ExperienceForm = ({ areas }) => {
@@ -16,11 +17,13 @@ const ExperienceForm = ({ areas }) => {
   const [partySize, setPartySize] = useState(6);
   const [disabledCharacters, setDisabledCharacters] = useState([]);
 
+  const partySizeValid = isValidPartySize(partySize);
   const selected_character_names = characters.map((character) => character.name);
 
   const changeCharacters = (chars) => setCharacters(chars);
 
-  const importData = (data) => {
+  const importData = (imported) => {
+    const data = normalizeImport(imported);
     setCharacters(data.characters);
     setDisabledCharacters(data.disabled_characters);
     // Fights has to be set last, so you don't error calculating results.
@@ -35,6 +38,7 @@ const ExperienceForm = ({ areas }) => {
   };
 
   const addFight = () => {
+    if (!partySizeValid) return;
     const group = areas[area].encounterTable[enemyGroup];
     const enemy_group = {
       name: group.name,
@@ -42,7 +46,7 @@ const ExperienceForm = ({ areas }) => {
     };
     const fight = {
       enemy_group,
-      party_size: partySize,
+      party_size: Number(partySize),
       enabled: true,
     };
     setFights([...fights, fight]);
@@ -146,22 +150,34 @@ const ExperienceForm = ({ areas }) => {
           label="Party Size"
           type="number"
           value={partySize}
-          min={1}
-          max={6}
+          min={MIN_PARTY_SIZE}
+          max={MAX_PARTY_SIZE}
           step={1}
+          error={
+            !partySizeValid && {
+              content: `Party size must be ${MIN_PARTY_SIZE}–${MAX_PARTY_SIZE}`,
+              pointing: 'above',
+            }
+          }
           onChange={(e) => setPartySize(e.target.value)}
         />
         <Form.Group>
           <Form.Button
             type="submit"
             content="Generate EXP Table"
+            disabled={!partySizeValid}
             onClick={() => {
               addCharacters();
               addFight();
             }}
             primary={true}
           />
-          <Form.Button content="Add Fight" primary={true} onClick={addFight} />
+          <Form.Button
+            content="Add Fight"
+            primary={true}
+            disabled={!partySizeValid}
+            onClick={addFight}
+          />
           <Form.Button
             content="Add Characters"
             onClick={() => {
