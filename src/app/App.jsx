@@ -42,8 +42,8 @@ const App = () => {
       <Route path="/sequence/result" exact={true} component={SequenceResult} />
       <Route path="/npc" exact={true} component={NPCForm} />
       <Route path="/npc/result" exact={true} component={NPCResult} />
-      <Route path="/drops" exact={true} render={() => <ItemDropsForm areas={Areas} />} />
-      <Route path="/drops/result" exact={true} render={() => <ItemDropsResult areas={Areas} />} />
+      <Route path="/drops" exact={true} render={() => <ItemDropsForm />} />
+      <Route path="/drops/result" exact={true} render={() => <ItemDropsResult />} />
       <Route path="/rngfinder" render={() => <RNGFinder areas={Areas} />} />
       <Route path="/experience" exact={true} render={() => <Experience areas={Areas} />} />
       <Route path="/runassist" exact={true} render={() => <RunAssistantForm areas={Areas} />} />

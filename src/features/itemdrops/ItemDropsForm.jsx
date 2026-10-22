@@ -3,8 +3,15 @@ import { withRouter } from 'react-router-dom';
 import { Container, Form } from 'semantic-ui-react';
 import { Helpers } from 'suikoden-rng-lib';
 import { InputRNG, InputIterations } from 'shared/form/inputs';
+import {
+  FIGHT_AREAS,
+  areaFormations,
+  areaId,
+  findAreaById,
+  formationName,
+} from 'shared/lib/encounters';
 
-const ItemDropsForm = ({ areas, history }) => {
+const ItemDropsForm = ({ history }) => {
   const [rng, setRNG] = useState(Helpers.numToHexString(0x12));
   const [iterations, setIterations] = useState(1000);
   const [area, setArea] = useState('Cave of the Past');
@@ -28,23 +35,26 @@ const ItemDropsForm = ({ areas, history }) => {
         <Form.Dropdown
           label="Area"
           placeholder="Area"
-          options={Object.keys(areas).map((name) => ({
-            key: name,
-            value: name,
-            text: areas[name].name,
+          options={FIGHT_AREAS.map((a) => ({
+            key: areaId(a),
+            value: areaId(a),
+            text: a.name,
           }))}
           value={area}
-          onChange={(_e, data) => setArea(data.value)}
+          onChange={(_e, data) => {
+            setArea(data.value);
+            setEnemyGroup(0);
+          }}
           search={true}
           selection={true}
         />
         <Form.Dropdown
           label="Enemy Group"
           placeholder="Enemy Group"
-          options={areas[area].encounterTable.map((group, index) => ({
-            key: group.name,
+          options={areaFormations(findAreaById(area)).map(({ formation }, index) => ({
+            key: index,
             value: index,
-            text: group.name,
+            text: formationName(formation),
           }))}
           value={enemyGroup}
           onChange={(_e, data) => setEnemyGroup(data.value)}
