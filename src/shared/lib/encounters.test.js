@@ -5,6 +5,7 @@ import {
   areaFormations,
   areaId,
   findAreaById,
+  formationLevels,
   formationName,
 } from './encounters';
 import { itemName } from './items';
@@ -60,5 +61,24 @@ describe('itemName', () => {
 
   test('no item is an empty string', () => {
     expect(itemName(null)).toBe('');
+  });
+});
+
+describe('formationLevels', () => {
+  test('one level per enemy, in slot order', () => {
+    const levels = formationLevels(['BANSHEE', null, 'BANSHEE', null, 'CLAY_DOLL']);
+    expect(levels).toHaveLength(3);
+    expect(levels.every((level) => Number.isInteger(level) && level > 0)).toBe(true);
+    expect(levels[0]).toBe(levels[1]);
+  });
+
+  test('every formation in every area has a level for each enemy', () => {
+    for (const area of FIGHT_AREAS) {
+      for (const { formation } of areaFormations(area)) {
+        const levels = formationLevels(formation);
+        expect(levels.length).toBeGreaterThan(0);
+        expect(levels.every((level) => level > 0)).toBe(true);
+      }
+    }
   });
 });

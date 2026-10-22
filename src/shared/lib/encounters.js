@@ -34,6 +34,12 @@ export function formationName(formation) {
 }
 
 /**
+ * The level of each enemy in a formation, in slot order.
+ * @param {import('suikoden-rng-lib/encounters').Formation} formation
+ */
+export const formationLevels = (formation) => formationEnemies(formation).map((enemy) => enemy.LVL);
+
+/**
  * Every fight formation in an area: the random encounters in table order, then the scripted ones.
  * A formation's position here is what URLs and dropdowns use as its group index.
  * @param {import('suikoden-rng-lib/encounters').AreaData} area

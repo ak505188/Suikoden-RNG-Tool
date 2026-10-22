@@ -2,13 +2,21 @@ import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Button, Container, Form } from 'semantic-ui-react';
 import { Characters } from 'suikoden-rng-lib';
+import {
+  FIGHT_AREAS,
+  areaFormations,
+  areaId,
+  findAreaById,
+  formationLevels,
+  formationName,
+} from 'shared/lib/encounters';
 import ImportModal from 'shared/ui/ImportModal';
 
 import ExperienceResult from './ExperienceResult';
 import { MAX_PARTY_SIZE, MIN_PARTY_SIZE, isValidPartySize, normalizeImport } from './lib';
 import './Experience.scss';
 
-const ExperienceForm = ({ areas }) => {
+const ExperienceForm = () => {
   const [characters, setCharacters] = useState([]);
   const [selectedCharacters, setSelectedCharacters] = useState([]);
   const [area, setArea] = useState('Cave of the Past');
@@ -39,10 +47,10 @@ const ExperienceForm = ({ areas }) => {
 
   const addFight = () => {
     if (!partySizeValid) return;
-    const group = areas[area].encounterTable[enemyGroup];
+    const { formation } = areaFormations(findAreaById(area))[enemyGroup];
     const enemy_group = {
-      name: group.name,
-      levels: group.enemies.map((enemy) => enemy.stats.lvl),
+      name: formationName(formation),
+      levels: formationLevels(formation),
     };
     const fight = {
       enemy_group,
@@ -122,13 +130,16 @@ const ExperienceForm = ({ areas }) => {
         <Form.Dropdown
           label="Areas"
           placeholder="Area"
-          options={Object.keys(areas).map((name) => ({
-            key: name,
-            value: name,
-            text: areas[name].name,
+          options={FIGHT_AREAS.map((a) => ({
+            key: areaId(a),
+            value: areaId(a),
+            text: a.name,
           }))}
           value={area}
-          onChange={(_e, data) => setArea(data.value)}
+          onChange={(_e, data) => {
+            setArea(data.value);
+            setEnemyGroup(0);
+          }}
           multiple={false}
           search={true}
           selection={true}
@@ -136,10 +147,10 @@ const ExperienceForm = ({ areas }) => {
         <Form.Dropdown
           label="Enemy Group"
           placeholder="Enemy Group"
-          options={areas[area].encounterTable.map((group, index) => ({
-            key: `${group.name}-${index}`,
+          options={areaFormations(findAreaById(area)).map(({ formation, scripted }, index) => ({
+            key: index,
             value: index,
-            text: group.name,
+            text: formationName(formation) + (scripted ? ' (scripted)' : ''),
           }))}
           value={enemyGroup}
           onChange={(_e, data) => setEnemyGroup(data.value)}
