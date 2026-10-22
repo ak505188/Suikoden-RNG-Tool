@@ -2,21 +2,33 @@ import * as React from 'react';
 import { Button, Container, Progress, Segment, Table } from 'semantic-ui-react';
 import { formatPair } from './rngPair';
 
-const Matches = ({ matches, done }) => (
+const heading = ({ count, done, stopped, limitReached }) => {
+  const matches = `${count} ${count === 1 ? 'match' : 'matches'}`;
+  if (stopped) return `${matches} found before stopping`;
+  if (!done) return `${matches} so far`;
+  if (limitReached) return `${matches} (limit reached; a longer sequence gives fewer)`;
+  return matches;
+};
+
+const Matches = ({ matches, done, stopped, limitReached }) => (
   <Segment>
     <p>
-      {matches.length} {matches.length === 1 ? 'match' : 'matches'}
-      {done ? '' : ' so far'}
+      {heading({ count: matches.length, done, stopped, limitReached })}
+      {matches.length > 0 && (
+        <span style={{ color: 'rgba(0, 0, 0, 0.55)' }}>
+          {' · '}Each result is two equivalent RNG values: the game ignores the top bit.
+        </span>
+      )}
     </p>
     {matches.length > 0 && (
       <div style={{ maxHeight: '22rem', overflowY: 'auto' }}>
-        <Table compact basic="very" textAlign="center">
+      <Table compact basic="very" textAlign="center">
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>#</Table.HeaderCell>
               <Table.HeaderCell>First Battle RNG</Table.HeaderCell>
               <Table.HeaderCell>First Possible RNG</Table.HeaderCell>
-              <Table.HeaderCell>Gap</Table.HeaderCell>
+              <Table.HeaderCell>Gap Between Battles</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
           <Table.Body>
@@ -35,30 +47,10 @@ const Matches = ({ matches, done }) => (
   </Segment>
 );
 
-const RNGFinderStatus = ({
-  cancel,
-  message,
-  progress,
-  done,
-  result,
-  matches,
-  findAll,
-  running,
-}) => (
+const RNGFinderStatus = ({ cancel, progress, done, stopped, limitReached, matches, running }) => (
   <Container textAlign="center">
-    {findAll ? (
-      <Matches matches={matches ?? []} done={done} />
-    ) : (
-      result && (
-        <Segment>
-          <p>First Battle RNG: {formatPair(result.foundEncounterRNG)}</p>
-          <p>
-            First Possible RNG: {formatPair(result.firstPossibleRNG)} (gap of {result.gap})
-          </p>
-        </Segment>
-      )
-    )}
-    <Progress percent={done ? 100 : progress} progress={true} indicating={true} label={message} />
+    <Matches matches={matches ?? []} done={done} stopped={stopped} limitReached={limitReached} />
+    <Progress percent={done && !stopped ? 100 : progress} progress={true} indicating={true} />
     <Button
       type="button"
       onClick={cancel}

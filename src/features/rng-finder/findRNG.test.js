@@ -11,6 +11,7 @@ import { findFirstPossible, findRNG, tablesFor } from './findRNG';
 import { twinOf } from './rngPair';
 
 const BUFFER = 0xffff; // fights findRNG collects before it searches them
+const STEPS = 5_000_000; // enough for two buffers (about 3% of RNG steps start a battle here)
 
 // Every place `wanted` occurs in `ids` (matches may overlap), in order
 const occurrences = (ids, wanted) =>
@@ -19,9 +20,28 @@ const occurrences = (ids, wanted) =>
   );
 const firstOccurrence = (ids, wanted) => occurrences(ids, wanted)[0];
 
-// Every battle value from the seed, whatever the mode: the first possible RNG for a match comes
-// from the last of these before it
-const battlesOf = (area) => generateEncounters(new RNG(0x12), area, { iterations: 5_000_000 });
+// The first `count` fights a player gets standing on `raw`, worked out step by step with the
+// lib's own checks: the first battle value, its group, the call the group uses, and on
+const sequenceFrom = (area, raw, count) => {
+  const rng = new RNG(raw);
+  const groups = [];
+  while (groups.length < count) {
+    if (isBattle(rng, area)) {
+      groups.push(encounterIndex(rng, area));
+      rng.next(); // spent on the group
+    }
+    rng.next();
+  }
+  return groups;
+};
+
+// Every RNG value in `battles` (all the battle values, in order) where a player gets `wanted`
+// as their first fights. The first fight can be any battle value: the player may start on it.
+const trueStarts = (area, wanted, battles) =>
+  battles
+    .filter((battle) => battle.encounterIndex === wanted[0]) // cheap first look
+    .filter((battle) => sequenceFrom(area, battle.startRNG, wanted.length).join() === wanted.join())
+    .map((battle) => battle.startRNG);
 
 // The call after the battle before `matchRaw`, and the values between them
 const expectedFirstPossible = (battles, matchRaw) => {
@@ -33,163 +53,136 @@ const expectedFirstPossible = (battles, matchRaw) => {
   };
 };
 
-let allBattles;
-
-describe.each([false, true])('findRNG (realistic: %s)', (realistic) => {
-  let area, fights, ids;
+describe('findRNG', () => {
+  let area, allBattles, fights, ids;
   beforeAll(() => {
     area = ENCOUNTER_AREAS.find((a) => a.name === 'Moravia Area');
-    allBattles = allBattles ?? battlesOf(area);
-    // The fights the game would produce from this seed. Enough for findRNG to fill its buffer
-    // twice (about 3% of RNG steps start a battle here).
-    fights = generateEncounters(new RNG(0x12), area, { iterations: 5_000_000, realistic });
+    // Every battle value from the seed
+    allBattles = generateEncounters(new RNG(0x12), area, { iterations: STEPS });
+    // The fights a player walking from the seed would get, one after another
+    fights = generateEncounters(new RNG(0x12), area, { iterations: STEPS, realistic: true });
     ids = fights.map((fight) => fight.encounterIndex);
     expect(fights.length).toBeGreaterThan(BUFFER * 2);
   });
 
+  const first = { maxMatches: 1 };
+
   test('finds the RNG a run of fights started at', () => {
     const wanted = ids.slice(30000, 30010);
-    const first = firstOccurrence(ids, wanted);
-    expect(first).toBeLessThan(BUFFER);
+    const at = firstOccurrence(ids, wanted);
+    expect(at).toBeLessThan(BUFFER);
 
-    expect(findRNG(area, wanted, 0x12, () => {}, { realistic })[0].foundEncounterRNG).toBe(
-      fights[first].startRNG,
+    expect(findRNG(area, wanted, 0x12, () => {}, first)[0].foundEncounterRNG).toBe(
+      fights[at].startRNG,
     );
   });
 
   test('finds a run that straddles the end of a full buffer', () => {
     const wanted = ids.slice(BUFFER - 5, BUFFER + 6);
-    const first = firstOccurrence(ids, wanted);
-    expect(first).toBe(BUFFER - 5); // the first place it occurs is the one that straddles
+    const at = firstOccurrence(ids, wanted);
+    expect(at).toBe(BUFFER - 5); // the first place it occurs is the one that straddles
 
-    expect(findRNG(area, wanted, 0x12, () => {}, { realistic })[0].foundEncounterRNG).toBe(
-      fights[first].startRNG,
+    expect(findRNG(area, wanted, 0x12, () => {}, first)[0].foundEncounterRNG).toBe(
+      fights[at].startRNG,
     );
   });
 
   test('reports the first possible RNG and the gap before the match', () => {
     const wanted = ids.slice(30000, 30010);
-    const first = firstOccurrence(ids, wanted);
+    const at = firstOccurrence(ids, wanted);
     const updates = [];
-    findRNG(area, wanted, 0x12, (status) => updates.push(status), { realistic });
+    findRNG(area, wanted, 0x12, (status) => updates.push(status), first);
 
-    const { result } = updates.find((status) => status.result);
-    expect(result.foundEncounterRNG).toBe(fights[first].startRNG);
-    expect({ rng: result.firstPossibleRNG, gap: result.gap }).toEqual(
-      expectedFirstPossible(allBattles, fights[first].startRNG),
+    const [match] = updates[updates.length - 1].matches;
+    expect(match.foundEncounterRNG).toBe(fights[at].startRNG);
+    expect({ rng: match.firstPossibleRNG, gap: match.gap }).toEqual(
+      expectedFirstPossible(allBattles, fights[at].startRNG),
     );
   });
 
-  test('finding the first match returns just that one', () => {
+  test('with maxMatches of 1 it stops at the first match', () => {
     const wanted = ids.slice(30000, 30010);
-    const matches = findRNG(area, wanted, 0x12, () => {}, { realistic });
-    expect(matches).toHaveLength(1);
+    expect(findRNG(area, wanted, 0x12, () => {}, first)).toHaveLength(1);
   });
 
-  test('find all gives every match, in order, with the same details as a single search', () => {
-    const wanted = ids.slice(30000, 30003); // short enough to occur many times
-    const starts = occurrences(ids, wanted).filter((start) => start < BUFFER - wanted.length);
-    expect(starts.length).toBeGreaterThan(5);
-
-    const matches = findRNG(area, wanted, 0x12, () => {}, {
-      realistic,
-      findAll: true,
-      maxMatches: 5,
+  test('matches go out through the progress callback as they are found', () => {
+    const wanted = ids.slice(30000, 30003); // occurs many times over two buffers
+    const updates = [];
+    const matches = findRNG(area, wanted, 0x12, (status) => updates.push(status), {
+      maxSteps: 4_500_000,
     });
-    expect(matches.map((m) => m.foundEncounterRNG)).toEqual(
-      starts.slice(0, 5).map((start) => fights[start].startRNG),
-    );
-    // each match carries the same first possible RNG a search for just that one would give
-    for (const match of matches) {
-      expect(match).toEqual({
-        foundEncounterRNG: match.foundEncounterRNG,
-        ...findFirstPossible(area, match.foundEncounterRNG),
-      });
-    }
+    const counts = updates.map((status) => status.matches.length);
+    expect(matches.length).toBeGreaterThan(10);
+    expect(counts[counts.length - 1]).toBe(matches.length);
+    expect(counts).toEqual([...counts].sort((a, b) => a - b)); // never goes down
+    expect(counts.some((count) => count > 0 && count < matches.length)).toBe(true); // in stages
+    // each update has its own copy of the list
+    expect(updates[0].matches).not.toBe(updates[updates.length - 1].matches);
   });
 
-  // The second buffer starts with the last wanted.length - 1 battles of the first, so it can see
-  // up to this far
-  const lastStartSeen = (length) => 2 * BUFFER - 2 * length + 1;
-
-  test('find all finds a match across the buffer boundary', () => {
-    const wanted = ids.slice(BUFFER - 3, BUFFER + 3);
-    const starts = occurrences(ids, wanted).filter((start) => start <= lastStartSeen(6));
-    expect(starts).toContain(BUFFER - 3);
-
-    const matches = findRNG(area, wanted, 0x12, () => {}, {
-      realistic,
-      findAll: true,
-      maxMatches: starts.length,
-    });
-    expect(matches.map((m) => m.foundEncounterRNG)).toEqual(
-      starts.map((start) => fights[start].startRNG),
-    );
-  });
-
-  test('find all reports a match that ends exactly at the end of a buffer only once', () => {
-    // Found in the first buffer; if the second kept all of it, it would be found there again
-    const wanted = ids.slice(BUFFER - 6, BUFFER);
-    const starts = occurrences(ids, wanted).filter((start) => start <= lastStartSeen(6));
-    expect(starts).toContain(BUFFER - 6);
-
-    const matches = findRNG(area, wanted, 0x12, () => {}, {
-      realistic,
-      findAll: true,
-      maxMatches: starts.length + 1, // room for a duplicate, if there were one
-    });
-    // it carries on until it finds one more, genuine, match (or reaches maxMatches)
-    expect(matches.slice(0, starts.length).map((m) => m.foundEncounterRNG)).toEqual(
-      starts.map((start) => fights[start].startRNG),
-    );
-    expect(new Set(matches.map((m) => m.foundEncounterRNG)).size).toBe(matches.length);
-  });
-
-  test('find all stops at maxMatches and says so', () => {
+  test('progress is a whole percent that only goes up, and ends at 100', () => {
     const wanted = ids.slice(30000, 30003);
     const updates = [];
-    findRNG(area, wanted, 0x12, (status) => updates.push(status), {
-      realistic,
-      findAll: true,
-      maxMatches: 3,
-    });
+    findRNG(area, wanted, 0x12, (status) => updates.push(status), { maxSteps: 4_500_000 });
+
+    const progress = updates.map((status) => status.progress);
+    expect(progress.every((p) => Number.isInteger(p) && p >= 0 && p <= 100)).toBe(true);
+    expect(progress).toEqual([...progress].sort((a, b) => a - b));
+    expect(progress[progress.length - 1]).toBe(100);
+    expect(new Set(progress).size).toBeGreaterThan(50); // it really does move in small steps
+  });
+
+  test('stops at maxMatches and flags that the limit was reached', () => {
+    const wanted = ids.slice(30000, 30003);
+    const updates = [];
+    findRNG(area, wanted, 0x12, (status) => updates.push(status), { maxMatches: 3 });
     const last = updates[updates.length - 1];
     expect(last.done).toBe(true);
     expect(last.matches).toHaveLength(3);
-    expect(last.message).toMatch(/Stopped at 3 matches/);
+    expect(last.limitReached).toBe(true);
   });
 
-  test('searches the last, part-filled buffer too', () => {
-    // Steps run out when the second buffer is only partly full. A run of fights at the very end
-    // of those steps is only in that part-filled buffer.
-    const maxSteps = 2_500_000;
-    const seen = generateEncounters(new RNG(0x12), area, { iterations: maxSteps, realistic });
-    const seenIds = seen.map((fight) => fight.encounterIndex);
-    expect(seen.length).toBeGreaterThan(BUFFER + 100);
-    expect(seen.length).toBeLessThan(BUFFER * 2 - 100);
+  describe('against a step-by-step search from every battle value', () => {
+    // The search must find exactly the places a player gets the fights, in order, however the
+    // buffers and the skipped battle values fall
+    const searchAll = (wanted) =>
+      findRNG(area, wanted, 0x12, () => {}, { maxSteps: STEPS, maxMatches: 1e9 });
 
-    const wanted = seenIds.slice(-8);
-    const first = firstOccurrence(seenIds, wanted);
-    expect(first).toBeGreaterThan(BUFFER); // not in the first, full buffer
+    test('a sequence that comes up many times', () => {
+      const wanted = ids.slice(30000, 30003);
+      const expected = trueStarts(area, wanted, allBattles);
+      expect(expected.length).toBeGreaterThan(20);
+      expect(searchAll(wanted).map((m) => m.foundEncounterRNG)).toEqual(expected);
+    });
 
-    const matches = findRNG(area, wanted, 0x12, () => {}, { realistic, maxSteps });
-    expect(matches.map((m) => m.foundEncounterRNG)).toEqual([seen[first].startRNG]);
+    test('a sequence that starts on a battle value the game would have spent on a group', () => {
+      // a battle value right after a battle that does count: the first fight can still be there
+      const chain = new Set(fights.map((fight) => fight.startRNG));
+      const skipped = allBattles.find((battle, i) => i > 1000 && !chain.has(battle.startRNG));
+      const wanted = sequenceFrom(area, skipped.startRNG, 4);
+      const expected = trueStarts(area, wanted, allBattles);
+      expect(expected).toContain(skipped.startRNG);
+
+      const matches = searchAll(wanted);
+      expect(matches.map((m) => m.foundEncounterRNG)).toEqual(expected);
+
+      // standing right on it, with the battle before it already behind you
+      const match = matches.find((m) => m.foundEncounterRNG === skipped.startRNG);
+      expect(match.gap).toBe(0);
+      expect(match.firstPossibleRNG).toBe(skipped.startRNG);
+    });
   });
 
   // maxSteps ends the scan just after the battle at fights[i]
-  const stepsThrough = (i) => fights[i].index + (realistic ? 2 : 1);
+  const stepsThrough = (i) => fights[i].index + 2;
 
   test('a match that starts before the end of the steps is found even though it finishes after', () => {
     const k = 30000;
     const wanted = ids.slice(k, k + 6);
-    const first = firstOccurrence(ids, wanted);
-    expect(first).toBe(k); // unique, so the only place to look
+    expect(firstOccurrence(ids, wanted)).toBe(k); // unique, so the only place to look
 
     // the steps end after the third of its six battles
-    const matches = findRNG(area, wanted, 0x12, () => {}, {
-      realistic,
-      maxSteps: stepsThrough(k + 2),
-    });
+    const matches = findRNG(area, wanted, 0x12, () => {}, { maxSteps: stepsThrough(k + 2) });
     expect(matches.map((m) => m.foundEncounterRNG)).toEqual([fights[k].startRNG]);
   });
 
@@ -199,10 +192,7 @@ describe.each([false, true])('findRNG (realistic: %s)', (realistic) => {
     expect(firstOccurrence(ids, wanted)).toBe(k + 3);
 
     // the steps end after battle k + 2: the match starts with battle k + 3
-    const matches = findRNG(area, wanted, 0x12, () => {}, {
-      realistic,
-      maxSteps: stepsThrough(k + 2),
-    });
+    const matches = findRNG(area, wanted, 0x12, () => {}, { maxSteps: stepsThrough(k + 2) });
     expect(matches).toEqual([]);
   });
 
@@ -211,8 +201,25 @@ describe.each([false, true])('findRNG (realistic: %s)', (realistic) => {
     const wanted = ids.slice(k, k + 6);
     expect(firstOccurrence(ids, wanted)).toBe(k);
 
-    const matches = findRNG(area, wanted, 0x12, () => {}, { realistic, maxSteps: stepsThrough(k) });
+    const matches = findRNG(area, wanted, 0x12, () => {}, { maxSteps: stepsThrough(k) });
     expect(matches.map((m) => m.foundEncounterRNG)).toEqual([fights[k].startRNG]);
+  });
+
+  test('searches the last, part-filled buffer too', () => {
+    // Steps run out when the second buffer is only partly full. A run of fights at the very end
+    // of those steps is only in that part-filled buffer.
+    const maxSteps = 2_500_000;
+    const seen = generateEncounters(new RNG(0x12), area, { iterations: maxSteps, realistic: true });
+    const seenIds = seen.map((fight) => fight.encounterIndex);
+    expect(seen.length).toBeGreaterThan(BUFFER + 100);
+    expect(seen.length).toBeLessThan(BUFFER * 2 - 100);
+
+    const wanted = seenIds.slice(-8);
+    const at = firstOccurrence(seenIds, wanted);
+    expect(at).toBeGreaterThan(BUFFER); // not in the first, full buffer
+
+    const matches = findRNG(area, wanted, 0x12, () => {}, { maxSteps });
+    expect(matches.map((m) => m.foundEncounterRNG)).toEqual([seen[at].startRNG]);
   });
 });
 
@@ -254,18 +261,6 @@ describe('findFirstPossible', () => {
 });
 
 describe('findRNG', () => {
-  test('realistic mode skips the battle value right after a battle', () => {
-    const area = ENCOUNTER_AREAS.find((a) => a.name === 'Moravia Area');
-    const options = { iterations: 2_000_000 };
-    const plain = generateEncounters(new RNG(0x12), area, options);
-    const realistic = generateEncounters(new RNG(0x12), area, { ...options, realistic: true });
-    expect(realistic.length).toBeLessThan(plain.length);
-    // no two battles in the realistic list are one RNG call apart
-    for (let i = 1; i < realistic.length; i++) {
-      expect(realistic[i].index - realistic[i - 1].index).toBeGreaterThan(1);
-    }
-  });
-
   test('needs at least two fights to go on', () => {
     expect(findRNG(ENCOUNTER_AREAS[0], [3], 0x12, () => {})).toEqual([]);
   });
@@ -319,15 +314,13 @@ describe('tablesFor', () => {
 describe('a half search', () => {
   test('finds each match once, and the twin of each match plays out the same fights', () => {
     const area = ENCOUNTER_AREAS.find((a) => a.name === 'Cave of the Past');
-    const realistic = true;
-    const seen = generateEncounters(new RNG(0x12), area, { iterations: 5_000_000, realistic });
+    const seen = generateEncounters(new RNG(0x12), area, {
+      iterations: 5_000_000,
+      realistic: true,
+    });
     const wanted = seen.slice(1500, 1506).map((fight) => fight.encounterIndex);
 
-    const matches = findRNG(area, wanted, 0x12, () => {}, {
-      realistic,
-      findAll: true,
-      maxMatches: 1e9,
-    });
+    const matches = findRNG(area, wanted, 0x12, () => {}, { maxMatches: 1e9 });
     expect(matches.length).toBeGreaterThan(1);
     expect(new Set(matches.map((m) => m.foundEncounterRNG)).size).toBe(matches.length);
     // no match is the twin of another: each pair is reported once
@@ -336,7 +329,10 @@ describe('a half search', () => {
 
     for (const m of matches) {
       for (const raw of [m.foundEncounterRNG, twinOf(m.foundEncounterRNG)]) {
-        const fights = generateEncounters(new RNG(raw), area, { iterations: 200_000, realistic });
+        const fights = generateEncounters(new RNG(raw), area, {
+          iterations: 200_000,
+          realistic: true,
+        });
         expect(fights[0].startRNG).toBe(raw);
         expect(fights.slice(0, wanted.length).map((f) => f.encounterIndex)).toEqual(wanted);
       }
