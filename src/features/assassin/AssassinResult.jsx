@@ -1,21 +1,15 @@
 import React, { useState } from 'react';
 import { Container, Form } from 'semantic-ui-react';
-import { RNG, simulateAssassinFight, characterLevelUps } from 'suikoden-rng-lib';
+import { RNG, simulateAssassinFight } from 'suikoden-rng-lib';
+import { CHARACTER_KEYS, Character } from 'suikoden-rng-lib/battle';
 import DraftNumberInput from 'shared/form/DraftNumberInput';
 import { int } from 'shared/lib/params';
 import { useQueryParams } from 'shared/lib/useQueryParams';
 import InvalidLink from 'shared/ui/InvalidLink';
 import AssassinTable from './AssassinTable';
 
-const KIRKIS_STARTING_STATS = {
-  HP: 20,
-  PWR: 13,
-  SKL: 21,
-  DEF: 12,
-  SPD: 11,
-  MGC: 10,
-  LUK: 12,
-};
+// Kirkis joins at level 1 and levels up to 15 over the course of the fight
+const KIRKIS_LEVELS_GAINED = 14;
 
 const SCHEMA = { rng: int(), range_start: int(), range_end: int() };
 
@@ -25,8 +19,8 @@ const isDamageFilter = (text) => text === '' || parseInt(text) >= 0;
 const AssassinResult = () => {
   const { params, problems } = useQueryParams(SCHEMA);
   const [heroArmor, setHeroArmor] = useState(80);
-  const [dmg1, setDmg1] = useState(25);
-  const [dmg2, setDmg2] = useState(25);
+  const [dmg1, setDmg1] = useState(27);
+  const [dmg2, setDmg2] = useState(27);
   const [kirkisHP, setKirkisHP] = useState(0);
   if (problems.length > 0) return <InvalidLink problems={problems} formPath="/assassin" />;
 
@@ -34,6 +28,7 @@ const AssassinResult = () => {
   const rangeStart = params.range_start;
   const rangeEnd = params.range_end;
 
+  const kirkis = new Character(CHARACTER_KEYS.KIRKIS);
   const sim_results = [];
 
   rng.jump(rangeStart);
@@ -43,7 +38,8 @@ const AssassinResult = () => {
     const sim_result = simulateAssassinFight(cur_rng, heroArmor);
 
     const assassin_end_index = cur_rng.count;
-    const kirkis_stats = characterLevelUps('Kirkis', 1, 14, cur_rng);
+    const gained = kirkis.calculateLevelups(KIRKIS_LEVELS_GAINED, 1, cur_rng);
+    const kirkis_stats = (stat) => kirkis.initial[stat] + gained[stat];
     sim_results.push({
       index: i,
       rng: rng.raw.toString(16),
@@ -53,13 +49,13 @@ const AssassinResult = () => {
       turn2_damage: sim_result.turns[1].damage,
       end_rng: cur_rng.raw.toString(16),
       end_index: assassin_end_index,
-      kirkis_hp: kirkis_stats.HP + KIRKIS_STARTING_STATS.HP,
-      kirkis_pwr: kirkis_stats.PWR + KIRKIS_STARTING_STATS.PWR,
-      kirkis_skl: kirkis_stats.SKL + KIRKIS_STARTING_STATS.SKL,
-      kirkis_def: kirkis_stats.DEF + KIRKIS_STARTING_STATS.DEF,
-      kirkis_spd: kirkis_stats.SPD + KIRKIS_STARTING_STATS.SPD,
-      kirkis_mgc: kirkis_stats.MGC + KIRKIS_STARTING_STATS.MGC,
-      kirkis_luk: kirkis_stats.LUK + KIRKIS_STARTING_STATS.LUK,
+      kirkis_hp: kirkis_stats('HP'),
+      kirkis_pwr: kirkis_stats('PWR'),
+      kirkis_skl: kirkis_stats('SKL'),
+      kirkis_def: kirkis_stats('DEF'),
+      kirkis_spd: kirkis_stats('SPD'),
+      kirkis_mgc: kirkis_stats('MGC'),
+      kirkis_luk: kirkis_stats('LUK'),
       kirkis_index: cur_rng.count,
       advancement: cur_rng.count - i,
     });
