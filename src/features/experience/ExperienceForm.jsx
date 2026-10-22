@@ -14,7 +14,7 @@ import ImportModal from 'shared/ui/ImportModal';
 
 import ExperienceResult from './ExperienceResult';
 import { MAX_PARTY_SIZE, MIN_PARTY_SIZE, isValidPartySize, normalizeImport } from './lib';
-import './Experience.scss';
+import './Experience.css';
 
 const ExperienceForm = () => {
   const [characters, setCharacters] = useState([]);

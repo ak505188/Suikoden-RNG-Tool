@@ -7,7 +7,7 @@ Live at https://ak505188.github.io/Suikoden-RNG-Tool/ (GitHub Pages, `npm run de
 
 ## Stack
 - Vite 8 + `@vitejs/plugin-react` (config: `vite.config.mjs`, `index.html` at the repo root), Node 22 (`.nvmrc`). React 16 (hooks + some class code), JSX in `.jsx` (Vite requires `.jsx` for JSX and rejects type annotations in source).
-- UI: `semantic-ui-react`, `react-virtualized` tables, `styled-components`, some `.css` / one `.scss` (`sass`).
+- UI: `semantic-ui-react`, `react-virtualized` tables, `styled-components`, plain `.css` files next to their components (scope selectors to a class, as `features/experience/Experience.css` does; bare element rules apply app-wide).
 - Routing: `react-router-dom` v5 `HashRouter`. State is passed form → result via **URL query params** (`/sequence/result?rng=..&iterations=..`); the result page recomputes from the params.
 - Redux (`redux`, `redux-actions`) is used only by Run Assistant.
 - Game logic lives in the external package **`suikoden-rng-lib`** (git dependency, `ak505188/Suikoden-RNG-lib#battle-simulator`; `.npmrc` sets `allow-git=all` because npm 12 blocks git deps by default): `RNG` (`raw`, `rand`, `next()`, `jump(n)`, `peek()`, `clone()`, `seed`, `count`), `Areas`/`Area`, `Helpers`, roll checks (`isCliveAppearance(rand)`, `countWheelAttempts(rng)`, ...), stats, `Kaku`, chinchironin, assassin. Import from the package root, or from the `suikoden-rng-lib/encounters` entry (new `AREAS`/`generateEncounters` API replacing the deprecated root `Areas`; Encounters, Item drops and Experience are migrated; the RNG finder and Run Assistant still use the old `Areas`). The package has an `exports` map, so no deep imports. This repo is the UI on top of it.

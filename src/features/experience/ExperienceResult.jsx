@@ -46,6 +46,7 @@ const ExperienceContainer = ({
   const dragRowIndex = useRef(null);
   const [dragOverCol, setDragOverCol] = useState(null);
   const [dragOverRow, setDragOverRow] = useState(null);
+  const [draggingRow, setDraggingRow] = useState(null);
 
   // --- Column (character) drag handlers ---
   const onColDragStart = (index) => {
@@ -53,6 +54,7 @@ const ExperienceContainer = ({
   };
 
   const onColDragOver = (e, index) => {
+    if (dragColIndex.current === null) return;
     e.preventDefault();
     setDragOverCol(index);
   };
@@ -82,9 +84,12 @@ const ExperienceContainer = ({
   // --- Row (fight) drag handlers ---
   const onRowDragStart = (index) => {
     dragRowIndex.current = index;
+    // Dim the row after the drag has started, or the drag image would be dimmed too
+    setTimeout(() => setDraggingRow(index), 0);
   };
 
   const onRowDragOver = (e, index) => {
+    if (dragRowIndex.current === null) return;
     e.preventDefault();
     setDragOverRow(index);
   };
@@ -94,6 +99,7 @@ const ExperienceContainer = ({
     if (fromIndex === null || fromIndex === toIndex) {
       dragRowIndex.current = null;
       setDragOverRow(null);
+      setDraggingRow(null);
       return;
     }
 
@@ -113,11 +119,13 @@ const ExperienceContainer = ({
 
     dragRowIndex.current = null;
     setDragOverRow(null);
+    setDraggingRow(null);
   };
 
   const onRowDragEnd = () => {
     dragRowIndex.current = null;
     setDragOverRow(null);
+    setDraggingRow(null);
   };
 
   // --- Character level / remove ---
@@ -145,7 +153,7 @@ const ExperienceContainer = ({
 
   return (
     <Container style={{ flex: 1 }} textAlign="center">
-      <Table striped>
+      <Table striped className="experience-table">
         <TableHeader>
           <TableRow>
             {/* Export cell — not draggable */}
@@ -178,40 +186,46 @@ const ExperienceContainer = ({
           {results.map((result, index) => (
             <TableRow
               key={index}
+              onDragOver={(e) => onRowDragOver(e, index)}
+              onDrop={() => onRowDrop(index)}
               style={{
-                opacity: dragRowIndex.current === index ? 0.4 : 1,
+                opacity: draggingRow === index ? 0.4 : 1,
                 outline: dragOverRow === index ? '1px dashed #2185d0' : undefined,
-                cursor: 'grab',
               }}
             >
-              <TableCell
-                key={`${result.enemy_group.name}-${index}`}
-                draggable
-                onDragStart={() => onRowDragStart(index)}
-                onDragOver={(e) => onRowDragOver(e, index)}
-                onDrop={() => onRowDrop(index)}
-                onDragEnd={onRowDragEnd}
-              >
+              <TableCell key={`${result.enemy_group.name}-${index}`}>
+                <DragHandle
+                  orientation="row"
+                  label={`Drag to reorder ${result.enemy_group.name}`}
+                  onDragStart={() => onRowDragStart(index)}
+                  onDragEnd={onRowDragEnd}
+                />
                 <div>{result.enemy_group.name}</div>
                 <div className="cell_controls">
-                  {/* Stop drag from firing when interacting with controls */}
                   <DraftNumberInput
                     size={2}
                     min={MIN_PARTY_SIZE}
                     max={MAX_PARTY_SIZE}
                     step={1}
                     value={result.party_size}
+                    aria-label={`Party size for ${result.enemy_group.name}`}
                     accepts={isValidPartySize}
                     onCommit={(text) => changeFightPartySize(text, index)}
-                    onDragStart={(e) => e.stopPropagation()}
                   />
                   <button
                     className={`toggle ${result.enabled ? 'fight_enabled' : 'fight_disabled'}`}
+                    title={`${result.enabled ? 'Disable' : 'Enable'} this fight`}
+                    aria-label={`${result.enabled ? 'Disable' : 'Enable'} ${result.enemy_group.name}`}
                     onClick={() => toggleFight(index)}
                   >
                     ●
                   </button>
-                  <button className="remove" onClick={() => removeFight(index)}>
+                  <button
+                    className="remove"
+                    title="Remove this fight"
+                    aria-label={`Remove ${result.enemy_group.name}`}
+                    onClick={() => removeFight(index)}
+                  >
                     ⊖
                   </button>
                 </div>
@@ -225,6 +239,8 @@ const ExperienceContainer = ({
                   enabled={result.enabled && !disabledCharacters[index].includes(character.name)}
                   toggleDisabledCharacter={toggleDisabledCharacter}
                   isDragOver={dragOverCol === charIdx}
+                  onDragOver={(e) => onColDragOver(e, charIdx)}
+                  onDrop={() => onColDrop(charIdx)}
                 />
               ))}
             </TableRow>
@@ -235,12 +251,44 @@ const ExperienceContainer = ({
   );
 };
 
-const RowCell = ({ character, index, enabled, toggleDisabledCharacter, isDragOver }) => {
+// The strip a row or column is dragged by: the full height of a row's first cell, or the full
+// width of a column's header cell (styled in Experience.css). The drag image is the whole
+// row/column header, not just the strip.
+const DragHandle = ({ orientation, label, onDragStart, onDragEnd }) => (
+  <span
+    className={`drag-handle drag-handle-${orientation}`}
+    draggable
+    title={label}
+    aria-label={label}
+    onDragStart={(e) => {
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', ''); // Firefox won't start a drag without data
+      const dragImage = e.currentTarget.closest(orientation === 'row' ? 'tr' : 'th');
+      e.dataTransfer.setDragImage(dragImage, 0, 0);
+      onDragStart();
+    }}
+    onDragEnd={onDragEnd}
+  />
+);
+
+const RowCell = ({
+  character,
+  index,
+  enabled,
+  toggleDisabledCharacter,
+  isDragOver,
+  onDragOver,
+  onDrop,
+}) => {
   return (
     <TableCell
+      onDragOver={onDragOver}
+      onDrop={onDrop}
       className={`toggle ${enabled ? 'char_enabled' : 'char_disabled'}`}
       key={character.name}
       role="button"
+      aria-pressed={enabled}
+      title={`${enabled ? 'Disable' : 'Enable'} ${character.name} for this fight`}
       onClick={() => toggleDisabledCharacter(character.name, index)}
       style={{
         outline: isDragOver ? '1px dashed #2185d0' : undefined,
@@ -264,16 +312,18 @@ const HeaderCell = ({
 }) => {
   return (
     <TableHeaderCell
-      draggable
-      onDragStart={onDragStart}
       onDragOver={onDragOver}
       onDrop={onDrop}
-      onDragEnd={onDragEnd}
       style={{
         outline: isDragOver ? '1px dashed #2185d0' : undefined,
-        cursor: 'grab',
       }}
     >
+      <DragHandle
+        orientation="column"
+        label={`Drag to reorder ${character.name}`}
+        onDragStart={onDragStart}
+        onDragEnd={onDragEnd}
+      />
       <div className="character_name">{character.name}</div>
       <div className="cell_controls">
         <DraftNumberInput
@@ -282,11 +332,16 @@ const HeaderCell = ({
           max={MAX_LEVEL}
           step={1}
           value={character.level}
+          aria-label={`${character.name} level`}
           accepts={(text) => !Number.isNaN(parseFloat(text))}
           onCommit={(text) => changeCharacterLevel(text, index)}
-          draggable={false}
         />
-        <button className="remove" onClick={() => removeCharacter(index)}>
+        <button
+          className="remove"
+          title={`Remove ${character.name}`}
+          aria-label={`Remove ${character.name}`}
+          onClick={() => removeCharacter(index)}
+        >
           ⊖
         </button>
       </div>

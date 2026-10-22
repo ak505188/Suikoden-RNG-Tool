@@ -1,0 +1,199 @@
+/* Scoped to the result table (className="experience-table"): bare element rules like these would
+   otherwise restyle every table, button and number input in the app. */
+
+.experience-table {
+  --on-color: green;
+  --off-color: red;
+
+  --cell-padding-x: 0.25rem;
+  --cell-padding-y: 0.5rem;
+  --control-radius: 0.25rem;
+  --control-outline: 0 0 1px 1px lightgrey;
+
+  /* Drag grips: a pill (the hit area) holding a row of dots. Its length is the pill's long side
+     and its thickness the short one; the dots sit in a box of --grip-dot-box across. */
+  --grip-length: 66px;
+  --grip-thickness: 12px;
+  --grip-radius: 6px;
+  --grip-dots: 5;
+  --grip-dot-gap: 8px; /* distance between dot centres */
+  --grip-dot-box: 4px;
+  --grip-dot-radius: 1.5px;
+  --grip-dots-length: calc(var(--grip-dots) * var(--grip-dot-gap));
+  --grip-color: #aaa;
+  --grip-color-hover: #555;
+  --grip-bg-hover: #eef2f7;
+  --grip-header-extra: 8px; /* room above a column's header text for its grip */
+  --grip-row-gap: 8px; /* gap kept between one row's grip and the next */
+
+  font-size: 16px;
+}
+
+.experience-table td,
+.experience-table th {
+  padding: var(--cell-padding-y) var(--cell-padding-x);
+  text-align: right;
+}
+
+.experience-table th {
+  text-align: center;
+}
+
+.experience-table tbody tr td:first-child > div {
+  margin-bottom: 0.25rem;
+}
+
+.experience-table input[type='number'] {
+  -moz-appearance: textfield;
+  border: none;
+  box-shadow: var(--control-outline);
+  border-radius: 0.5rem;
+}
+
+.experience-table input[type='number']::-webkit-outer-spin-button,
+.experience-table input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.experience-table th div.character_name {
+  display: flex;
+  margin-bottom: 0.5rem;
+}
+
+.experience-table div.cell_controls {
+  display: flex;
+}
+
+.experience-table div.cell_controls input {
+  background: white;
+  border: none;
+  border-radius: var(--control-radius);
+  box-shadow: var(--control-outline);
+  padding: 0 var(--cell-padding-x);
+  width: 2.5rem;
+}
+
+.experience-table div.cell_controls button.remove {
+  color: var(--off-color);
+  font-weight: 600;
+  cursor: pointer;
+  background: white;
+}
+
+.experience-table div.cell_controls button.toggle {
+  cursor: pointer;
+  color: var(--on-color);
+}
+
+.experience-table div.cell_controls button.toggle.fight_disabled {
+  color: var(--off-color);
+}
+
+.experience-table button {
+  background: transparent;
+  border: none;
+  border-radius: var(--control-radius);
+  box-shadow: var(--control-outline);
+  padding: 0 var(--cell-padding-x);
+  margin-left: var(--cell-padding-x);
+}
+
+.experience-table td.toggle {
+  font-weight: 600;
+  box-shadow: none;
+  text-align: left;
+  margin: 0;
+}
+
+.experience-table td.toggle:hover {
+  cursor: pointer;
+}
+
+.experience-table td.toggle.char_enabled span.indicator {
+  color: var(--on-color);
+}
+
+.experience-table td.toggle.char_disabled {
+  text-decoration: line-through;
+  font-weight: 400;
+}
+
+.experience-table td.toggle.char_disabled span.indicator {
+  color: var(--off-color);
+  text-decoration: none;
+}
+
+/* The grips you drag a row or a column by, centred on the top edge of a column's header cell and
+   the left edge of a row's first cell. */
+.experience-table th,
+.experience-table td:first-child {
+  position: relative;
+}
+
+.experience-table th {
+  padding-top: calc(var(--cell-padding-y) + var(--grip-header-extra));
+}
+
+.experience-table td:first-child {
+  padding-left: calc(var(--cell-padding-x) + var(--grip-thickness));
+}
+
+.experience-table .drag-handle {
+  --grip-dot-color: var(--grip-color);
+  position: absolute;
+  cursor: grab;
+  border-radius: var(--grip-radius);
+}
+
+.experience-table .drag-handle:hover {
+  --grip-dot-color: var(--grip-color-hover);
+  background-color: var(--grip-bg-hover);
+}
+
+.experience-table .drag-handle:active {
+  cursor: grabbing;
+}
+
+.experience-table .drag-handle::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  background-image: radial-gradient(
+    circle,
+    var(--grip-dot-color) var(--grip-dot-radius),
+    transparent calc(var(--grip-dot-radius) + 0.5px)
+  );
+}
+
+.experience-table .drag-handle-column {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: var(--grip-length);
+  height: var(--grip-thickness);
+}
+
+.experience-table .drag-handle-column::before {
+  width: var(--grip-dots-length);
+  height: var(--grip-dot-box);
+  background-size: var(--grip-dot-gap) var(--grip-dot-box);
+  background-repeat: repeat-x;
+}
+
+.experience-table .drag-handle-row {
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  width: var(--grip-thickness);
+  height: var(--grip-length);
+  max-height: calc(100% - var(--grip-row-gap));
+}
+
+.experience-table .drag-handle-row::before {
+  width: var(--grip-dot-box);
+  height: var(--grip-dots-length);
+  background-size: var(--grip-dot-box) var(--grip-dot-gap);
+  background-repeat: repeat-y;
+}
