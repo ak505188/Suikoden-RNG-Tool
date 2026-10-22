@@ -24,6 +24,7 @@
   --grip-color-hover: #555;
   --grip-bg-hover: #eef2f7;
   --grip-header-extra: 8px; /* room above a column's header text for its grip */
+  --header-top: 0px; /* where the header row sticks: the top of the viewport */
   --grip-row-gap: 8px; /* gap kept between one row's grip and the next */
 
   font-size: 16px;
@@ -196,4 +197,12 @@
   height: var(--grip-dots-length);
   background-size: var(--grip-dot-box) var(--grip-dot-gap);
   background-repeat: repeat-y;
+}
+
+/* The header row stays in view while the fights scroll under it. It needs an opaque background
+   (Semantic's th has one) and a z-index above the positioned cells below it. */
+.experience-table thead th {
+  position: sticky;
+  top: var(--header-top);
+  z-index: 2;
 }
