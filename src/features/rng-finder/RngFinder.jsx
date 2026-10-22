@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import DoubleListSelector from 'shared/ui/DoubleListSelector';
 import { InputRNG } from 'shared/form/inputs';
+import { ENCOUNTER_AREAS, areaId, findAreaById, formationName } from 'shared/lib/encounters';
 import { Helpers } from 'suikoden-rng-lib';
 import { Container, Form } from 'semantic-ui-react';
 import RNGFinderStatus from './Status';
@@ -13,10 +14,12 @@ const initialStatus = {
   done: false,
 };
 
-const RNGFinder = ({ areas }) => {
+const RNGFinder = () => {
   const [rng, setRNG] = useState(Helpers.numToHexString(0x12));
-  const [selectedArea, setSelectedArea] = useState(Helpers.areaNamesWithRandomEncounters[0]);
+  const [selectedArea, setSelectedArea] = useState(areaId(ENCOUNTER_AREAS[0]));
   const [fightList, setFightList] = useState([]);
+  const [realistic, setRealistic] = useState(true);
+  const [findAll, setFindAll] = useState(false);
   const [running, setRunning] = useState(false);
   const [status, setStatus] = useState(initialStatus);
   const [worker, setWorker] = useState();
@@ -37,22 +40,23 @@ const RNGFinder = ({ areas }) => {
     }
 
     const webworker = new findRNGWorker();
-    const area = areas[selectedArea];
-    const workerParams = {
-      areaType: area.areaType,
-      tableLength: area.encounterTable.length,
-      encounterRate: area.encounterRate,
-    };
+    const area = findAreaById(selectedArea);
 
     webworker.onmessage = (m) => {
-      const { done, message, progress, result } = m.data;
-      setStatus({ done, message, progress, result });
+      const { done, message, progress, result, matches, findAll } = m.data;
+      setStatus({ done, message, progress, result, matches, findAll });
       setRunning(!done);
     };
 
     setWorker(webworker);
     setRunning(true);
-    webworker.postMessage({ workerParams, encounters: fightList, rng: parseInt(rng) });
+    webworker.postMessage({
+      area,
+      encounters: fightList,
+      rng: parseInt(rng),
+      realistic,
+      findAll,
+    });
   };
 
   const killWorker = () => {
@@ -63,7 +67,13 @@ const RNGFinder = ({ areas }) => {
   const handleStop = (event) => {
     event.preventDefault();
     setRunning(false);
-    setStatus(initialStatus);
+    // Matches already found are worth keeping when you stop a find-all
+    const found = status.matches?.length > 0;
+    setStatus(
+      found
+        ? { ...status, done: true, message: `Stopped. ${status.matches.length} found so far.` }
+        : initialStatus,
+    );
     killWorker();
   };
 
@@ -74,10 +84,10 @@ const RNGFinder = ({ areas }) => {
         <Form.Dropdown
           label="Areas"
           placeholder="Area"
-          options={Helpers.areaNamesWithRandomEncounters.map((name) => ({
-            key: name,
-            value: name,
-            text: areas[name].name,
+          options={ENCOUNTER_AREAS.map((area) => ({
+            key: areaId(area),
+            value: areaId(area),
+            text: area.name,
           }))}
           value={selectedArea}
           onChange={handleAreaChange}
@@ -87,7 +97,19 @@ const RNGFinder = ({ areas }) => {
         <DoubleListSelector
           handleChange={(list) => setFightList(list)}
           list={fightList}
-          options={areas[selectedArea].encounterTable.map((group) => group.name)}
+          options={findAreaById(selectedArea).encounters.map(formationName)}
+        />
+        <Form.Checkbox
+          label="Realistic mode"
+          title="After a battle the game uses the next RNG call to pick the enemy group, so that value can't start a battle. Realistic mode skips it."
+          checked={realistic}
+          onChange={(_e, data) => setRealistic(data.checked)}
+        />
+        <Form.Checkbox
+          label="Find all matches"
+          title="Scan the whole RNG cycle and list every match, instead of stopping at the first. Takes up to about a minute."
+          checked={findAll}
+          onChange={(_e, data) => setFindAll(data.checked)}
         />
         <Form.Button
           style={{ marginBottom: '1em' }}

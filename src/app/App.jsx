@@ -44,7 +44,7 @@ const App = () => {
       <Route path="/npc/result" exact={true} component={NPCResult} />
       <Route path="/drops" exact={true} render={() => <ItemDropsForm />} />
       <Route path="/drops/result" exact={true} render={() => <ItemDropsResult />} />
-      <Route path="/rngfinder" render={() => <RNGFinder areas={Areas} />} />
+      <Route path="/rngfinder" render={() => <RNGFinder />} />
       <Route path="/experience" exact={true} render={() => <Experience />} />
       <Route path="/runassist" exact={true} render={() => <RunAssistantForm areas={Areas} />} />
       <Route
