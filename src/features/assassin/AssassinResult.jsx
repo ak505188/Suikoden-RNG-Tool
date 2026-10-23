@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Container, Form } from 'semantic-ui-react';
 import { RNG, simulateAssassinFight } from 'suikoden-rng-lib';
 import { CHARACTER_KEYS, Character } from 'suikoden-rng-lib/battle';
@@ -16,26 +16,18 @@ const SCHEMA = { rng: int(), range_start: int(), range_end: int() };
 // A filter box takes a whole number from 0, and an empty box means no filter (0)
 const isDamageFilter = (text) => text === '' || parseInt(text) >= 0;
 
-const AssassinResult = () => {
-  const { params, problems } = useQueryParams(SCHEMA);
-  const [heroArmor, setHeroArmor] = useState(80);
-  const [dmg1, setDmg1] = useState(27);
-  const [dmg2, setDmg2] = useState(27);
-  const [kirkisHP, setKirkisHP] = useState(0);
-  if (problems.length > 0) return <InvalidLink problems={problems} formPath="/assassin" />;
-
-  const rng = new RNG(params.rng);
-  const rangeStart = params.range_start;
-  const rangeEnd = params.range_end;
-
+// Every row the table can show: the fight from each RNG index in the range. It depends only on
+// the link and McDohl's armor, so typing in a filter box doesn't run it again.
+const simulateRows = (seed, rangeStart, rangeEnd, armor) => {
   const kirkis = new Character(CHARACTER_KEYS.KIRKIS);
+  const rng = new RNG(seed);
   const sim_results = [];
 
   rng.jump(rangeStart);
 
   for (let i = rangeStart; i < rangeEnd; i++) {
     const cur_rng = rng.clone();
-    const sim_result = simulateAssassinFight(cur_rng, heroArmor);
+    const sim_result = simulateAssassinFight(cur_rng, armor);
 
     const assassin_end_index = cur_rng.count;
     const gained = kirkis.calculateLevelups(KIRKIS_LEVELS_GAINED, 1, cur_rng);
@@ -61,17 +53,37 @@ const AssassinResult = () => {
     });
     rng.next();
   }
+  return sim_results;
+};
 
-  const damage_filter = (sim_dmg, selected_dmg) => {
-    if (typeof selected_dmg != 'number' || isNaN(selected_dmg)) return true;
-    if (selected_dmg <= 0) return true;
-    return sim_dmg === selected_dmg;
-  };
+const damage_filter = (sim_dmg, selected_dmg) => {
+  if (typeof selected_dmg != 'number' || isNaN(selected_dmg)) return true;
+  if (selected_dmg <= 0) return true;
+  return sim_dmg === selected_dmg;
+};
 
-  const results_to_show = sim_results
-    .filter(({ turn1_damage }) => damage_filter(turn1_damage, dmg1))
-    .filter(({ turn2_damage }) => damage_filter(turn2_damage, dmg2))
-    .filter(({ kirkis_hp }) => damage_filter(kirkis_hp, kirkisHP));
+const AssassinResult = () => {
+  const { params, problems } = useQueryParams(SCHEMA);
+  const [heroArmor, setHeroArmor] = useState(80);
+  const [dmg1, setDmg1] = useState(27);
+  const [dmg2, setDmg2] = useState(27);
+  const [kirkisHP, setKirkisHP] = useState(0);
+  const rows = useMemo(
+    () =>
+      problems.length > 0
+        ? []
+        : simulateRows(params.rng, params.range_start, params.range_end, heroArmor),
+    [problems, params, heroArmor],
+  );
+  const results_to_show = useMemo(
+    () =>
+      rows
+        .filter(({ turn1_damage }) => damage_filter(turn1_damage, dmg1))
+        .filter(({ turn2_damage }) => damage_filter(turn2_damage, dmg2))
+        .filter(({ kirkis_hp }) => damage_filter(kirkis_hp, kirkisHP)),
+    [rows, dmg1, dmg2, kirkisHP],
+  );
+  if (problems.length > 0) return <InvalidLink problems={problems} formPath="/assassin" />;
 
   return (
     <Container style={{ flex: 1 }} textAlign="center">
@@ -115,7 +127,7 @@ const AssassinResult = () => {
           />
         </Form.Group>
       </Form>
-      <AssassinTable rng={`0x${rng.seed.toString(16)}`} data={results_to_show} />
+      <AssassinTable rng={`0x${new RNG(params.rng).seed.toString(16)}`} data={results_to_show} />
     </Container>
   );
 };

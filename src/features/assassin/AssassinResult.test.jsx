@@ -2,8 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { act, Simulate } from 'react-dom/test-utils';
 import { MemoryRouter } from 'react-router-dom';
-import { afterEach, describe, expect, test } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vitest';
+import { simulateAssassinFight } from 'suikoden-rng-lib';
 import AssassinResult from './AssassinResult';
+
+vi.mock('suikoden-rng-lib', async (importOriginal) => {
+  const lib = await importOriginal();
+  return { ...lib, simulateAssassinFight: vi.fn(lib.simulateAssassinFight) };
+});
 
 let container;
 afterEach(() => {
@@ -58,5 +64,15 @@ describe('Assassin number boxes', () => {
     expect(damage.value).toBe('');
     blur(damage);
     expect(damage.value).toBe('0');
+  });
+
+  test('filters reuse the simulation, a new armor value runs it again', () => {
+    render();
+    const runs = simulateAssassinFight.mock.calls.length;
+    expect(runs).toBe(20); // one per index in the range
+    for (const label of ['Turn 1 Damage', 'Turn 2 Damage', 'Kirkis HP']) type(box(label), '30');
+    expect(simulateAssassinFight.mock.calls.length).toBe(runs);
+    type(box('McDohl Armor'), '85');
+    expect(simulateAssassinFight.mock.calls.length).toBe(runs * 2);
   });
 });
