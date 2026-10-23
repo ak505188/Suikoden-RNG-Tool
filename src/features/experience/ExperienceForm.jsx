@@ -3,13 +3,8 @@ import { unstable_batchedUpdates } from 'react-dom';
 import { Button, Checkbox, Container, Form } from 'semantic-ui-react';
 import { Characters } from 'suikoden-rng-lib';
 import { formationName } from 'suikoden-rng-lib/encounters';
-import {
-  FIGHT_AREAS,
-  areaFormations,
-  areaId,
-  findAreaById,
-  formationLevels,
-} from 'shared/lib/encounters';
+import { areaFormations, findAreaById, formationLevels } from 'shared/lib/encounters';
+import AreaGroupPicker from 'shared/form/AreaGroupPicker';
 import ExportModal from 'shared/table/export-modal';
 import ImportModal from 'shared/ui/ImportModal';
 
@@ -158,35 +153,13 @@ const ExperienceForm = () => {
           search={true}
           selection={true}
         />
-        <Form.Dropdown
-          label="Areas"
-          placeholder="Area"
-          options={FIGHT_AREAS.map((a) => ({
-            key: areaId(a),
-            value: areaId(a),
-            text: a.name,
-          }))}
-          value={area}
-          onChange={(_e, data) => {
-            setArea(data.value);
-            setEnemyGroup(0);
+        <AreaGroupPicker
+          area={area}
+          enemyGroup={enemyGroup}
+          onChange={(picked) => {
+            setArea(picked.area);
+            setEnemyGroup(picked.enemyGroup);
           }}
-          multiple={false}
-          search={true}
-          selection={true}
-        />
-        <Form.Dropdown
-          label="Enemy Group"
-          placeholder="Enemy Group"
-          options={areaFormations(findAreaById(area)).map(({ formation, scripted }, index) => ({
-            key: index,
-            value: index,
-            text: formationName(formation) + (scripted ? ' (scripted)' : ''),
-          }))}
-          value={enemyGroup}
-          onChange={(_e, data) => setEnemyGroup(data.value)}
-          search={true}
-          selection={true}
         />
         <Form.Input
           label="Party Size"

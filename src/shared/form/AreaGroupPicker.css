@@ -1,0 +1,14 @@
+/* Scripted fights in a group dropdown are tinted amber, except while hovered or selected, which
+   keep Semantic's own highlight. The first one also gets a line above it. */
+.ui.selection.dropdown .menu > .item.scripted:not(.selected):not(:hover) {
+  background: #fff3d6;
+}
+
+/* Semantic's faint line between items would show as a white gap in the tint */
+.ui.selection.dropdown .menu > .item.scripted {
+  border-top-color: #fff3d6;
+}
+
+.ui.selection.dropdown .menu > .item.scripted.scripted-start {
+  border-top-color: #e9b949;
+}
