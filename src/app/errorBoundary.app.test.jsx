@@ -13,12 +13,12 @@ vi.mock('features/kaku', () => ({
   },
 }));
 
-test('a page that throws shows a message in its place, and the navbar stays', () => {
+test('a page that throws shows a message in its place, and the navbar stays', async () => {
   const container = document.createElement('div');
   document.body.appendChild(container);
   vi.spyOn(console, 'error').mockImplementation(() => {});
 
-  act(() => {
+  await act(async () => {
     ReactDOM.render(
       <MemoryRouter initialEntries={['/kaku/result']}>
         <App />
@@ -26,6 +26,12 @@ test('a page that throws shows a message in its place, and the navbar stays', ()
       container,
     );
   });
+
+  for (let i = 0; i < 500 && container.querySelector('.ui.loader'); i++) {
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    });
+  }
 
   expect(container.textContent).toContain('Something went wrong on this page');
   expect(container.textContent).toContain('the kaku page broke');

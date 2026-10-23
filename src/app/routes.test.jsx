@@ -27,11 +27,23 @@ const render = (element) => {
   return container;
 };
 
-const page = (url) =>
-  render(
-    <MemoryRouter initialEntries={[url]}>
-      <App />
-    </MemoryRouter>,
+// The tools that load on first visit show a spinner until their code arrives
+const settle = async (container) => {
+  for (let i = 0; i < 500 && container.querySelector('.ui.loader'); i++) {
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    });
+  }
+  return container;
+};
+
+const page = async (url) =>
+  settle(
+    render(
+      <MemoryRouter initialEntries={[url]}>
+        <App />
+      </MemoryRouter>,
+    ),
   );
 
 const query = (params) => '?' + new URLSearchParams(params).toString();
@@ -78,42 +90,42 @@ const results = {
 };
 
 describe.each(Object.entries(results))('%s', (path, { good, bad, unknown }) => {
-  test('shows its result for a good link', () => {
-    const text = page(path + query(good)).textContent;
+  test('shows its result for a good link', async () => {
+    const text = (await page(path + query(good))).textContent;
     expect(text).not.toContain(BROKEN);
     expect(text).not.toContain(CRASHED);
   });
 
-  test('says the link is broken, instead of crashing, when it has no parameters at all', () => {
-    const text = page(path).textContent;
+  test('says the link is broken, instead of crashing, when it has no parameters at all', async () => {
+    const text = (await page(path)).textContent;
     expect(text).toContain(BROKEN);
     expect(text).not.toContain(CRASHED);
   });
 
-  test('says the link is broken when a value is not a number', () => {
-    const text = page(path + query({ ...good, rng: 'soon' })).textContent;
+  test('says the link is broken when a value is not a number', async () => {
+    const text = (await page(path + query({ ...good, rng: 'soon' }))).textContent;
     expect(text).toContain(BROKEN);
     expect(text).toContain('rng is not a number');
   });
 
   if (bad) {
-    test('says the link is broken when nothing was chosen', () => {
-      const text = page(path + query(bad)).textContent;
+    test('says the link is broken when nothing was chosen', async () => {
+      const text = (await page(path + query(bad))).textContent;
       expect(text).toContain(BROKEN);
       expect(text).not.toContain(CRASHED);
     });
   }
 
   if (unknown) {
-    test('says the link is broken when it names something that does not exist', () => {
-      const text = page(path + query(unknown)).textContent;
+    test('says the link is broken when it names something that does not exist', async () => {
+      const text = (await page(path + query(unknown))).textContent;
       expect(text).toContain(BROKEN);
       expect(text).not.toContain(CRASHED);
     });
   }
 
-  test('offers a way back to the form', () => {
-    const container = page(path);
+  test('offers a way back to the form', async () => {
+    const container = await page(path);
     const back = [...container.querySelectorAll('a')].find((a) =>
       /back to the form/i.test(a.textContent),
     );
@@ -161,22 +173,22 @@ describe('ErrorBoundary', () => {
 });
 
 describe('forms that need a selection', () => {
-  const submit = (path) => {
-    const button = page(path).querySelector('button[type=submit]');
+  const submit = async (path) => {
+    const button = (await page(path)).querySelector('button[type=submit]');
     return button;
   };
 
   test.each(['/stats/starting-stats', '/stats/level-ups', '/encounters', '/runassist'])(
     '%s keeps its submit button off until something is chosen',
-    (path) => {
-      expect(submit(path).disabled).toBe(true);
+    async (path) => {
+      expect((await submit(path)).disabled).toBe(true);
     },
   );
 
   test.each(['/sequence', '/npc', '/drops', '/chinchironin', '/assassin', '/kaku'])(
     '%s can be submitted straight away',
-    (path) => {
-      expect(submit(path).disabled).toBe(false);
+    async (path) => {
+      expect((await submit(path)).disabled).toBe(false);
     },
   );
 });
@@ -192,8 +204,8 @@ describe('the Realistic Mode checkbox', () => {
     });
   };
 
-  test.each(['/encounters', '/runassist'])('%s: clicking its label unticks it', (path) => {
-    const container = page(path);
+  test.each(['/encounters', '/runassist'])('%s: clicking its label unticks it', async (path) => {
+    const container = await page(path);
     const input = container.querySelector('.ui.checkbox input');
     expect(input.checked).toBe(true);
     clickLabel(container);
