@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Provider } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { createStore, applyMiddleware } from 'redux';
-import { createLogger } from 'redux-logger';
 import { Divider } from 'semantic-ui-react';
 import InvalidLink from 'shared/ui/InvalidLink';
 import { ConnectedTable as Table } from './Table';
@@ -12,7 +11,10 @@ import { buildRunAssistantState } from './buildState';
 import { initialState as configDefault } from './reducers/config';
 import { initialState as controlsDefault } from './reducers/controls';
 
-const logger = createLogger({});
+// Logs every action to the console while developing; the production build leaves it out
+const middleware = import.meta.env.DEV
+  ? applyMiddleware((await import('redux-logger')).createLogger({}))
+  : undefined;
 
 class RunAssistantTool extends React.Component {
   constructor(props) {
@@ -50,7 +52,7 @@ class RunAssistantTool extends React.Component {
       controls: controlsDefault,
     };
 
-    this.state = { store: createStore(reducer, initialState, applyMiddleware(logger)) };
+    this.state = { store: createStore(reducer, initialState, middleware) };
   }
 
   render() {
