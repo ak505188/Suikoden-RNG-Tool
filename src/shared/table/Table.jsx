@@ -56,7 +56,6 @@ const Table = (props) => {
             label={column.label}
             dataKey={column.key}
             width={columnsWidthRatio * column.width}
-            columnStyler={(data) => console.log(data)}
           />
         );
       })}

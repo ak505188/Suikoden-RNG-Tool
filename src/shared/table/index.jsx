@@ -14,11 +14,16 @@ export default class TableContainer extends React.Component {
     super();
     this.state = {
       rowsToRender: createDefaultRowsToRender(props.data),
-      columns: props.columns,
+      // Columns the user has shown or hidden here, by column key; the rest follow props.columns
+      columnVisibility: {},
     };
   }
 
   render() {
+    const columns = this.props.columns.map((column) => {
+      const show = this.state.columnVisibility[column.key];
+      return show === undefined ? column : { ...column, show };
+    });
     const data = this.state.rowsToRender
       .map((rowIndex) => this.props.data[rowIndex])
       .filter((row) => row !== undefined);
@@ -43,23 +48,24 @@ export default class TableContainer extends React.Component {
                 </div>
               ) : null}
               <ExportModal
-                columns={this.props.columns}
+                columns={columns}
                 data={data}
                 trigger={<Button primary>Export</Button>}
               />
               <ColumnDropdown
-                columns={this.props.columns}
+                columns={columns}
                 toggleColumn={(columnIndex) => {
-                  const columns = this.props.columns;
-                  columns[columnIndex].show = columns[columnIndex].show === false ? true : false;
-                  this.setState({ columns });
+                  const { key, show } = columns[columnIndex];
+                  this.setState((state) => ({
+                    columnVisibility: { ...state.columnVisibility, [key]: show === false },
+                  }));
                 }}
               />
             </div>
             <Table
               {...this.props}
               currentRow={this.props.currentRow}
-              columns={this.props.columns}
+              columns={columns}
               data={data}
               height={height - 38}
               width={width}
