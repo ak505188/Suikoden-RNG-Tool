@@ -1,8 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
-// import { Label } from 'semantic-ui-react';
 
-export const ListButton = styled.button`
+const ListButton = styled.button`
   &&& {
     width: 100%;
     border: 0;
@@ -12,7 +11,7 @@ export const ListButton = styled.button`
   }
 `;
 
-export const ListContainer = styled.div`
+const ListContainer = styled.div`
   &&& {
     width: 49.75%;
     display: flex;
@@ -20,7 +19,7 @@ export const ListContainer = styled.div`
   }
 `;
 
-export const Label = styled.label`
+const Label = styled.label`
   &&& {
     margin: 0 0 0.28571429rem 0;
     color: rgba(0, 0, 0, 0.87);
@@ -30,7 +29,7 @@ export const Label = styled.label`
   }
 `;
 
-export const ListInnerContainer = styled.div`
+const ListInnerContainer = styled.div`
   &&& {
     border: 1px solid rgba(34, 36, 38, 0.15);
     border-radius: 0.28571429rem;
@@ -39,7 +38,7 @@ export const ListInnerContainer = styled.div`
   }
 `;
 
-export const DoubleListSelectorDiv = styled.div`
+const DoubleListSelectorDiv = styled.div`
   &&& {
     display: flex;
     flex-direction: row;
@@ -48,54 +47,36 @@ export const DoubleListSelectorDiv = styled.div`
   }
 `;
 
-export class ListSelector extends React.Component {
-  handleClick = (index, event) => {
-    event.preventDefault();
-    this.props.click(index, event);
-  };
+// One column of buttons; clicking one calls onSelect with its position in `list`
+const ListSelector = ({ label, list, onSelect }) => (
+  <ListContainer>
+    <Label>{label}</Label>
+    <ListInnerContainer>
+      {list.map((name, index) => (
+        <ListButton type="button" key={index} onClick={() => onSelect(index)}>
+          {name}
+        </ListButton>
+      ))}
+    </ListInnerContainer>
+  </ListContainer>
+);
 
-  render() {
-    return (
-      <ListContainer>
-        <Label>{this.props.label}</Label>
-        <ListInnerContainer>
-          {this.props.list.map((value, index) => {
-            return (
-              <ListButton onClick={this.handleClick.bind(this, index)} key={index} value={index}>
-                {this.props.optionNames ? this.props.optionNames[index] : value}
-              </ListButton>
-            );
-          })}
-        </ListInnerContainer>
-      </ListContainer>
-    );
-  }
-}
+// Builds a list of positions in `options`: pick from the left list to add one at the end, from
+// the right list (the picks so far, in order) to remove it. `list` and `handleChange` carry the
+// picked positions.
+const DoubleListSelector = ({ options, list, handleChange }) => (
+  <DoubleListSelectorDiv>
+    <ListSelector
+      label="Add Enemies"
+      list={options}
+      onSelect={(index) => handleChange([...list, index])}
+    />
+    <ListSelector
+      label="Remove Enemies"
+      list={list.map((position) => options[position])}
+      onSelect={(index) => handleChange(list.filter((_, i) => i !== index))}
+    />
+  </DoubleListSelectorDiv>
+);
 
-export default class DoubleListSelector extends React.Component {
-  addItem = (_index, event) => {
-    this.props.handleChange([...this.props.list, parseInt(event.currentTarget.value)]);
-  };
-
-  removeItem = (index, _event) => {
-    this.props.handleChange([
-      ...this.props.list.slice(0, index),
-      ...this.props.list.slice(index + 1),
-    ]);
-  };
-
-  render() {
-    return (
-      <DoubleListSelectorDiv>
-        <ListSelector list={this.props.options} label="Add Enemies" click={this.addItem} />
-        <ListSelector
-          label="Remove Enemies"
-          list={this.props.list.map((val, _index) => {
-            return this.props.options[val];
-          })}
-          click={this.removeItem}
-        />
-      </DoubleListSelectorDiv>
-    );
-  }
-}
+export default DoubleListSelector;
