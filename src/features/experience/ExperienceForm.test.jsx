@@ -119,6 +119,36 @@ describe('removing and undoing', () => {
   });
 });
 
+describe('clearing', () => {
+  test('Clear empties the table, and Undo brings it back', () => {
+    const { container, addCharacters, addFight, columns, rows } = mount();
+    addCharacters('Cleo', 'Pahn');
+    addFight();
+    addFight();
+    click(button(container, 'Clear'));
+    expect(container.querySelector('.experience-table')).toBeNull();
+    expect(button(container, 'Clear')).toBeUndefined(); // nothing left to clear
+    click(button(container, 'Undo'));
+    expect(columns()).toEqual(['Cleo', 'Pahn']);
+    expect(rows()).toHaveLength(2);
+  });
+
+  test('there is no Clear button before anything is added', () => {
+    const { container } = mount();
+    expect(button(container, 'Clear')).toBeUndefined();
+  });
+
+  test('a cleared plan is not saved, so a reload starts empty', () => {
+    const first = mount();
+    first.addCharacters('Cleo');
+    first.addFight();
+    click(button(first.container, 'Clear'));
+    expect(localStorage.getItem('autosave-experience')).toBeNull();
+    render(<p>elsewhere</p>, first.container);
+    expect(mount().container.querySelector('.experience-table')).toBeNull();
+  });
+});
+
 describe('importing', () => {
   const plan = {
     characters: [{ name: 'Flik', level: '5' }],

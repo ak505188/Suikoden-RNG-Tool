@@ -155,6 +155,14 @@ const ExperienceForm = () => {
                   trigger={<Button primary>Export</Button>}
                 />
               )}
+              {characters.length > 0 && (
+                <Button
+                  type="button"
+                  content="Clear"
+                  title="Empty the table (Undo brings it back)"
+                  onClick={() => dispatch(planActions.clear())}
+                />
+              )}
               {showUndo && (
                 <Button
                   type="button"

@@ -26,6 +26,7 @@ export const planActions = {
   setCharacterLevel: (index, level) => ({ type: 'setLevel', index, level }),
   moveCharacter: (from, to) => ({ type: 'moveCharacter', from, to }),
   moveFight: (from, to) => ({ type: 'moveFight', from, to }),
+  clear: () => ({ type: 'clear' }),
   // `data` is what normalizeImport returns
   importPlan: (data) => ({ type: 'import', data }),
   undo: () => ({ type: 'undo' }),
@@ -114,6 +115,15 @@ export const planReducer = (plan, action) => {
         ...plan,
         fights: moveItem(plan.fights, action.from, action.to),
         disabledCharacters: moveItem(plan.disabledCharacters, action.from, action.to),
+      };
+
+    case 'clear':
+      if (plan.characters.length === 0 && plan.fights.length === 0) return plan;
+      return {
+        ...remember(plan, 'cleared the plan'),
+        characters: [],
+        fights: [],
+        disabledCharacters: [],
       };
 
     case 'import': {

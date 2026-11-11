@@ -163,3 +163,27 @@ describe('importing', () => {
     expect(planData(again)).toEqual(planData(plan));
   });
 });
+
+describe('clearing', () => {
+  test('empties the plan, and Undo brings all of it back', () => {
+    const before = run(built(), act.toggleDisabledCharacter('Cleo', 1));
+    let plan = run(before, act.clear());
+    expect(plan.characters).toEqual([]);
+    expect(plan.fights).toEqual([]);
+    expect(plan.disabledCharacters).toEqual([]);
+    expect(plan.undoStack.map((e) => e.label)).toEqual(['cleared the plan']);
+    plan = run(plan, act.undo());
+    expect(planData(plan)).toEqual(planData(before));
+    expect(plan.undoStack).toEqual([]);
+  });
+
+  test('new characters and fights can be added straight after', () => {
+    const plan = run(built(), act.clear(), act.addCharacters(['Viktor']), act.addFight(fight('Z')));
+    expect(names(plan)).toEqual(['Viktor']);
+    expect(plan.disabledCharacters).toEqual([[]]);
+  });
+
+  test('clearing an empty plan changes nothing and leaves nothing to undo', () => {
+    expect(run(emptyPlan, act.clear())).toBe(emptyPlan);
+  });
+});
