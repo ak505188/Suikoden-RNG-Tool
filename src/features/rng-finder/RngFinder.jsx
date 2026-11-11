@@ -94,9 +94,9 @@ const RNGFinder = () => {
         <div
           style={{
             display: 'flex',
-            justifyContent: 'center',
+            flexDirection: 'column',
             alignItems: 'center',
-            gap: '1em',
+            gap: '0.5em',
             marginBottom: '1em',
           }}
         >
