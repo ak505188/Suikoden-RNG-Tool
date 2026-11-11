@@ -16,6 +16,17 @@ export default defineConfig({
     outDir: 'build',
     // lightningcss rejects some selectors in semantic-ui-css
     cssMinify: 'esbuild',
+    rolldownOptions: {
+      output: {
+        // Name the big shared chunks after what is in them
+        codeSplitting: {
+          groups: [
+            { name: 'react', test: /node_modules[\\/](react|react-dom|scheduler)[\\/]/ },
+            { name: 'suikoden-rng-lib', test: /suikoden-rng-lib/i },
+          ],
+        },
+      },
+    },
   },
   test: {
     environment: 'jsdom',

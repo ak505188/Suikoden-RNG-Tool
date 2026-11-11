@@ -1,31 +1,38 @@
 import * as React from 'react';
 import Navbar from './Navbar';
 import Home from './Home';
-import { Form as EncountersForm, Result as EncounterResult } from 'features/encounters';
-import { Form as ItemDropsForm, Result as ItemDropsResult } from 'features/itemdrops';
-import { Form as SequenceForm, Result as SequenceResult } from 'features/sequence';
-import { Form as NPCForm, Result as NPCResult } from 'features/npc-movements';
-import RNGFinder from 'features/rng-finder';
-import Experience from 'features/experience';
-import {
-  StatsInfo,
-  StartingStatsForm,
-  StartingStatsResult,
-  LevelUpsForm,
-  LevelUpsResult,
-} from 'features/stats';
 import { Loader } from 'semantic-ui-react';
 import { Route, useLocation } from 'react-router-dom';
 import ErrorBoundary from './ErrorBoundary';
 import './index.css';
 
-// The tools that pull in the battle engine or a lot of their own code load when first visited
-const lazyExport = (load, name) =>
+// Every tool loads when it is first visited, so the home page only needs the shell
+const lazyExport = (load, name = 'default') =>
   React.lazy(() => load().then((feature) => ({ default: feature[name] })));
+const loadEncounters = () => import('features/encounters');
+const loadItemDrops = () => import('features/itemdrops');
+const loadSequence = () => import('features/sequence');
+const loadNpcMovements = () => import('features/npc-movements');
+const loadStats = () => import('features/stats');
 const loadRunAssistant = () => import('features/run-assistant');
 const loadChinchironin = () => import('features/chinchironin');
 const loadAssassin = () => import('features/assassin');
 const loadKaku = () => import('features/kaku');
+const EncountersForm = lazyExport(loadEncounters, 'Form');
+const EncounterResult = lazyExport(loadEncounters, 'Result');
+const ItemDropsForm = lazyExport(loadItemDrops, 'Form');
+const ItemDropsResult = lazyExport(loadItemDrops, 'Result');
+const SequenceForm = lazyExport(loadSequence, 'Form');
+const SequenceResult = lazyExport(loadSequence, 'Result');
+const NPCForm = lazyExport(loadNpcMovements, 'Form');
+const NPCResult = lazyExport(loadNpcMovements, 'Result');
+const StatsInfo = lazyExport(loadStats, 'StatsInfo');
+const StartingStatsForm = lazyExport(loadStats, 'StartingStatsForm');
+const StartingStatsResult = lazyExport(loadStats, 'StartingStatsResult');
+const LevelUpsForm = lazyExport(loadStats, 'LevelUpsForm');
+const LevelUpsResult = lazyExport(loadStats, 'LevelUpsResult');
+const RNGFinder = lazyExport(() => import('features/rng-finder'));
+const Experience = lazyExport(() => import('features/experience'));
 const RunAssistantForm = lazyExport(loadRunAssistant, 'Form');
 const RunAssistantTool = lazyExport(loadRunAssistant, 'Tool');
 const ChinchironinForm = lazyExport(loadChinchironin, 'Form');
@@ -42,7 +49,7 @@ const App = () => {
       <Navbar />
       <ErrorBoundary resetKey={pathname + search}>
         <React.Suspense fallback={<Loader active inline="centered" />}>
-          <Route path="/" component={Home} exact={true} />
+          <Route path="/" render={() => <Home />} exact={true} />
           <Route path="/encounters" exact={true} render={() => <EncountersForm />} />
           <Route path="/encounters/result" exact={true} render={() => <EncounterResult />} />
           <Route path="/stats" exact={true} render={() => <StatsInfo />} />
@@ -54,10 +61,10 @@ const App = () => {
           />
           <Route path="/stats/level-ups" exact={true} render={() => <LevelUpsForm />} />
           <Route path="/stats/level-ups/result" exact={true} render={() => <LevelUpsResult />} />
-          <Route path="/sequence" exact={true} component={SequenceForm} />
-          <Route path="/sequence/result" exact={true} component={SequenceResult} />
-          <Route path="/npc" exact={true} component={NPCForm} />
-          <Route path="/npc/result" exact={true} component={NPCResult} />
+          <Route path="/sequence" exact={true} render={() => <SequenceForm />} />
+          <Route path="/sequence/result" exact={true} render={() => <SequenceResult />} />
+          <Route path="/npc" exact={true} render={() => <NPCForm />} />
+          <Route path="/npc/result" exact={true} render={() => <NPCResult />} />
           <Route path="/drops" exact={true} render={() => <ItemDropsForm />} />
           <Route path="/drops/result" exact={true} render={() => <ItemDropsResult />} />
           <Route path="/rngfinder" render={() => <RNGFinder />} />
