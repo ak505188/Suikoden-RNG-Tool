@@ -67,12 +67,12 @@ const ListSelector = ({ label, list, onSelect }) => (
 const DoubleListSelector = ({ options, list, handleChange }) => (
   <DoubleListSelectorDiv>
     <ListSelector
-      label="Add Enemies"
+      label="Add Fight"
       list={options}
       onSelect={(index) => handleChange([...list, index])}
     />
     <ListSelector
-      label="Remove Enemies"
+      label="Fights Seen"
       list={list.map((position) => options[position])}
       onSelect={(index) => handleChange(list.filter((_, i) => i !== index))}
     />

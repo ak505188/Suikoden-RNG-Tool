@@ -4,7 +4,7 @@ import { InputRNG } from 'shared/form/inputs';
 import { formationName } from 'suikoden-rng-lib/encounters';
 import { ENCOUNTER_AREAS, areaId, findAreaById } from 'shared/lib/encounters';
 import { Helpers } from 'suikoden-rng-lib';
-import { Container, Form } from 'semantic-ui-react';
+import { Button, Container, Form } from 'semantic-ui-react';
 import RNGFinderStatus from './Status';
 
 import findRNGWorker from './findRNG.worker.js?worker';
@@ -74,7 +74,7 @@ const RNGFinder = () => {
       <Form size="large" onSubmit={() => handleStart()}>
         <InputRNG value={rng} onChange={(e) => setRNG(Helpers.numToHexString(e.target.value))} />
         <Form.Dropdown
-          label="Areas"
+          label="Area"
           placeholder="Area"
           options={ENCOUNTER_AREAS.map((area) => ({
             key: areaId(area),
@@ -91,12 +91,22 @@ const RNGFinder = () => {
           list={fightList}
           options={findAreaById(selectedArea).encounters.map(formationName)}
         />
-        <Form.Button
-          style={{ marginBottom: '1em' }}
-          type="submit"
-          content="Find RNG Seed"
-          primary={true}
-        />
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: '1em',
+            marginBottom: '1em',
+          }}
+        >
+          <Button type="submit" primary={true} disabled={fightList.length < 2}>
+            Find RNG Seed
+          </Button>
+          {fightList.length < 2 && (
+            <span>{fightList.length === 0 ? 'Pick at least 2 fights' : 'Pick 1 more fight'}</span>
+          )}
+        </div>
       </Form>
       {(running || status.done) && (
         <RNGFinderStatus running={running} cancel={handleStop} {...status} />

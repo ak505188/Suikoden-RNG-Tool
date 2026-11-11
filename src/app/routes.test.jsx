@@ -151,12 +151,15 @@ describe('forms that need a selection', () => {
     return button;
   };
 
-  test.each(['/stats/starting-stats', '/stats/level-ups', '/encounters', '/runassist'])(
-    '%s keeps its submit button off until something is chosen',
-    async (path) => {
-      expect((await submit(path)).disabled).toBe(true);
-    },
-  );
+  test.each([
+    '/stats/starting-stats',
+    '/stats/level-ups',
+    '/encounters',
+    '/runassist',
+    '/rngfinder',
+  ])('%s keeps its submit button off until something is chosen', async (path) => {
+    expect((await submit(path)).disabled).toBe(true);
+  });
 
   test.each(['/sequence', '/npc', '/drops', '/chinchironin', '/assassin', '/kaku'])(
     '%s can be submitted straight away',
@@ -185,5 +188,39 @@ describe('the Realistic Mode checkbox', () => {
     expect(input.checked).toBe(false);
     clickLabel(container);
     expect(input.checked).toBe(true);
+  });
+});
+
+describe('the RNG Finder fight picker', () => {
+  const column = (container, label) =>
+    [...container.querySelectorAll('label')].find((l) => l.textContent === label)
+      .nextElementSibling;
+  const findButton = (container) => container.querySelector('button[type=submit]');
+  const add = (container, row) =>
+    act(() => column(container, 'Add Fight').querySelectorAll('button')[row].click());
+
+  test('Find RNG Seed waits for two fights and says how many are missing', async () => {
+    const container = await page('/rngfinder');
+    expect(findButton(container).disabled).toBe(true);
+    expect(container.textContent).toContain('Pick at least 2 fights');
+    add(container, 0);
+    expect(findButton(container).disabled).toBe(true);
+    expect(container.textContent).toContain('Pick 1 more fight');
+    add(container, 1);
+    expect(findButton(container).disabled).toBe(false);
+    expect(container.textContent).not.toContain('Pick ');
+  });
+
+  test('the picked fights are listed in order, and one can be taken back', async () => {
+    const container = await page('/rngfinder');
+    add(container, 2);
+    add(container, 0);
+    const seen = () =>
+      [...column(container, 'Fights Seen').querySelectorAll('button')].map((b) => b.textContent);
+    expect(seen()).toHaveLength(2);
+    const [first, second] = seen();
+    act(() => column(container, 'Fights Seen').querySelectorAll('button')[0].click());
+    expect(seen()).toEqual([second]);
+    expect(first).not.toBe(second);
   });
 });
