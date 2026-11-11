@@ -3,6 +3,7 @@ import { Simulate } from 'react-dom/test-utils';
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 import { act, render } from 'test/render';
 import ExperienceForm from './ExperienceForm';
+import { AUTOSAVE_KEY } from './autosave';
 
 beforeEach(() => localStorage.clear());
 afterEach(() => localStorage.clear());
@@ -194,5 +195,63 @@ describe('reordering', () => {
     act(() => Simulate.dragOver(th, { dataTransfer: dataTransfer() }));
     act(() => Simulate.drop(th, { dataTransfer: dataTransfer() }));
     expect(columns()).toEqual(['Cleo', 'Pahn']);
+  });
+});
+
+describe('saving automatically', () => {
+  // Opening the page again: the old one is replaced by a new one in the same place
+  const reopen = (container) => {
+    render(<p>elsewhere</p>, container);
+    return mount();
+  };
+
+  test('a reload brings back the plan, with who was sitting out', () => {
+    const first = mount();
+    first.addCharacters('Cleo', 'Pahn');
+    first.addFight();
+    first.addFight();
+    click(first.container.querySelectorAll('td.toggle')[1]);
+    const again = reopen(first.container);
+    expect(again.columns()).toEqual(['Cleo', 'Pahn']);
+    expect(again.rows()).toHaveLength(2);
+    const sitting = [...again.container.querySelectorAll('td.toggle')].map((c) =>
+      c.classList.contains('char_disabled'),
+    );
+    expect(sitting).toEqual([false, true, false, false]); // Pahn, in the first fight
+  });
+
+  test('a restored plan starts with nothing to undo', () => {
+    const first = mount();
+    first.addCharacters('Cleo');
+    first.addFight();
+    const again = reopen(first.container);
+    expect(button(again.container, 'Undo').disabled).toBe(true);
+  });
+
+  test('removing the last character forgets the plan', () => {
+    const first = mount();
+    first.addCharacters('Cleo');
+    first.addFight();
+    expect(localStorage.getItem(AUTOSAVE_KEY)).not.toBeNull();
+    click(first.container.querySelector('button.remove[title="Remove Cleo"]'));
+    expect(localStorage.getItem(AUTOSAVE_KEY)).toBeNull();
+    expect(reopen(first.container).container.querySelector('.experience-table')).toBeNull();
+  });
+
+  test('a saved plan that cannot be used is ignored', () => {
+    localStorage.setItem(AUTOSAVE_KEY, 'not json {');
+    expect(mount().container.querySelector('.experience-table')).toBeNull();
+    localStorage.setItem(AUTOSAVE_KEY, JSON.stringify({ characters: 'Cleo' }));
+    expect(mount().container.querySelector('.experience-table')).toBeNull();
+  });
+
+  test('it stays out of the Import list', () => {
+    const first = mount();
+    first.addCharacters('Cleo');
+    first.addFight();
+    click(button(first.container, 'Import'));
+    expect(document.querySelector('.ui.modal').textContent).toContain(
+      'Nothing saved in Local Storage',
+    );
   });
 });

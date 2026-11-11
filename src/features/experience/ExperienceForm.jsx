@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import { Button, Checkbox, Container, Form } from 'semantic-ui-react';
 import { Characters } from 'suikoden-rng-lib';
 import { formationName } from 'suikoden-rng-lib/encounters';
@@ -9,12 +9,28 @@ import ImportModal from 'shared/ui/ImportModal';
 
 import ExperienceResult from './ExperienceResult';
 import { MAX_PARTY_SIZE, MIN_PARTY_SIZE, isValidPartySize, normalizeImport } from './lib';
+import { loadAutosave, saveAutosave } from './autosave';
 import { emptyPlan, planActions, planData, planReducer } from './plan';
 import './Experience.css';
 
 const ExperienceForm = () => {
-  const [plan, dispatch] = useReducer(planReducer, emptyPlan);
+  // Starts from the plan the page had when it was last used, if there was one
+  const [plan, dispatch] = useReducer(planReducer, undefined, () => {
+    const saved = loadAutosave();
+    return saved
+      ? {
+          ...emptyPlan,
+          characters: saved.characters,
+          fights: saved.fights,
+          disabledCharacters: saved.disabled_characters,
+        }
+      : emptyPlan;
+  });
   const { characters, fights, disabledCharacters, undoStack } = plan;
+  useEffect(
+    () => saveAutosave({ characters, fights, disabledCharacters }),
+    [characters, fights, disabledCharacters],
+  );
   const [selectedCharacters, setSelectedCharacters] = useState([]);
   const [area, setArea] = useState('Cave of the Past');
   const [enemyGroup, setEnemyGroup] = useState(0);
