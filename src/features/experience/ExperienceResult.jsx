@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React from 'react';
 import {
   Container,
   Table,
@@ -18,126 +18,26 @@ import {
   isValidPartySize,
   parseLevel,
 } from './lib';
+import { planActions } from './plan';
+import { useReorder } from './useReorder';
 
 const ExperienceContainer = ({
   characters,
-  changeCharacters,
-  changeFight,
-  changeFights,
-  changeDisabledCharacters,
-  disabledCharacters,
   fights,
-  removeFight,
-  removeCharacter,
-  toggleFight,
-  toggleDisabledCharacter,
+  disabledCharacters,
   highlightLevelUps,
+  dispatch,
 }) => {
   const results = calculateLevels(characters, fights, disabledCharacters);
   const enabledFights = fights.filter((fight) => fight.enabled).length;
 
-  // --- Drag state ---
-  const dragColIndex = useRef(null);
-  const dragRowIndex = useRef(null);
-  const [dragOverCol, setDragOverCol] = useState(null);
-  const [dragOverRow, setDragOverRow] = useState(null);
-  const [draggingRow, setDraggingRow] = useState(null);
-
-  // --- Column (character) drag handlers ---
-  const onColDragStart = (index) => {
-    dragColIndex.current = index;
-  };
-
-  const onColDragOver = (e, index) => {
-    if (dragColIndex.current === null) return;
-    e.preventDefault();
-    setDragOverCol(index);
-  };
-
-  const onColDrop = (toIndex) => {
-    const fromIndex = dragColIndex.current;
-    if (fromIndex === null || fromIndex === toIndex) {
-      dragColIndex.current = null;
-      setDragOverCol(null);
-      return;
-    }
-
-    const reordered = [...characters];
-    const [moved] = reordered.splice(fromIndex, 1);
-    reordered.splice(toIndex, 0, moved);
-    changeCharacters(reordered);
-
-    dragColIndex.current = null;
-    setDragOverCol(null);
-  };
-
-  const onColDragEnd = () => {
-    dragColIndex.current = null;
-    setDragOverCol(null);
-  };
-
-  // --- Row (fight) drag handlers ---
-  const onRowDragStart = (index) => {
-    dragRowIndex.current = index;
-    // Dim the row after the drag has started, or the drag image would be dimmed too
-    setTimeout(() => setDraggingRow(index), 0);
-  };
-
-  const onRowDragOver = (e, index) => {
-    if (dragRowIndex.current === null) return;
-    e.preventDefault();
-    setDragOverRow(index);
-  };
-
-  const onRowDrop = (toIndex) => {
-    const fromIndex = dragRowIndex.current;
-    if (fromIndex === null || fromIndex === toIndex) {
-      dragRowIndex.current = null;
-      setDragOverRow(null);
-      setDraggingRow(null);
-      return;
-    }
-
-    // Reorder fights array
-    const reorderedFights = [...fights];
-    const [movedFight] = reorderedFights.splice(fromIndex, 1);
-    reorderedFights.splice(toIndex, 0, movedFight);
-
-    // Reorder disabledCharacters array in sync
-    const reorderedDisabled = [...disabledCharacters];
-    const [movedDisabled] = reorderedDisabled.splice(fromIndex, 1);
-    reorderedDisabled.splice(toIndex, 0, movedDisabled);
-
-    // Disabled characters are stored per fight, so they move with the fights
-    changeFights(reorderedFights);
-    changeDisabledCharacters(reorderedDisabled);
-
-    dragRowIndex.current = null;
-    setDragOverRow(null);
-    setDraggingRow(null);
-  };
-
-  const onRowDragEnd = () => {
-    dragRowIndex.current = null;
-    setDragOverRow(null);
-    setDraggingRow(null);
-  };
-
-  // --- Character level / remove ---
-  const changeCharacterLevel = (value, index) => {
-    const level = parseLevel(value);
-    const new_characters = [
-      ...characters.slice(0, index),
-      { ...characters[index], level },
-      ...characters.slice(index + 1),
-    ];
-    changeCharacters(new_characters);
-  };
+  // Characters are the columns, fights the rows; each can be dragged to a new place
+  const columnDrag = useReorder((from, to) => dispatch(planActions.moveCharacter(from, to)));
+  const rowDrag = useReorder((from, to) => dispatch(planActions.moveFight(from, to)));
 
   const changeFightPartySize = (party_size, index) => {
     if (!isValidPartySize(party_size)) return;
-    const new_fight = { ...fights[index], party_size: Number(party_size) };
-    changeFight(new_fight, index);
+    dispatch(planActions.changeFight(index, { ...fights[index], party_size: Number(party_size) }));
   };
 
   if (results.length <= 0) return null;
@@ -159,14 +59,15 @@ const ExperienceContainer = ({
               <HeaderCell
                 key={index}
                 character={character}
-                index={index}
-                changeCharacterLevel={changeCharacterLevel}
-                removeCharacter={removeCharacter}
-                isDragOver={dragOverCol === index}
-                onDragStart={() => onColDragStart(index)}
-                onDragOver={(e) => onColDragOver(e, index)}
-                onDrop={() => onColDrop(index)}
-                onDragEnd={onColDragEnd}
+                changeCharacterLevel={(value) =>
+                  dispatch(planActions.setCharacterLevel(index, parseLevel(value)))
+                }
+                removeCharacter={() => dispatch(planActions.removeCharacter(index))}
+                isDragOver={columnDrag.overIndex === index}
+                onDragStart={() => columnDrag.start(index)}
+                onDragOver={(e) => columnDrag.over(e, index)}
+                onDrop={() => columnDrag.drop(index)}
+                onDragEnd={columnDrag.end}
               />
             ))}
           </TableRow>
@@ -176,19 +77,19 @@ const ExperienceContainer = ({
           {results.map((result, index) => (
             <TableRow
               key={index}
-              onDragOver={(e) => onRowDragOver(e, index)}
-              onDrop={() => onRowDrop(index)}
+              onDragOver={(e) => rowDrag.over(e, index)}
+              onDrop={() => rowDrag.drop(index)}
               style={{
-                opacity: draggingRow === index ? 0.4 : 1,
-                outline: dragOverRow === index ? '1px dashed #2185d0' : undefined,
+                opacity: rowDrag.dragging === index ? 0.4 : 1,
+                outline: rowDrag.overIndex === index ? '1px dashed #2185d0' : undefined,
               }}
             >
               <TableCell key={`${result.enemy_group.name}-${index}`}>
                 <DragHandle
                   orientation="row"
                   label={`Drag to reorder ${result.enemy_group.name}`}
-                  onDragStart={() => onRowDragStart(index)}
-                  onDragEnd={onRowDragEnd}
+                  onDragStart={() => rowDrag.start(index)}
+                  onDragEnd={rowDrag.end}
                 />
                 <div>{result.enemy_group.name}</div>
                 <div className="cell_controls">
@@ -206,7 +107,7 @@ const ExperienceContainer = ({
                     className={`toggle ${result.enabled ? 'fight_enabled' : 'fight_disabled'}`}
                     title={`${result.enabled ? 'Disable' : 'Enable'} this fight`}
                     aria-label={`${result.enabled ? 'Disable' : 'Enable'} ${result.enemy_group.name}`}
-                    onClick={() => toggleFight(index)}
+                    onClick={() => dispatch(planActions.toggleFight(index))}
                   >
                     ●
                   </button>
@@ -214,7 +115,7 @@ const ExperienceContainer = ({
                     className="remove"
                     title="Remove this fight"
                     aria-label={`Remove ${result.enemy_group.name}`}
-                    onClick={() => removeFight(index)}
+                    onClick={() => dispatch(planActions.removeFight(index))}
                   >
                     ⊖
                   </button>
@@ -225,13 +126,14 @@ const ExperienceContainer = ({
                 <RowCell
                   key={character.name}
                   character={character}
-                  index={index}
                   enabled={result.enabled && !disabledCharacters[index].includes(character.name)}
-                  toggleDisabledCharacter={toggleDisabledCharacter}
+                  toggleDisabledCharacter={(name) =>
+                    dispatch(planActions.toggleDisabledCharacter(name, index))
+                  }
                   levelUp={highlightLevelUps && character.levelsGained > 0}
-                  isDragOver={dragOverCol === charIdx}
-                  onDragOver={(e) => onColDragOver(e, charIdx)}
-                  onDrop={() => onColDrop(charIdx)}
+                  isDragOver={columnDrag.overIndex === charIdx}
+                  onDragOver={(e) => columnDrag.over(e, charIdx)}
+                  onDrop={() => columnDrag.drop(charIdx)}
                 />
               ))}
             </TableRow>
@@ -272,7 +174,6 @@ const cellTitle = (character, enabled, levelUp) => {
 
 const RowCell = ({
   character,
-  index,
   levelUp,
   enabled,
   toggleDisabledCharacter,
@@ -291,7 +192,7 @@ const RowCell = ({
       role="button"
       aria-pressed={enabled}
       title={cellTitle(character, enabled, levelUp)}
-      onClick={() => toggleDisabledCharacter(character.name, index)}
+      onClick={() => toggleDisabledCharacter(character.name)}
       style={{
         outline: isDragOver ? '1px dashed #2185d0' : undefined,
       }}
@@ -303,7 +204,6 @@ const RowCell = ({
 
 const HeaderCell = ({
   character,
-  index,
   changeCharacterLevel,
   removeCharacter,
   isDragOver,
@@ -336,13 +236,13 @@ const HeaderCell = ({
           value={character.level}
           aria-label={`${character.name} level`}
           accepts={(text) => !Number.isNaN(parseFloat(text))}
-          onCommit={(text) => changeCharacterLevel(text, index)}
+          onCommit={changeCharacterLevel}
         />
         <button
           className="remove"
           title={`Remove ${character.name}`}
           aria-label={`Remove ${character.name}`}
-          onClick={() => removeCharacter(index)}
+          onClick={removeCharacter}
         >
           ⊖
         </button>

@@ -3,6 +3,7 @@ import {
   calculateLevels,
   clampNumber,
   isValidPartySize,
+  moveItem,
   normalizeImport,
   parseLevel,
   parsePartySize,
@@ -166,5 +167,59 @@ describe('levelsGained', () => {
       [0, 1],
     ]);
     expect(gains(characters, [fight([12], 6, false)], [[]])).toEqual([[0, 0]]);
+  });
+});
+
+describe('moveItem', () => {
+  test('moves an item forward or back and leaves the original list alone', () => {
+    const list = ['a', 'b', 'c', 'd'];
+    expect(moveItem(list, 0, 2)).toEqual(['b', 'c', 'a', 'd']);
+    expect(moveItem(list, 3, 1)).toEqual(['a', 'd', 'b', 'c']);
+    expect(moveItem(list, 1, 1)).toEqual(list);
+    expect(list).toEqual(['a', 'b', 'c', 'd']);
+  });
+});
+
+describe('normalizeImport checks what it is given', () => {
+  const good = () => ({
+    characters: [{ name: 'A', level: 3 }],
+    fights: [fight([12])],
+    disabled_characters: [[]],
+  });
+
+  test.each([
+    ['nothing', undefined],
+    ['text', 'plan'],
+    ['no characters', { fights: [] }],
+    ['no fights', { characters: [] }],
+    ['a character without a name', { characters: [{ level: 2 }], fights: [] }],
+    ['a fight without enemy levels', { characters: [], fights: [{ enabled: true }] }],
+  ])('rejects %s', (_name, data) => {
+    expect(() => normalizeImport(data)).toThrow('Not a saved EXP plan');
+  });
+
+  test('a missing disabled_characters list becomes one empty list per fight', () => {
+    const data = { ...good(), fights: [fight([1]), fight([2])] };
+    delete data.disabled_characters;
+    expect(normalizeImport(data).disabled_characters).toEqual([[], []]);
+  });
+
+  test('a short disabled_characters list is filled in, and a saved one is kept', () => {
+    const data = {
+      ...good(),
+      fights: [fight([1]), fight([2])],
+      disabled_characters: [['A']],
+    };
+    expect(normalizeImport(data).disabled_characters).toEqual([['A'], []]);
+  });
+
+  test('a fight saved without enabled counts as enabled, and false stays false', () => {
+    const noFlag = { enemy_group: { name: 'x', levels: [1] }, party_size: 6 };
+    const data = {
+      ...good(),
+      fights: [noFlag, fight([1], 6, false)],
+      disabled_characters: [[], []],
+    };
+    expect(normalizeImport(data).fights.map((f) => f.enabled)).toEqual([true, false]);
   });
 });

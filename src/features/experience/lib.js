@@ -43,12 +43,39 @@ export function parsePartySize(value) {
   return Math.trunc(clampNumber(value, MIN_PARTY_SIZE, MAX_PARTY_SIZE, MAX_PARTY_SIZE));
 }
 
-// Cleans up a saved export so levels and party sizes are numbers in range (old exports have strings).
+// A copy of `list` with the item at `from` moved to position `to`.
+export const moveItem = (list, from, to) => {
+  const moved = [...list];
+  const [item] = moved.splice(from, 1);
+  moved.splice(to, 0, item);
+  return moved;
+};
+
+// Checks a saved export and cleans it up: levels and party sizes become numbers in range (old
+// exports have strings), a fight with no `enabled` counts as enabled, and a missing or short
+// disabled_characters list becomes one empty list per fight. Throws if it isn't a saved plan.
 export function normalizeImport(data) {
+  const isCharacter = (c) => c && typeof c.name === 'string';
+  const isFight = (f) => f && f.enemy_group && Array.isArray(f.enemy_group.levels);
+  if (
+    !data ||
+    !Array.isArray(data.characters) ||
+    !Array.isArray(data.fights) ||
+    !data.characters.every(isCharacter) ||
+    !data.fights.every(isFight)
+  ) {
+    throw new Error('Not a saved EXP plan: it needs characters and fights');
+  }
+  const saved = Array.isArray(data.disabled_characters) ? data.disabled_characters : [];
   return {
     ...data,
     characters: data.characters.map((c) => ({ ...c, level: parseLevel(c.level) })),
-    fights: data.fights.map((f) => ({ ...f, party_size: parsePartySize(f.party_size) })),
+    fights: data.fights.map((f) => ({
+      ...f,
+      party_size: parsePartySize(f.party_size),
+      enabled: f.enabled ?? true,
+    })),
+    disabled_characters: data.fights.map((_, i) => (Array.isArray(saved[i]) ? saved[i] : [])),
   };
 }
 

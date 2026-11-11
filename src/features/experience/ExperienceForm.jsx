@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useReducer, useState } from 'react';
 import { Button, Checkbox, Container, Form } from 'semantic-ui-react';
 import { Characters } from 'suikoden-rng-lib';
 import { formationName } from 'suikoden-rng-lib/encounters';
@@ -8,21 +8,17 @@ import ExportModal from 'shared/table/export-modal';
 import ImportModal from 'shared/ui/ImportModal';
 
 import ExperienceResult from './ExperienceResult';
-import { MAX_PARTY_SIZE, MIN_PARTY_SIZE, isValidPartySize, normalizeImport, pushUndo } from './lib';
+import { MAX_PARTY_SIZE, MIN_PARTY_SIZE, isValidPartySize, normalizeImport } from './lib';
+import { emptyPlan, planActions, planData, planReducer } from './plan';
 import './Experience.css';
 
 const ExperienceForm = () => {
-  const [characters, setCharacters] = useState([]);
+  const [plan, dispatch] = useReducer(planReducer, emptyPlan);
+  const { characters, fights, disabledCharacters, undoStack } = plan;
   const [selectedCharacters, setSelectedCharacters] = useState([]);
   const [area, setArea] = useState('Cave of the Past');
-  const [fights, setFights] = useState([]);
   const [enemyGroup, setEnemyGroup] = useState(0);
   const [partySize, setPartySize] = useState(6);
-  const [disabledCharacters, setDisabledCharacters] = useState([]);
-
-  // Each entry is the whole plan as it was before a removal or an import, so undoing restores
-  // exactly what was there (including which characters were disabled in each fight).
-  const [undoStack, setUndoStack] = useState([]);
   const [highlightLevelUps, setHighlightLevelUps] = useState(false);
 
   // Nothing to undo on a fresh page, but if the last character was just removed the table is empty
@@ -32,103 +28,27 @@ const ExperienceForm = () => {
   const partySizeValid = isValidPartySize(partySize);
   const selected_character_names = characters.map((character) => character.name);
 
-  const changeCharacters = (chars) => setCharacters(chars);
-
-  const rememberForUndo = (label) =>
-    setUndoStack((stack) => pushUndo(stack, { label, characters, fights, disabledCharacters }));
-
-  const undo = () => {
-    const entry = undoStack[undoStack.length - 1];
-    if (!entry) return;
-    setCharacters(entry.characters);
-    setDisabledCharacters(entry.disabledCharacters);
-    setFights(entry.fights);
-    setUndoStack((stack) => stack.slice(0, -1));
-  };
-
-  const importData = (imported) => {
-    if (characters.length > 0 || fights.length > 0) rememberForUndo('import');
-    const data = normalizeImport(imported);
-    setCharacters(data.characters);
-    setDisabledCharacters(data.disabled_characters);
-    // React renders once after all of these, so the results never see fights without their characters
-    setFights(data.fights);
-  };
+  // Checks the file first, so one that isn't a plan changes nothing (ImportModal shows the error)
+  const importData = (imported) => dispatch(planActions.importPlan(normalizeImport(imported)));
 
   const addCharacters = () => {
-    const new_characters = selectedCharacters.map((name) => ({ name, level: 1 }));
+    dispatch(planActions.addCharacters(selectedCharacters));
     setSelectedCharacters([]);
-    setCharacters([...characters, ...new_characters]);
   };
 
   const addFight = () => {
     if (!partySizeValid) return;
     const { formation } = areaFormations(findAreaById(area))[enemyGroup];
-    const enemy_group = {
-      name: formationName(formation),
-      levels: formationLevels(formation),
-    };
-    const fight = {
-      enemy_group,
-      party_size: Number(partySize),
-      enabled: true,
-    };
-    setFights([...fights, fight]);
-
-    const new_disabled_characters =
-      disabledCharacters.length > 0 ? disabledCharacters[disabledCharacters.length - 1] : [];
-    setDisabledCharacters([...disabledCharacters, new_disabled_characters]);
-  };
-
-  const toggleDisabledCharacter = (character_name, fight_index) => {
-    const disabled_characters = disabledCharacters[fight_index];
-    const disabled_character_index = disabled_characters.indexOf(character_name);
-    if (disabled_character_index === -1) {
-      setDisabledCharacters((prevDisabledCharacters) => [
-        ...prevDisabledCharacters.slice(0, fight_index),
-        [...disabled_characters, character_name],
-        ...prevDisabledCharacters.slice(fight_index + 1),
-      ]);
-    } else {
-      setDisabledCharacters((prevDisabledCharacters) => [
-        ...prevDisabledCharacters.slice(0, fight_index),
-        [
-          ...disabled_characters.slice(0, disabled_character_index),
-          ...disabled_characters.slice(disabled_character_index + 1),
-        ],
-        ...prevDisabledCharacters.slice(fight_index + 1),
-      ]);
-    }
-  };
-
-  const removeCharacter = (index) => {
-    rememberForUndo(`removed ${characters[index].name}`);
-    setCharacters([...characters.slice(0, index), ...characters.slice(index + 1)]);
-  };
-
-  const removeFight = (index) => {
-    rememberForUndo(`removed ${fights[index].enemy_group.name}`);
-    setFights((prevFights) => [...prevFights.slice(0, index), ...prevFights.slice(index + 1)]);
-    setDisabledCharacters((prevDisabledCharacters) => [
-      ...prevDisabledCharacters.slice(0, index),
-      ...prevDisabledCharacters.slice(index + 1),
-    ]);
-  };
-
-  const changeFight = (fight, index) => {
-    setFights((prevFights) => [
-      ...prevFights.slice(0, index),
-      fight,
-      ...prevFights.slice(index + 1),
-    ]);
-  };
-
-  const toggleFight = (index) => {
-    setFights((prevFights) => [
-      ...prevFights.slice(0, index),
-      { ...prevFights[index], enabled: !prevFights[index].enabled },
-      ...prevFights.slice(index + 1),
-    ]);
+    dispatch(
+      planActions.addFight({
+        enemy_group: {
+          name: formationName(formation),
+          levels: formationLevels(formation),
+        },
+        party_size: Number(partySize),
+        enabled: true,
+      }),
+    );
   };
 
   return (
@@ -214,7 +134,7 @@ const ExperienceForm = () => {
               )}
               {characters.length > 0 && (
                 <ExportModal
-                  data={{ characters, fights, disabled_characters: disabledCharacters }}
+                  data={planData(plan)}
                   local_storage_prefix="exp"
                   trigger={<Button primary>Export</Button>}
                 />
@@ -227,7 +147,7 @@ const ExperienceForm = () => {
                     undoStack.length > 0 ? `Undo: ${undoStack[undoStack.length - 1].label}` : ''
                   }
                   disabled={undoStack.length === 0}
-                  onClick={undo}
+                  onClick={() => dispatch(planActions.undo())}
                 />
               )}
             </Form.Field>
@@ -237,17 +157,10 @@ const ExperienceForm = () => {
       {characters.length > 0 && (
         <ExperienceResult
           characters={characters}
-          changeCharacters={changeCharacters}
-          changeFight={changeFight}
-          changeFights={(fights) => setFights(fights)}
-          changeDisabledCharacters={setDisabledCharacters}
           fights={fights}
           disabledCharacters={disabledCharacters}
-          removeFight={removeFight}
-          removeCharacter={removeCharacter}
           highlightLevelUps={highlightLevelUps}
-          toggleDisabledCharacter={toggleDisabledCharacter}
-          toggleFight={toggleFight}
+          dispatch={dispatch}
         />
       )}
     </Container>
