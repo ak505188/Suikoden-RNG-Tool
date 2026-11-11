@@ -29,15 +29,9 @@ const RunAssistantTable = (props) => {
     ...fight,
     enemyGroup: fight.enemyGroup.name,
     enemyGroupImage: (
-      <div style={{ height: props.rowHeight }} className="enemyGroupImage">
+      <div className="enemyGroupImage">
         {fight.enemyGroup.enemies.map((enemy, index) => (
-          <img
-            style={{ height: props.rowHeight }}
-            className="enemyImage"
-            alt=""
-            key={index}
-            src={enemy.img}
-          />
+          <img className="enemyImage" alt="" key={index} src={enemy.img} />
         ))}
       </div>
     ),
@@ -48,7 +42,11 @@ const RunAssistantTable = (props) => {
   }));
 
   return (
-    <Container textAlign="center" className="run-assistant-table">
+    <Container
+      textAlign="center"
+      className="run-assistant-table"
+      style={{ '--row-height': `${props.rowHeight}px` }}
+    >
       <VirtTable
         currentRow={props.currentRow}
         columns={columns}

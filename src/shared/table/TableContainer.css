@@ -1,7 +1,10 @@
 /* The row above a table: filter at the left, then Export and the column choice */
+/* --table-width and --toolbar-height are set by the table: the width is measured at runtime */
 .table-toolbar {
   display: flex;
   justify-content: space-between;
+  width: var(--table-width);
+  height: var(--toolbar-height);
 }
 
 .table-toolbar-filter {

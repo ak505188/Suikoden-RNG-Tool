@@ -8,6 +8,9 @@ import ColumnDropdown from './ColumnDropdown';
 import ExportModal from './export-modal';
 import './TableContainer.css';
 
+// The toolbar's height, which the table below it makes room for
+const TOOLBAR_HEIGHT = 38;
+
 const createDefaultRowsToRender = (data) => data.map((_row, index) => index);
 
 const TableContainer = (props) => {
@@ -38,7 +41,10 @@ const TableContainer = (props) => {
     <AutoSizer>
       {({ height, width }) => (
         <React.Fragment>
-          <div className="table-toolbar" style={{ width, height: 38 }}>
+          <div
+            className="table-toolbar"
+            style={{ '--table-width': `${width}px`, '--toolbar-height': `${TOOLBAR_HEIGHT}px` }}
+          >
             {props.filter !== false ? (
               <div className="table-toolbar-filter">
                 <Filter
@@ -55,7 +61,7 @@ const TableContainer = (props) => {
             currentRow={props.currentRow}
             columns={columns}
             data={data}
-            height={height - 38}
+            height={height - TOOLBAR_HEIGHT}
             width={width}
             headerHeight={props.headerHeight || 30}
             rowHeight={props.rowHeight || 30}

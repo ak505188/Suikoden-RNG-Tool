@@ -6,21 +6,6 @@ body {
   height: 100vh;
 }
 
-div.enemyGroupImage {
-  display: flex;
-  width: 100%;
-}
-
-div.enemyGroupImage,
-img.enemyImage {
-  height: 100%;
-  object-fit: scale-down;
-}
-
-img.enemyImage {
-  width: 16%;
-}
-
 /* The page: the navbar above, then one tool filling the rest of the height */
 .app {
   display: flex;

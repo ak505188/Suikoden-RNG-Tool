@@ -3,3 +3,20 @@
   display: block;
   height: 100%;
 }
+
+/* The enemy pictures column of the table: as tall as a row, whose height is set from the config
+   (--row-height, on the container above) */
+div.enemyGroupImage {
+  display: flex;
+  width: 100%;
+}
+
+div.enemyGroupImage,
+img.enemyImage {
+  height: var(--row-height);
+  object-fit: scale-down;
+}
+
+img.enemyImage {
+  width: 16%;
+}
