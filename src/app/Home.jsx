@@ -73,7 +73,7 @@ const Home = () => {
       </Segment>
       <Segment>
         <Header>
-          <a href="https://github.com/ak505188/SuikodenRNG-React/tree/master">Github Repository</a>
+          <a href="https://github.com/ak505188/Suikoden-RNG-Tool/tree/master">Github Repository</a>
         </Header>
         <p>
           This webapp's Github repository. README details how the game calculates most things RNG
