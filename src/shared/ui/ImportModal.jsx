@@ -13,26 +13,46 @@ import {
 const ImportModal = ({ local_storage_prefix, importData, trigger }) => {
   const fileInputRef = useRef(null);
   const [imports, setImports] = useState(getLocalStorageByPrefix(local_storage_prefix));
+  const [error, setError] = useState(null);
 
-  const refresh = () => setImports(getLocalStorageByPrefix(local_storage_prefix));
+  const refresh = () => {
+    setImports(getLocalStorageByPrefix(local_storage_prefix));
+    setError(null);
+  };
 
   const clearLocalStorageKey = (key) => {
     localStorage.removeItem(key);
     refresh();
   };
 
-  const handleImport = (data) => importData(data);
+  // Whatever was saved or chosen may not be something importData understands
+  const handleImport = (data, source) => {
+    try {
+      importData(data);
+      setError(null);
+    } catch {
+      setError(`${source} isn't something that can be imported.`);
+    }
+  };
 
   const fileInputHandleChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const json = JSON.parse(event.target.result);
-        handleImport(json);
-      };
-      reader.readAsText(file);
-    }
+    const input = e.target;
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      let json;
+      try {
+        json = JSON.parse(event.target.result);
+      } catch {
+        setError(`${file.name} isn't valid JSON.`);
+        return;
+      }
+      handleImport(json, file.name);
+    };
+    reader.onerror = () => setError(`${file.name} couldn't be read.`);
+    reader.readAsText(file);
+    input.value = ''; // so choosing the same file again still counts as a change
   };
 
   return (
@@ -40,6 +60,7 @@ const ImportModal = ({ local_storage_prefix, importData, trigger }) => {
       <Modal.Header>Import</Modal.Header>
       <Modal.Content>
         <Form>
+          {error && <Message negative content={error} onDismiss={() => setError(null)} />}
           {Object.keys(imports).length > 0 ? (
             <Table celled definition>
               <TableBody>
@@ -47,10 +68,15 @@ const ImportModal = ({ local_storage_prefix, importData, trigger }) => {
                   <TableRow key={index}>
                     <TableCell collapsing>{stripPrefix(name, local_storage_prefix)}</TableCell>
                     <TableCell>
-                      {data.characters.map((character) => character.name).join(', ')}
+                      {Array.isArray(data?.characters)
+                        ? data.characters.map((character) => character.name).join(', ')
+                        : 'Unreadable entry'}
                     </TableCell>
                     <TableCell collapsing>
-                      <Button content="Import" onClick={() => handleImport(data)} />
+                      <Button
+                        content="Import"
+                        onClick={() => handleImport(data, stripPrefix(name, local_storage_prefix))}
+                      />
                     </TableCell>
                     <TableCell collapsing>
                       <Button content="Delete" onClick={() => clearLocalStorageKey(name)} />
