@@ -1,96 +1,46 @@
 import * as React from 'react';
-import styled from 'styled-components';
+import './EnemyButtons.css';
 
-const EnemyImage = styled.img`
-  padding: 0 2px;
-  max-height: 56px;
-`;
-
-export const EnemyButtonText = styled.button`
-  &&&&& {
-    width: 100%;
-    flex: 0 0 auto;
-    margin: 2px 0;
-  }
-`;
-
-const EnemyButtonImage = styled.div`
-  &&&&& {
-    height: 60px;
-    width: 100%;
-    margin: 2px 0;
-    flex: 0 0 auto;
-    border: none;
-    border-radius: 0.28571429rem;
-    padding: 2px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-`;
-
-const CompactEnemyButtonText = styled.div`
-  &&&&& {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 60px;
-    flex: 1;
-    margin: 0 2px;
-  }
-`;
-
-const CompactEnemyButtonImage = styled.div`
-  &&&&& {
-    height: 60px;
-    margin: 0 2px;
-    flex: 1;
-    border: none;
-    border-radius: 0.28571429rem;
-    padding: 2px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-`;
+const EnemyImages = ({ enemyGroup }) =>
+  enemyGroup.enemies.map((enemy, index) => (
+    <img className="enemy-image" key={index} src={enemy.img} alt="" />
+  ));
 
 export const CompactEnemyButton = (props) => {
   // useImages and enemyGroup are for this component, not the button element
   const { useImages, enemyGroup, ...buttonProps } = props;
   if (useImages) {
     return (
-      <CompactEnemyButtonImage className="ui button" role="button" {...buttonProps}>
-        {enemyGroup.enemies.map((enemy, index) => (
-          <EnemyImage key={index} src={enemy.img} />
-        ))}
-      </CompactEnemyButtonImage>
+      <div
+        className="ui button compact-enemy-button compact-enemy-button-images"
+        role="button"
+        {...buttonProps}
+      >
+        <EnemyImages enemyGroup={enemyGroup} />
+      </div>
     );
   }
   return (
-    <CompactEnemyButtonText className="ui button" role="button" {...buttonProps}>
+    <div className="ui button compact-enemy-button" role="button" {...buttonProps}>
       {enemyGroup.name}
-    </CompactEnemyButtonText>
+    </div>
   );
 };
 
 const EnemyButton = (props) => {
-  // useImages and enemyGroup are for this component, not the button element
   const { useImages, enemyGroup, ...buttonProps } = props;
   if (useImages) {
     return (
-      <EnemyButtonImage className="ui button" role="button" {...buttonProps}>
-        {enemyGroup.enemies.map((enemy, index) => (
-          <EnemyImage key={index} src={enemy.img} />
-        ))}
-      </EnemyButtonImage>
-    );
-  } else {
-    return (
-      <EnemyButtonText className="ui button" role="button" {...buttonProps}>
-        {enemyGroup.name}
-      </EnemyButtonText>
+      <div className="ui button enemy-button enemy-button-images" role="button" {...buttonProps}>
+        <EnemyImages enemyGroup={enemyGroup} />
+      </div>
     );
   }
+  return (
+    <button className="ui button enemy-button" role="button" {...buttonProps}>
+      {enemyGroup.name}
+    </button>
+  );
 };
 
 export default EnemyButton;

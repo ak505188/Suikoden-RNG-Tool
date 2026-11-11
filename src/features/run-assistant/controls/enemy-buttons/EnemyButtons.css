@@ -1,0 +1,46 @@
+/* The enemy-formation buttons. Semantic styles .ui.buttons .ui.button, so these selectors repeat
+   that to win over it. */
+
+.even-columns {
+  display: flex;
+  justify-content: space-around;
+}
+
+.enemy-image {
+  padding: 0 2px;
+  max-height: 56px;
+}
+
+/* A column of buttons, one under another */
+.ui.buttons .ui.button.enemy-button {
+  width: 100%;
+  flex: 0 0 auto;
+  margin: 2px 0;
+}
+
+/* The same, showing the enemies' pictures instead of a name */
+.ui.buttons .ui.button.enemy-button.enemy-button-images {
+  height: 60px;
+  border: none;
+  border-radius: 0.28571429rem;
+  padding: 2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Compact mode: a row of buttons filling the width */
+.ui.buttons .ui.button.compact-enemy-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60px;
+  flex: 1;
+  margin: 0 2px;
+}
+
+.ui.buttons .ui.button.compact-enemy-button.compact-enemy-button-images {
+  border: none;
+  border-radius: 0.28571429rem;
+  padding: 2px;
+}
