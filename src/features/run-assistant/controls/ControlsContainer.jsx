@@ -7,22 +7,15 @@ import {
   jumpRNG,
   nextFight,
   previousFight,
-  findFight,
   switchArea,
   togglePatternMode,
 } from '../actions/runAssistant';
-import { findNextFight, getCurrentArea, getCurrentFight, getFight } from '../reducers/runAssistant';
+import { getCurrentArea } from '../reducers/runAssistant';
 import ConfigModal from './modal/ConfigModal';
-import styled from 'styled-components';
 
 const mapStateToProps = (state) => ({
   areas: state.RunAssistant.areas.map((area) => area.name),
   currentArea: getCurrentArea(state.RunAssistant).name,
-  findNextFight: () => {
-    const index = findNextFight(state.RunAssistant);
-    return index > -1 ? getFight(state.RunAssistant, index) : null;
-  },
-  getCurrentFight: () => getCurrentFight(state.RunAssistant),
   patternMode: state.RunAssistant.patternMode,
   compactMode: state.config.compactMode,
   hotkeys: state.config.hotkeys,
@@ -32,78 +25,66 @@ const mapDispatchToProps = {
   jumpRNG,
   nextFight,
   previousFight,
-  findFight,
   switchArea,
   togglePatternMode,
 };
 
-class Controls extends React.Component {
-  componentDidMount() {
-    document.addEventListener('keydown', this.handleHotkeyNextFight);
-    document.addEventListener('keydown', this.handleHotkeyPrevFight);
-  }
+const Controls = ({
+  areas,
+  currentArea,
+  patternMode,
+  compactMode,
+  hotkeys,
+  jumpRNG,
+  nextFight,
+  previousFight,
+  switchArea,
+  togglePatternMode,
+}) => {
+  // The hotkeys work anywhere on the page except while typing in an input
+  React.useEffect(() => {
+    const handleHotkey = (event) => {
+      if (event.target.tagName.toLowerCase() === 'input') return;
+      if (event.key === hotkeys.nextFight) nextFight();
+      if (event.key === hotkeys.prevFight) previousFight();
+    };
+    document.addEventListener('keydown', handleHotkey);
+    return () => document.removeEventListener('keydown', handleHotkey);
+  }, [hotkeys.nextFight, hotkeys.prevFight, nextFight, previousFight]);
 
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.handleHotkeyNextFight);
-    document.removeEventListener('keydown', this.handleHotkeyPrevFight);
-  }
+  return (
+    <Container>
+      {compactMode ? <CompactEnemyButtons /> : <EnemyButtons />}
+      <Segment style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Dropdown
+          label="Areas"
+          placeholder="Area"
+          value={currentArea}
+          options={areas.map((name) => {
+            return { key: name, value: name, text: name };
+          })}
+          onChange={(_e, data) => {
+            switchArea(data.value);
+          }}
+          selection={true}
+        />
+        <Checkbox
+          style={{ display: 'flex', margin: '0 1em', alignItems: 'center' }}
+          label="Pattern Mode"
+          checked={patternMode}
+          onChange={() => togglePatternMode()}
+        />
+        <ConfigModal trigger={<Button>Config</Button>} />
+        <span style={{ display: 'flex', flex: 1, justifyContent: 'flex-end' }}>
+          <Button content="+100" onClick={() => jumpRNG(100)} />
+          <Button content="+500" onClick={() => jumpRNG(500)} />
+          <Button content="+1000" onClick={() => jumpRNG(1000)} />
+          <Button content="Previous" onClick={() => previousFight()} />
+          <Button content="Next" onClick={() => nextFight()} />
+        </span>
+      </Segment>
+    </Container>
+  );
+};
 
-  handleHotkeyNextFight = (event) => {
-    if (event.target.tagName.toLowerCase() !== 'input') {
-      if (event.key === this.props.hotkeys.nextFight) {
-        this.props.nextFight();
-      }
-    }
-  };
-
-  handleHotkeyPrevFight = (event) => {
-    if (event.target.tagName.toLowerCase() !== 'input') {
-      if (event.key === this.props.hotkeys.prevFight) {
-        this.props.previousFight();
-      }
-    }
-  };
-
-  render() {
-    const { areas, currentArea, compactMode } = this.props;
-    return (
-      <Container className={this.props.className}>
-        {compactMode ? <CompactEnemyButtons /> : <EnemyButtons />}
-        <Segment style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Dropdown
-            label="Areas"
-            placeholder="Area"
-            value={currentArea}
-            options={areas.map((name) => {
-              return { key: name, value: name, text: name };
-            })}
-            onChange={(_e, data) => {
-              this.props.switchArea(data.value);
-            }}
-            selection={true}
-          />
-          <Checkbox
-            style={{ display: 'flex', margin: '0 1em', alignItems: 'center' }}
-            label="Pattern Mode"
-            checked={this.props.patternMode}
-            onChange={() => this.props.togglePatternMode()}
-          />
-          <ConfigModal trigger={<Button>Config</Button>} />
-          <span style={{ display: 'flex', flex: 1, justifyContent: 'flex-end' }}>
-            <Button content="+100" onClick={() => this.props.jumpRNG(100)} />
-            <Button content="+500" onClick={() => this.props.jumpRNG(500)} />
-            <Button content="+1000" onClick={() => this.props.jumpRNG(1000)} />
-            <Button content="Previous" onClick={() => this.props.previousFight()} />
-            <Button content="Next" onClick={() => this.props.nextFight()} />
-          </span>
-        </Segment>
-      </Container>
-    );
-  }
-}
-
-const ConnectedControls = connect(mapStateToProps, mapDispatchToProps)(Controls);
-
-const StyledControls = styled(ConnectedControls)``;
-
-export default StyledControls;
+export default connect(mapStateToProps, mapDispatchToProps)(Controls);
