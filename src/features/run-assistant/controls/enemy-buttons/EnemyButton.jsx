@@ -55,10 +55,11 @@ const CompactEnemyButtonImage = styled.div`
 `;
 
 export const CompactEnemyButton = (props) => {
-  const { useImages, enemyGroup } = props;
+  // useImages and enemyGroup are for this component, not the button element
+  const { useImages, enemyGroup, ...buttonProps } = props;
   if (useImages) {
     return (
-      <CompactEnemyButtonImage className="ui button" role="button" {...props}>
+      <CompactEnemyButtonImage className="ui button" role="button" {...buttonProps}>
         {enemyGroup.enemies.map((enemy, index) => (
           <EnemyImage key={index} src={enemy.img} />
         ))}
@@ -66,17 +67,18 @@ export const CompactEnemyButton = (props) => {
     );
   }
   return (
-    <CompactEnemyButtonText className="ui button" role="button" {...props}>
+    <CompactEnemyButtonText className="ui button" role="button" {...buttonProps}>
       {enemyGroup.name}
     </CompactEnemyButtonText>
   );
 };
 
 const EnemyButton = (props) => {
-  const { useImages, enemyGroup } = props;
+  // useImages and enemyGroup are for this component, not the button element
+  const { useImages, enemyGroup, ...buttonProps } = props;
   if (useImages) {
     return (
-      <EnemyButtonImage className="ui button" role="button" {...props}>
+      <EnemyButtonImage className="ui button" role="button" {...buttonProps}>
         {enemyGroup.enemies.map((enemy, index) => (
           <EnemyImage key={index} src={enemy.img} />
         ))}
@@ -84,7 +86,7 @@ const EnemyButton = (props) => {
     );
   } else {
     return (
-      <EnemyButtonText className="ui button" role="button" {...props}>
+      <EnemyButtonText className="ui button" role="button" {...buttonProps}>
         {enemyGroup.name}
       </EnemyButtonText>
     );
