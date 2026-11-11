@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { unstable_batchedUpdates } from 'react-dom';
 import { Button, Checkbox, Container, Form } from 'semantic-ui-react';
 import { Characters } from 'suikoden-rng-lib';
 import { formationName } from 'suikoden-rng-lib/encounters';
@@ -41,12 +40,10 @@ const ExperienceForm = () => {
   const undo = () => {
     const entry = undoStack[undoStack.length - 1];
     if (!entry) return;
-    unstable_batchedUpdates(() => {
-      setCharacters(entry.characters);
-      setDisabledCharacters(entry.disabledCharacters);
-      setFights(entry.fights);
-      setUndoStack((stack) => stack.slice(0, -1));
-    });
+    setCharacters(entry.characters);
+    setDisabledCharacters(entry.disabledCharacters);
+    setFights(entry.fights);
+    setUndoStack((stack) => stack.slice(0, -1));
   };
 
   const importData = (imported) => {
@@ -54,8 +51,7 @@ const ExperienceForm = () => {
     const data = normalizeImport(imported);
     setCharacters(data.characters);
     setDisabledCharacters(data.disabled_characters);
-    // Fights has to be set last, so you don't error calculating results.
-    // Render updates on each setState, so these don't run concurrently.
+    // React renders once after all of these, so the results never see fights without their characters
     setFights(data.fights);
   };
 
