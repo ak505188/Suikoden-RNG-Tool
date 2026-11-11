@@ -63,3 +63,35 @@ describe('table column toggling', () => {
     expect(headers()).toEqual(['Beta']);
   });
 });
+
+describe('table filtering', () => {
+  const people = [
+    { a: 'Pahn', b: 'Cave', c: 1 },
+    { a: 'Cleo', b: 'Forest', c: 2 },
+    { a: 'Flik', b: 'Cave', c: 3 },
+  ];
+  const shownRows = () =>
+    [...container.querySelectorAll('.ReactVirtualized__Table__row')].map((row) =>
+      row.textContent.trim(),
+    );
+  const typeFilter = async (text) => {
+    const input = container.querySelector('input[placeholder=Filter]');
+    act(() => Simulate.change(input, { target: { value: text } }));
+    await act(async () => {});
+  };
+
+  test('shows every row until you type, then only the rows that match', async () => {
+    container = mount(<TableContainer columns={makeColumns()} data={people} />);
+    await act(async () => {});
+    expect(shownRows()).toHaveLength(3);
+    await typeFilter('cave');
+    expect(shownRows()).toEqual(['Pahn', 'Flik'].map((name) => expect.stringContaining(name)));
+    await typeFilter('');
+    expect(shownRows()).toHaveLength(3);
+  });
+
+  test('filter={false} leaves the filter box out', () => {
+    container = mount(<TableContainer columns={makeColumns()} data={people} filter={false} />);
+    expect(container.querySelector('input[placeholder=Filter]')).toBeNull();
+  });
+});
