@@ -23,15 +23,20 @@ export const render = (element, container) => {
   return target.container;
 };
 
-// Like render(), for pages whose code loads lazily: waits until the loading spinner has gone
-export const renderAsync = async (element, container) => {
-  const target = rootFor(container);
-  await act(async () => target.root.render(element));
-  for (let i = 0; i < 500 && target.container.querySelector('.ui.loader'); i++) {
+// Waits until a lazily loaded page's loading spinner has gone
+export const settle = async (container) => {
+  for (let i = 0; i < 500 && container.querySelector('.ui.loader'); i++) {
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 10));
     });
   }
+};
+
+// Like render(), for pages whose code loads lazily: waits until the loading spinner has gone
+export const renderAsync = async (element, container) => {
+  const target = rootFor(container);
+  await act(async () => target.root.render(element));
+  await settle(target.container);
   return target.container;
 };
 
