@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Menu } from 'semantic-ui-react';
 import { NavLink } from 'react-router-dom';
 
-const Routes = [
+export const Routes = [
   { name: 'Home', path: '/' },
   { name: 'Encounters', path: '/encounters' },
   { name: 'RNG Sequence', path: '/sequence' },

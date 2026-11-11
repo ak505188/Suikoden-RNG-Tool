@@ -32,6 +32,12 @@ const Home = () => {
       </Segment>
       <Segment>
         <Header>
+          <Link to="/npc">NPC Movements</Link>
+        </Header>
+        <p>Calculate whether NPCs move, and in which direction, over the coming RNG seeds.</p>
+      </Segment>
+      <Segment>
+        <Header>
           <Link to="/drops">Item Drops</Link>
         </Header>
         <p>Calculate what RNG seeds drop items based off a starting RNG seed and enemy group.</p>
@@ -41,6 +47,15 @@ const Home = () => {
           <Link to="/rngfinder">RNG Finder</Link>
         </Header>
         <p>Find (approximately) the current RNG seed based off a sequence of fights.</p>
+      </Segment>
+      <Segment>
+        <Header>
+          <Link to="/experience">Experience Planner</Link>
+        </Header>
+        <p>
+          Plan a run of fights and see how each character levels up. Drag fights and characters to
+          reorder, and click a level to sit that character out.
+        </p>
       </Segment>
       <Segment>
         <Header>
