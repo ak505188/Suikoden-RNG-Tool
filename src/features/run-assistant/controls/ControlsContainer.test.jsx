@@ -19,7 +19,7 @@ const mount = () => {
   const query = new URLSearchParams({
     rng: '18',
     iterations: '5000',
-    partylevel: '0',
+    partyLevel: '0',
     realistic: 'true',
     areas: 'Cave of the Past',
   }).toString();

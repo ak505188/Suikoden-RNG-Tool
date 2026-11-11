@@ -26,7 +26,7 @@ const Presenter = ({ data, rng }) => {
   const cellRenderer = (props) => {
     if (!props.dataKey.includes('kirkis_index')) return props.cellData;
     return (
-      <Link to={`/kaku/result?rng=${rng}&start_index=${props.cellData}&frames=900`}>
+      <Link to={`/kaku/result?rng=${rng}&startIndex=${props.cellData}&frames=900`}>
         {props.cellData}
       </Link>
     );

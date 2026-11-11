@@ -6,7 +6,7 @@ import { groupsOf } from './groups';
 const SCHEMA = {
   rng: int(),
   iterations: int(),
-  partylevel: int({ default: 0 }),
+  partyLevel: int({ default: 0, alias: 'partylevel' }),
   realistic: bool({ default: true }),
   areas: list(),
   index: int({ default: 0 }),
@@ -23,7 +23,7 @@ export function buildRunAssistantState(search) {
   if (unknown.length > 0) problems.push(`unknown area: ${unknown.join(', ')}`);
   if (problems.length > 0) return { state: null, problems };
 
-  const { rng, iterations, partylevel: partyLevel, realistic, index } = params;
+  const { rng, iterations, partyLevel, realistic, index } = params;
   const groups = areas.map(groupsOf);
 
   const fightsList = areas.map((area, i) =>

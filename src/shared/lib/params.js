@@ -1,6 +1,7 @@
 // Reads a result page's URL query against a schema, so a missing or bad value is reported as a
 // problem instead of becoming NaN or a crash further down. A parameter with no `default` is
-// required.
+// required. A parameter renamed since links were shared can keep its old name as an `alias`: the
+// old name is read when the new one is absent.
 //
 //   parseParams('?rng=0x12&iterations=100', { rng: int(), iterations: int(), offset: int({ default: 0 }) })
 //   -> { params: { rng: 18, iterations: 100, offset: 0 }, problems: [] }
@@ -18,7 +19,7 @@ export function parseParams(search, schema) {
   const problems = [];
 
   for (const [name, spec] of Object.entries(schema)) {
-    const raw = query.get(name);
+    const raw = query.get(name) ?? (spec.alias ? query.get(spec.alias) : null);
     if (raw === null || raw === '') {
       if ('default' in spec) params[name] = spec.default;
       else problems.push(`${name} is missing`);

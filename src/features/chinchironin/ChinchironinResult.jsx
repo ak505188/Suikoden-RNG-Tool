@@ -11,7 +11,7 @@ import { PLAYERS } from './lib';
 const SCHEMA = {
   rng: int(),
   iterations: int(),
-  frames_to_wait: int({ default: 203 }),
+  framesToWait: int({ default: 203, alias: 'frames_to_wait' }),
   player: oneOf(PLAYERS),
 };
 
@@ -23,7 +23,7 @@ const GenerateRollsResult = () => {
   const rng = new RNG(params.rng);
   const { iterations, player } = params;
   const is_tai_ho = player === PLAYERS[0];
-  const frames_to_advance = params.frames_to_wait;
+  const frames_to_advance = params.framesToWait;
   const data = [];
 
   if (player !== PLAYERS[2]) {

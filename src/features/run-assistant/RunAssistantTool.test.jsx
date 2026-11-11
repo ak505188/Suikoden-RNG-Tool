@@ -6,7 +6,7 @@ import { act, render } from 'test/render';
 import RunAssistantTool from './RunAssistantTool';
 
 const URL =
-  '/runassist/result?rng=18&iterations=2000&partylevel=0&realistic=true&areas=Cave+of+the+Past';
+  '/runassist/result?rng=18&iterations=2000&partyLevel=0&realistic=true&areas=Cave+of+the+Past';
 
 const mount = (url = URL) => {
   // A new element each time, so rendering again really re-renders

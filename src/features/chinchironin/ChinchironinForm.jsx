@@ -16,7 +16,7 @@ const ChinchironinForm = () => {
   const handleSubmit = submitTo(history, '/chinchironin/result', {
     rng,
     iterations,
-    frames_to_wait: framesToWait,
+    framesToWait,
     player,
   });
 

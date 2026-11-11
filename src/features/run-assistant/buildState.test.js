@@ -9,7 +9,7 @@ const query = (extra = {}) =>
   new URLSearchParams({
     rng: '18',
     iterations: '20000',
-    partylevel: '0',
+    partyLevel: '0',
     realistic: 'true',
     areas: 'Cave of the Past,Dragons Den',
     ...extra,
@@ -49,7 +49,7 @@ describe('buildRunAssistantState', () => {
 
   test('a missing party level counts as 0', () => {
     const params = new URLSearchParams(query());
-    params.delete('partylevel');
+    params.delete('partyLevel');
     const withoutLevel = buildRunAssistantState(params.toString()).state;
     expect(withoutLevel.fightsList[0].length).toBe(state.fightsList[0].length);
   });

@@ -19,7 +19,7 @@ export const InputIterations = ({ value, onChange }) => (
 export const InputPartyLevel = ({ value, onChange }) => (
   <Form.Input
     label="Party Level"
-    name="partylevel"
+    name="partyLevel"
     type="number"
     value={value}
     onChange={onChange}

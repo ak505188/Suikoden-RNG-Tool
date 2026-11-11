@@ -12,7 +12,7 @@ const SCHEMA = {
   rng: int(),
   iterations: int(),
   offset: int({ default: 0 }),
-  partylevel: int({ default: 0 }),
+  partyLevel: int({ default: 0, alias: 'partylevel' }),
   realistic: bool({ default: false }),
   areas: list(),
 };
@@ -26,7 +26,7 @@ const EncountersContainer = () => {
   if (problems.length > 0) return <InvalidLink problems={problems} formPath="/encounters" />;
 
   const rng = new RNG(params.rng);
-  const { iterations, offset, partylevel: partyLevel, realistic } = params;
+  const { iterations, offset, partyLevel, realistic } = params;
 
   const encounters = selectedAreas
     .map((area) =>

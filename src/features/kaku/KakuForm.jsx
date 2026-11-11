@@ -13,7 +13,7 @@ const KakuForm = () => {
 
   const handleSubmit = submitTo(history, '/kaku/result', {
     rng,
-    start_index: rngIndex,
+    startIndex: rngIndex,
     frames: framesToSimulate,
   });
 

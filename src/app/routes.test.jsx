@@ -44,8 +44,8 @@ const results = {
     unknown: { ...base, characters: 'Nobody', startingLevel: 1 },
   },
   '/encounters/result': {
-    good: { ...base, offset: 0, partylevel: 0, realistic: true, areas: 'Cave of the Past' },
-    bad: { ...base, offset: 0, partylevel: 0, realistic: true, areas: '' },
+    good: { ...base, offset: 0, partyLevel: 0, realistic: true, areas: 'Cave of the Past' },
+    bad: { ...base, offset: 0, partyLevel: 0, realistic: true, areas: '' },
     unknown: { ...base, areas: 'Nowhere' },
   },
   '/drops/result': {
@@ -54,17 +54,17 @@ const results = {
     unknown: { ...base, area: 'Nowhere', enemyGroup: 0 },
   },
   '/runassist/result': {
-    good: { ...base, iterations: 2000, partylevel: 0, realistic: true, areas: 'Cave of the Past' },
-    bad: { ...base, partylevel: 0, realistic: true, areas: '' },
+    good: { ...base, iterations: 2000, partyLevel: 0, realistic: true, areas: 'Cave of the Past' },
+    bad: { ...base, partyLevel: 0, realistic: true, areas: '' },
     unknown: { ...base, areas: 'Nowhere' },
   },
   '/chinchironin/result': {
-    good: { ...base, frames_to_wait: 203, player: 'Tai Ho' },
-    bad: { ...base, frames_to_wait: 203, player: '' },
-    unknown: { ...base, frames_to_wait: 203, player: 'Nobody' },
+    good: { ...base, framesToWait: 203, player: 'Tai Ho' },
+    bad: { ...base, framesToWait: 203, player: '' },
+    unknown: { ...base, framesToWait: 203, player: 'Nobody' },
   },
-  '/assassin/result': { good: { rng: '0x12', range_start: 0, range_end: 20 } },
-  '/kaku/result': { good: { rng: '0x12', start_index: 0, frames: 20 } },
+  '/assassin/result': { good: { rng: '0x12', rangeStart: 0, rangeEnd: 20 } },
+  '/kaku/result': { good: { rng: '0x12', startIndex: 0, frames: 20 } },
 };
 
 describe.each(Object.entries(results))('%s', (path, { good, bad, unknown }) => {
@@ -222,5 +222,28 @@ describe('the RNG Finder fight picker', () => {
     act(() => column(container, 'Fights Seen').querySelectorAll('button')[0].click());
     expect(seen()).toEqual([second]);
     expect(first).not.toBe(second);
+  });
+});
+
+describe('links made before the parameters were renamed', () => {
+  test.each([
+    [
+      '/encounters/result',
+      { rng: '0x12', iterations: 50, areas: 'Cave of the Past', partylevel: 0 },
+    ],
+    [
+      '/chinchironin/result',
+      { rng: '0x12', iterations: 50, player: 'Tai Ho', frames_to_wait: 203 },
+    ],
+    ['/assassin/result', { rng: '0x12', range_start: 0, range_end: 20 }],
+    ['/kaku/result', { rng: '0x12', start_index: 0, frames: 20 }],
+    [
+      '/runassist/result',
+      { rng: '0x12', iterations: 2000, areas: 'Cave of the Past', partylevel: 0 },
+    ],
+  ])('%s still opens with its old parameter names', async (path, params) => {
+    const text = (await page(path + query(params))).textContent;
+    expect(text).not.toContain(BROKEN);
+    expect(text).not.toContain(CRASHED);
   });
 });

@@ -70,4 +70,27 @@ describe('parseParams', () => {
   test('a list drops empty entries', () => {
     expect(parseParams('?areas=a,,b,', { areas: list() }).params.areas).toEqual(['a', 'b']);
   });
+
+  describe('a renamed parameter', () => {
+    const schema = { frames: int({ default: 5, alias: 'old_frames' }) };
+
+    test('is read by its new name', () => {
+      expect(parseParams('?frames=12', schema).params).toEqual({ frames: 12 });
+    });
+
+    test('is read by its old name when the new one is not there', () => {
+      expect(parseParams('?old_frames=12', schema).params).toEqual({ frames: 12 });
+    });
+
+    test('prefers the new name when both are there', () => {
+      expect(parseParams('?frames=3&old_frames=12', schema).params).toEqual({ frames: 3 });
+    });
+
+    test('falls back to the default when neither is there, and reports a bad old value by the new name', () => {
+      expect(parseParams('', schema).params).toEqual({ frames: 5 });
+      expect(parseParams('?old_frames=soon', schema).problems).toEqual([
+        'frames is not a number ("soon")',
+      ]);
+    });
+  });
 });

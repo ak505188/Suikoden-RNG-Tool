@@ -11,7 +11,7 @@ const EncountersForm = () => {
   const [rng, setRNG] = useState(Helpers.numToHexString(0x12));
   const [iterations, setIterations] = useState(1000);
   const [offset, setOffset] = useState(0);
-  const [partylevel, setPartylevel] = useState(0);
+  const [partyLevel, setPartyLevel] = useState(0);
   const [realistic, setRealistic] = useState(true);
   const [selectedAreas, setSelectedAreas] = useState([]);
 
@@ -19,7 +19,7 @@ const EncountersForm = () => {
     rng,
     iterations,
     offset,
-    partylevel,
+    partyLevel,
     realistic,
     areas: selectedAreas,
   });
@@ -37,7 +37,7 @@ const EncountersForm = () => {
           value={offset}
           onChange={(e) => setOffset(e.target.value)}
         />
-        <InputPartyLevel value={partylevel} onChange={(e) => setPartylevel(e.target.value)} />
+        <InputPartyLevel value={partyLevel} onChange={(e) => setPartyLevel(e.target.value)} />
         <Form.Dropdown
           label="Areas"
           placeholder="Area"

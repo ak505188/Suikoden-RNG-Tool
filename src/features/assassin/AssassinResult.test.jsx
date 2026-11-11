@@ -15,7 +15,7 @@ let container;
 
 const render = () => {
   container = mount(
-    <MemoryRouter initialEntries={['/assassin/result?rng=0x12&range_start=0&range_end=20']}>
+    <MemoryRouter initialEntries={['/assassin/result?rng=0x12&rangeStart=0&rangeEnd=20']}>
       <AssassinResult />
     </MemoryRouter>,
   );

@@ -10,14 +10,14 @@ const RunAssistantForm = () => {
   const history = useHistory();
   const [rng, setRNG] = useState(Helpers.numToHexString(0x12));
   const [iterations, setIterations] = useState(1000);
-  const [partylevel, setPartylevel] = useState(0);
+  const [partyLevel, setPartyLevel] = useState(0);
   const [realistic, setRealistic] = useState(true);
   const [areas, setAreas] = useState([]);
 
   const handleSubmit = submitTo(history, '/runassist/result', {
     rng,
     iterations,
-    partylevel,
+    partyLevel,
     realistic,
     areas,
   });
@@ -27,7 +27,7 @@ const RunAssistantForm = () => {
       <Form size="large" onSubmit={handleSubmit}>
         <InputRNG value={rng} onChange={(e) => setRNG(e.target.value)} />
         <InputIterations value={iterations} onChange={(e) => setIterations(e.target.value)} />
-        <InputPartyLevel value={partylevel} onChange={(e) => setPartylevel(e.target.value)} />
+        <InputPartyLevel value={partyLevel} onChange={(e) => setPartyLevel(e.target.value)} />
         <Form.Dropdown
           label="Areas"
           placeholder="Area"

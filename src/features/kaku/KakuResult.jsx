@@ -6,18 +6,18 @@ import { useQueryParams } from 'shared/lib/useQueryParams';
 import InvalidLink from 'shared/ui/InvalidLink';
 import KakuTable from './KakuTable';
 
-const SCHEMA = { rng: int(), start_index: int(), frames: int() };
+const SCHEMA = { rng: int(), startIndex: int({ alias: 'start_index' }), frames: int() };
 
 const KakuResult = () => {
   const { params, problems } = useQueryParams(SCHEMA);
   if (problems.length > 0) return <InvalidLink problems={problems} formPath="/kaku" />;
 
   const rng = new RNG(params.rng);
-  const start_index = params.start_index;
+  const startIndex = params.startIndex;
   const frames_to_simulate = params.frames;
 
   const kaku = new Kaku();
-  rng.jump(start_index);
+  rng.jump(startIndex);
   let events = [];
 
   for (let i = 1; i <= frames_to_simulate; i++) {

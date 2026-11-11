@@ -11,7 +11,11 @@ import AssassinTable from './AssassinTable';
 // Kirkis joins at level 1 and levels up to 15 over the course of the fight
 const KIRKIS_LEVELS_GAINED = 14;
 
-const SCHEMA = { rng: int(), range_start: int(), range_end: int() };
+const SCHEMA = {
+  rng: int(),
+  rangeStart: int({ alias: 'range_start' }),
+  rangeEnd: int({ alias: 'range_end' }),
+};
 
 // A filter box takes a whole number from 0, and an empty box means no filter (0)
 const isDamageFilter = (text) => text === '' || parseInt(text) >= 0;
@@ -72,7 +76,7 @@ const AssassinResult = () => {
     () =>
       problems.length > 0
         ? []
-        : simulateRows(params.rng, params.range_start, params.range_end, heroArmor),
+        : simulateRows(params.rng, params.rangeStart, params.rangeEnd, heroArmor),
     [problems, params, heroArmor],
   );
   const results_to_show = useMemo(

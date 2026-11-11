@@ -13,8 +13,8 @@ const AssassinForm = () => {
 
   const handleSubmit = submitTo(history, '/assassin/result', {
     rng,
-    range_start: rangeStart,
-    range_end: rangeEnd,
+    rangeStart,
+    rangeEnd,
   });
 
   return (
