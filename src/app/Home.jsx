@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Container, Header, Segment } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
-import { TOOLS } from './tools';
 
 const Home = () => {
   return (
@@ -13,14 +12,65 @@ const Home = () => {
           It's primary use is for routing and assisting a speedrun of the game.
         </p>
       </Segment>
-      {TOOLS.filter((tool) => tool.description).map((tool) => (
-        <Segment key={tool.path}>
-          <Header>
-            <Link to={tool.path}>{tool.title ?? tool.name}</Link>
-          </Header>
-          <p>{tool.description}</p>
-        </Segment>
-      ))}
+      <Segment>
+        <Header>
+          <Link to="/encounters">Encounter Tool</Link>
+        </Header>
+        <p>Calculate upcoming fights based off the RNG seed and area.</p>
+      </Segment>
+      <Segment>
+        <Header>
+          <Link to="/sequence">RNG Sequence</Link>
+        </Header>
+        <p>Calculate the sequence of upcoming RNG seeds based off a RNG seed.</p>
+      </Segment>
+      <Segment>
+        <Header>
+          <Link to="/stats">Stats</Link>
+        </Header>
+        <p>Generate stat growths for characters based on RNG and levels.</p>
+      </Segment>
+      <Segment>
+        <Header>
+          <Link to="/drops">Item Drops</Link>
+        </Header>
+        <p>Calculate what RNG seeds drop items based off a starting RNG seed and enemy group.</p>
+      </Segment>
+      <Segment>
+        <Header>
+          <Link to="/rngfinder">RNG Finder</Link>
+        </Header>
+        <p>Find (approximately) the current RNG seed based off a sequence of fights.</p>
+      </Segment>
+      <Segment>
+        <Header>
+          <Link to="/runassist">Run Assistant</Link>
+        </Header>
+        <p>Tool to assist in implementing RNG manipulation strategies while speedrunning.</p>
+      </Segment>
+      <Segment>
+        <Header>
+          <Link to="/chinchironin">Chinchironin Generator</Link>
+        </Header>
+        <p>Simulate rolls for yourself, Tai Ho, and Gaspar.</p>
+      </Segment>
+      <Segment>
+        <Header>
+          <Link to="/assassin">Assassin Fight</Link>
+        </Header>
+        <p>
+          Use this to find your RNG index mid-run based off the Assassin fight and Kirkis stats.
+        </p>
+      </Segment>
+      <Segment>
+        <Header>
+          <Link to="/kaku">Kaku NPC Simulator</Link>
+        </Header>
+        <p>
+          If you know what RNG you enter Kaku on (use the Assassin tool), you can use this to
+          simulate NPC movements to determine what RNG you're on.
+        </p>
+      </Segment>
       <Segment>
         <Header>
           <a href="https://github.com/ak505188/Suikoden-RNG-Tool/tree/master">Github Repository</a>
