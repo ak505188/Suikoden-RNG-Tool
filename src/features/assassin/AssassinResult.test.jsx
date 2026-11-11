@@ -1,9 +1,9 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { act, Simulate } from 'react-dom/test-utils';
+import { Simulate } from 'react-dom/test-utils';
 import { MemoryRouter } from 'react-router-dom';
-import { afterEach, describe, expect, test, vi } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 import { simulateAssassinFight } from 'suikoden-rng-lib';
+import { act, render as mount } from 'test/render';
 import AssassinResult from './AssassinResult';
 
 vi.mock('suikoden-rng-lib', async (importOriginal) => {
@@ -12,22 +12,13 @@ vi.mock('suikoden-rng-lib', async (importOriginal) => {
 });
 
 let container;
-afterEach(() => {
-  ReactDOM.unmountComponentAtNode(container);
-  container.remove();
-});
 
 const render = () => {
-  container = document.createElement('div');
-  document.body.appendChild(container);
-  act(() => {
-    ReactDOM.render(
-      <MemoryRouter initialEntries={['/assassin/result?rng=0x12&range_start=0&range_end=20']}>
-        <AssassinResult />
-      </MemoryRouter>,
-      container,
-    );
-  });
+  container = mount(
+    <MemoryRouter initialEntries={['/assassin/result?rng=0x12&range_start=0&range_end=20']}>
+      <AssassinResult />
+    </MemoryRouter>,
+  );
 };
 
 const box = (label) =>

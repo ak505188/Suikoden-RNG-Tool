@@ -1,13 +1,12 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { HashRouter } from 'react-router-dom';
 import App from './App';
 import 'semantic-ui-css/semantic.min.css';
 import 'react-virtualized/styles.css';
 
-ReactDOM.render(
+createRoot(document.getElementById('root')).render(
   <HashRouter>
     <App />
   </HashRouter>,
-  document.getElementById('root'),
 );

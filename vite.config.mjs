@@ -10,7 +10,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     // Absolute imports from src/, e.g. 'shared/form/inputs' (see jsconfig.json)
-    alias: [{ find: /^(app|features|shared)(\/|$)/, replacement: `${src}/$1$2` }],
+    alias: [{ find: /^(app|features|shared|test)(\/|$)/, replacement: `${src}/$1$2` }],
   },
   build: {
     outDir: 'build',
@@ -19,5 +19,6 @@ export default defineConfig({
   },
   test: {
     environment: 'jsdom',
+    setupFiles: ['./src/test/setup.js'],
   },
 });

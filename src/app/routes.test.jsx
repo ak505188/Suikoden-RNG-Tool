@@ -1,50 +1,28 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { act, Simulate } from 'react-dom/test-utils';
+import { Simulate } from 'react-dom/test-utils';
 import { MemoryRouter } from 'react-router-dom';
 import { afterEach, describe, expect, test, vi } from 'vitest';
+import { act, render as mount, renderAsync } from 'test/render';
 import App from './App';
 import ErrorBoundary from './ErrorBoundary';
 
-const containers = [];
-afterEach(() => {
-  while (containers.length > 0) {
-    const container = containers.pop();
-    ReactDOM.unmountComponentAtNode(container);
-    container.remove();
-  }
-  vi.restoreAllMocks();
-});
+afterEach(() => vi.restoreAllMocks());
+
+const quiet = () => vi.spyOn(console, 'error').mockImplementation(() => {}); // React logs what the boundary catches
 
 const render = (element) => {
-  const container = document.createElement('div');
-  document.body.appendChild(container);
-  containers.push(container);
-  vi.spyOn(console, 'error').mockImplementation(() => {}); // React logs what the boundary catches
-  act(() => {
-    ReactDOM.render(element, container);
-  });
-  return container;
+  quiet();
+  return mount(element);
 };
 
-// The tools that load on first visit show a spinner until their code arrives
-const settle = async (container) => {
-  for (let i = 0; i < 500 && container.querySelector('.ui.loader'); i++) {
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 10));
-    });
-  }
-  return container;
-};
-
-const page = async (url) =>
-  settle(
-    render(
-      <MemoryRouter initialEntries={[url]}>
-        <App />
-      </MemoryRouter>,
-    ),
+const page = (url) => {
+  quiet();
+  return renderAsync(
+    <MemoryRouter initialEntries={[url]}>
+      <App />
+    </MemoryRouter>,
   );
+};
 
 const query = (params) => '?' + new URLSearchParams(params).toString();
 const BROKEN = "This link doesn't work";
@@ -151,23 +129,18 @@ describe('ErrorBoundary', () => {
   });
 
   test('works again once the page changes', () => {
-    const container = document.createElement('div');
-    document.body.appendChild(container);
-    containers.push(container);
-    vi.spyOn(console, 'error').mockImplementation(() => {});
-    const show = (resetKey, child) =>
-      act(() => {
-        ReactDOM.render(
-          <MemoryRouter>
-            <ErrorBoundary resetKey={resetKey}>{child}</ErrorBoundary>
-          </MemoryRouter>,
-          container,
-        );
-      });
+    quiet();
+    const show = (resetKey, child, container) =>
+      mount(
+        <MemoryRouter>
+          <ErrorBoundary resetKey={resetKey}>{child}</ErrorBoundary>
+        </MemoryRouter>,
+        container,
+      );
 
-    show('/a', <Broken />);
+    const container = show('/a', <Broken />);
     expect(container.textContent).toContain(CRASHED);
-    show('/b', <p>fine now</p>);
+    show('/b', <p>fine now</p>, container);
     expect(container.textContent).toContain('fine now');
   });
 });

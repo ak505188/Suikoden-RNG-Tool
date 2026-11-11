@@ -1,14 +1,8 @@
 import React, { useState } from 'react';
-import ReactDOM from 'react-dom';
-import { act, Simulate } from 'react-dom/test-utils';
-import { afterEach, describe, expect, test } from 'vitest';
+import { Simulate } from 'react-dom/test-utils';
+import { describe, expect, test } from 'vitest';
+import { act, render as mount } from 'test/render';
 import DraftNumberInput from './DraftNumberInput';
-
-let container;
-afterEach(() => {
-  ReactDOM.unmountComponentAtNode(container);
-  container.remove();
-});
 
 // Mirrors the table: a committed value in state, only whole numbers 1-6 accepted
 const render = () => {
@@ -26,11 +20,7 @@ const render = () => {
       />
     );
   };
-  container = document.createElement('div');
-  document.body.appendChild(container);
-  act(() => {
-    ReactDOM.render(<Harness />, container);
-  });
+  const container = mount(<Harness />);
   return { input: container.querySelector('input'), commits };
 };
 

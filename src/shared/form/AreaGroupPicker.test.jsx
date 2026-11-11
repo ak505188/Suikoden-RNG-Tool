@@ -1,16 +1,12 @@
 import React, { useState } from 'react';
-import ReactDOM from 'react-dom';
-import { act, Simulate } from 'react-dom/test-utils';
+import { Simulate } from 'react-dom/test-utils';
 import { Form } from 'semantic-ui-react';
-import { afterEach, describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
+import { act, render as mount } from 'test/render';
 import { FIGHT_AREAS, areaId } from 'shared/lib/encounters';
 import AreaGroupPicker from './AreaGroupPicker';
 
 let container;
-afterEach(() => {
-  ReactDOM.unmountComponentAtNode(container);
-  container.remove();
-});
 
 const render = (initial) => {
   const picks = [];
@@ -28,11 +24,7 @@ const render = (initial) => {
       </Form>
     );
   };
-  container = document.createElement('div');
-  document.body.appendChild(container);
-  act(() => {
-    ReactDOM.render(<Harness />, container);
-  });
+  container = mount(<Harness />);
   return picks;
 };
 

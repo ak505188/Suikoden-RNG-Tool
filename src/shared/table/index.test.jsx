@@ -1,7 +1,7 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { act, Simulate } from 'react-dom/test-utils';
-import { afterEach, describe, expect, test, vi } from 'vitest';
+import { Simulate } from 'react-dom/test-utils';
+import { describe, expect, test, vi } from 'vitest';
+import { act, render as mount } from 'test/render';
 import TableContainer from './index';
 
 // jsdom has no layout, so AutoSizer would render nothing
@@ -11,10 +11,6 @@ vi.mock('react-virtualized', async (importOriginal) => ({
 }));
 
 let container;
-afterEach(() => {
-  ReactDOM.unmountComponentAtNode(container);
-  container.remove();
-});
 
 const makeColumns = () => [
   { key: 'a', label: 'Alpha', width: 50 },
@@ -31,14 +27,8 @@ const render = () => {
     given.push(columns);
     return <TableContainer key="t" columns={columns} data={data} filter={false} tick={tick} />;
   };
-  container = document.createElement('div');
-  document.body.appendChild(container);
-  const show = (tick) =>
-    act(() => {
-      ReactDOM.render(<Parent tick={tick} />, container);
-    });
-  show(0);
-  return { given, rerender: () => show(Math.random()) };
+  container = mount(<Parent tick={0} />);
+  return { given, rerender: () => mount(<Parent tick={Math.random()} />, container) };
 };
 
 const headers = () =>

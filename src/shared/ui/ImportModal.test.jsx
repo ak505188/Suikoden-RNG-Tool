@@ -1,31 +1,22 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { act, Simulate } from 'react-dom/test-utils';
+import { Simulate } from 'react-dom/test-utils';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { act, render as mount } from 'test/render';
 import ImportModal from './ImportModal';
 
 let container;
 beforeEach(() => localStorage.clear());
-afterEach(() => {
-  ReactDOM.unmountComponentAtNode(container);
-  container.remove();
-  localStorage.clear();
-});
+afterEach(() => localStorage.clear());
 
 // The modal opens into a portal on document.body
 const open = (importData) => {
-  container = document.createElement('div');
-  document.body.appendChild(container);
-  act(() => {
-    ReactDOM.render(
-      <ImportModal
-        local_storage_prefix="exp"
-        importData={importData}
-        trigger={<button id="open">Import</button>}
-      />,
-      container,
-    );
-  });
+  container = mount(
+    <ImportModal
+      local_storage_prefix="exp"
+      importData={importData}
+      trigger={<button id="open">Import</button>}
+    />,
+  );
   act(() => Simulate.click(container.querySelector('#open')));
 };
 
