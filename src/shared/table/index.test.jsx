@@ -4,10 +4,9 @@ import { describe, expect, test, vi } from 'vitest';
 import { act, render as mount } from 'test/render';
 import TableContainer from './index';
 
-// jsdom has no layout, so AutoSizer would render nothing
-vi.mock('react-virtualized', async (importOriginal) => ({
-  ...(await importOriginal()),
-  AutoSizer: ({ children }) => children({ width: 600, height: 300 }),
+// jsdom has no layout, so AutoSizer would never measure anything
+vi.mock('react-virtualized-auto-sizer', () => ({
+  AutoSizer: ({ renderProp }) => renderProp({ width: 600, height: 300 }),
 }));
 
 let container;
@@ -93,5 +92,38 @@ describe('table filtering', () => {
   test('filter={false} leaves the filter box out', () => {
     container = mount(<TableContainer columns={makeColumns()} data={people} filter={false} />);
     expect(container.querySelector('input[placeholder=Filter]')).toBeNull();
+  });
+});
+
+describe('the current row', () => {
+  const rows = Array.from({ length: 200 }, (_, i) => ({ a: `row-${i}`, b: i, c: i }));
+  const shown = () =>
+    [...container.querySelectorAll('.ReactVirtualized__Table__row')].map((row) =>
+      row.textContent.trim(),
+    );
+  const table = (currentRow) => (
+    <TableContainer columns={makeColumns()} data={rows} filter={false} currentRow={currentRow} />
+  );
+
+  test('is highlighted', () => {
+    container = mount(table(2));
+    const row = [...container.querySelectorAll('.ReactVirtualized__Table__row')].find((r) =>
+      r.textContent.includes('row-2'),
+    );
+    expect(row.style.backgroundColor).toBe('yellow');
+  });
+
+  test('is scrolled to when it changes, and the rows before it are no longer drawn', () => {
+    container = mount(table(0));
+    expect(shown().some((text) => text.includes('row-0'))).toBe(true);
+    expect(shown().some((text) => text.includes('row-120'))).toBe(false);
+    mount(table(120), container);
+    expect(shown().some((text) => text.includes('row-120'))).toBe(true);
+    expect(shown().some((text) => text.includes('row-0'))).toBe(false);
+  });
+
+  test('a table with no current row does not scroll', () => {
+    container = mount(table(undefined));
+    expect(shown().some((text) => text.includes('row-0'))).toBe(true);
   });
 });

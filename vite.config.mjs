@@ -31,5 +31,8 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.js'],
+    // react-virtualized 10 imports 'dom-helpers/scrollbarSize' as a directory, which Node's ES
+    // module loader refuses; Vite's own resolution accepts it
+    server: { deps: { inline: ['react-virtualized'] } },
   },
 });

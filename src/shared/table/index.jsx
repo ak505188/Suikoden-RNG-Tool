@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { AutoSizer } from 'react-virtualized';
+import { AutoSizer } from 'react-virtualized-auto-sizer';
 import { Button } from 'semantic-ui-react';
 import { Helpers } from 'suikoden-rng-lib';
 import Table from './Table';
@@ -38,38 +38,46 @@ const TableContainer = (props) => {
   };
 
   return (
-    <AutoSizer>
-      {({ height, width }) => (
-        <React.Fragment>
-          <div
-            className="table-toolbar"
-            style={{ '--table-width': `${width}px`, '--toolbar-height': `${TOOLBAR_HEIGHT}px` }}
-          >
-            {props.filter !== false ? (
-              <div className="table-toolbar-filter">
-                <Filter
-                  data={props.filterFromData !== undefined ? dataForFilter : props.data}
-                  setRowsToRender={setRowsToRender}
-                />
-              </div>
-            ) : null}
-            <ExportModal columns={columns} data={data} trigger={<Button primary>Export</Button>} />
-            <ColumnDropdown columns={columns} toggleColumn={toggleColumn} />
-          </div>
-          <Table
-            {...props}
-            currentRow={props.currentRow}
-            columns={columns}
-            data={data}
-            height={height - TOOLBAR_HEIGHT}
-            width={width}
-            headerHeight={props.headerHeight || 30}
-            rowHeight={props.rowHeight || 30}
-            rowStyle={props.rowStyle || {}}
-          />
-        </React.Fragment>
-      )}
-    </AutoSizer>
+    <AutoSizer
+      className="table-auto-sizer"
+      renderProp={({ height, width }) =>
+        // The size is not known until the first measurement
+        width === undefined || height === undefined ? null : (
+          <React.Fragment>
+            <div
+              className="table-toolbar"
+              style={{ '--table-width': `${width}px`, '--toolbar-height': `${TOOLBAR_HEIGHT}px` }}
+            >
+              {props.filter !== false ? (
+                <div className="table-toolbar-filter">
+                  <Filter
+                    data={props.filterFromData !== undefined ? dataForFilter : props.data}
+                    setRowsToRender={setRowsToRender}
+                  />
+                </div>
+              ) : null}
+              <ExportModal
+                columns={columns}
+                data={data}
+                trigger={<Button primary>Export</Button>}
+              />
+              <ColumnDropdown columns={columns} toggleColumn={toggleColumn} />
+            </div>
+            <Table
+              {...props}
+              currentRow={props.currentRow}
+              columns={columns}
+              data={data}
+              height={height - TOOLBAR_HEIGHT}
+              width={width}
+              headerHeight={props.headerHeight || 30}
+              rowHeight={props.rowHeight || 30}
+              rowStyle={props.rowStyle || {}}
+            />
+          </React.Fragment>
+        )
+      }
+    />
   );
 };
 

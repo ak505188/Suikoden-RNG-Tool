@@ -10,3 +10,11 @@
 .table-toolbar-filter {
   margin-right: auto;
 }
+
+/* The element that measures the space for the table takes none itself: the table is drawn over
+   the space it measured (its parent's), as one block would otherwise grow the page */
+.table-auto-sizer {
+  width: 0;
+  height: 0;
+  overflow: visible;
+}

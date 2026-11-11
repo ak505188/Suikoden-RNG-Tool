@@ -6,6 +6,14 @@ const defaultRowStyle = {
 };
 
 const Table = (props) => {
+  // The current row is scrolled to the top of the table whenever it changes
+  const tableRef = React.useRef(null);
+  const { currentRow } = props;
+  React.useEffect(() => {
+    if (currentRow !== undefined)
+      tableRef.current?.scrollToRow({ index: currentRow, align: 'start' });
+  }, [currentRow]);
+
   const columns = props.columns.reduce((accumulator, column) => {
     // Undefined show should still show columns.
     // Only explicitly hidden columns will not be shown.
@@ -29,6 +37,7 @@ const Table = (props) => {
 
   return (
     <VirtTable
+      ref={tableRef}
       headerHeight={props.headerHeight}
       height={props.height}
       onRowClick={({ index }) => {
@@ -44,8 +53,6 @@ const Table = (props) => {
           ? { ...rowStyle, backgroundColor: 'yellow' }
           : rowStyle
       }
-      scrollToIndex={props.currentRow}
-      scrollToAlignment="start"
       width={props.width}
     >
       {columns.map((column) => {
