@@ -2,7 +2,7 @@ import * as React from 'react';
 import VirtTable from 'shared/table';
 import './Chinchironin.css';
 
-const speed_columns = Array.from({ length: 17 }).map((_, index) => ({
+const speedColumns = Array.from({ length: 17 }).map((_, index) => ({
   key: `speed_${index * 4}`,
   label: `S${index * 4}`,
   width: 50,
@@ -32,7 +32,7 @@ const generateColumns = (player) => {
   player !== 'Player'
     ? columns.push({ key: 'wait', label: 'Wait', width: 50 })
     : columns.push({ key: 'cursor', label: 'Cur', width: 50 });
-  columns.push(...speed_columns);
+  columns.push(...speedColumns);
   return columns;
 };
 

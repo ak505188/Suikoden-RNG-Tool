@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Characters, Helpers } from 'suikoden-rng-lib';
+import { Characters } from 'suikoden-rng-lib';
 import { Container, Form } from 'semantic-ui-react';
-import { InputRNG } from 'shared/form/inputs';
+import { DEFAULT_RNG, InputRNG } from 'shared/form/inputs';
 import { submitTo } from 'shared/form/submitTo';
 
 const LevelUpsForm = () => {
   const history = useHistory();
   const [characters, setCharacters] = useState([]);
   const [startingLevel, setStartingLevel] = useState(1);
-  const [rng, setRNG] = useState(Helpers.numToHexString(0x12));
+  const [rng, setRNG] = useState(DEFAULT_RNG);
   const [iterations, setIterations] = useState(10);
 
   const handleSubmit = submitTo(history, '/stats/level-ups/result', {

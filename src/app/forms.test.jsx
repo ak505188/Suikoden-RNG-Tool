@@ -58,3 +58,14 @@ describe('every form leads to a working result page', () => {
     expect(container.querySelector('button[type=submit]')).toBeNull(); // left the form
   });
 });
+
+describe('every form starts from the default RNG value', () => {
+  test.each([...FORMS.map(([form]) => form), '/rngfinder'])('%s', async (form) => {
+    const container = await renderAsync(
+      <MemoryRouter initialEntries={[form]}>
+        <App />
+      </MemoryRouter>,
+    );
+    expect(container.querySelector('input[name=rng]').value).toBe('0x00000012');
+  });
+});

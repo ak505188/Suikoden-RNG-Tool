@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Characters, Helpers } from 'suikoden-rng-lib';
+import { Characters } from 'suikoden-rng-lib';
 import { Container, Form } from 'semantic-ui-react';
-import { InputRNG, InputIterations } from 'shared/form/inputs';
+import { DEFAULT_RNG, InputRNG, InputIterations } from 'shared/form/inputs';
 import { submitTo } from 'shared/form/submitTo';
 
 const StartingStatsForm = () => {
@@ -10,7 +10,7 @@ const StartingStatsForm = () => {
   const [characters, setCharacters] = useState([]);
   const [startingLevel, setStartingLevel] = useState(1);
   const [levelsGained, setLevelsGained] = useState(1);
-  const [rng, setRNG] = useState(Helpers.numToHexString(0x12));
+  const [rng, setRNG] = useState(DEFAULT_RNG);
   const [iterations, setIterations] = useState(1000);
 
   const handleSubmit = submitTo(history, '/stats/starting-stats/result', {

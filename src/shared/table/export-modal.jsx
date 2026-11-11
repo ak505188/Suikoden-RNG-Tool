@@ -48,8 +48,8 @@ const ExportModal = ({ columns, data, local_storage_prefix, trigger }) => {
   };
 
   const saveToLocalStorage = () => {
-    const data_str = JSON.stringify(data);
-    localStorage.setItem(`${local_storage_prefix}_${fileName}`, data_str);
+    const dataStr = JSON.stringify(data);
+    localStorage.setItem(`${local_storage_prefix}_${fileName}`, dataStr);
   };
 
   return (

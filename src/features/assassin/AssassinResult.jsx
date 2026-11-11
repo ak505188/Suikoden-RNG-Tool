@@ -25,45 +25,45 @@ const isDamageFilter = (text) => text === '' || parseInt(text) >= 0;
 const simulateRows = (seed, rangeStart, rangeEnd, armor) => {
   const kirkis = new Character(CHARACTER_KEYS.KIRKIS);
   const rng = new RNG(seed);
-  const sim_results = [];
+  const simResults = [];
 
   rng.jump(rangeStart);
 
   for (let i = rangeStart; i < rangeEnd; i++) {
-    const cur_rng = rng.clone();
-    const sim_result = simulateAssassinFight(cur_rng, armor);
+    const curRng = rng.clone();
+    const simResult = simulateAssassinFight(curRng, armor);
 
-    const assassin_end_index = cur_rng.count;
-    const gained = kirkis.calculateLevelups(KIRKIS_LEVELS_GAINED, 1, cur_rng);
-    const kirkis_stats = (stat) => kirkis.initial[stat] + gained[stat];
-    sim_results.push({
+    const assassinEndIndex = curRng.count;
+    const gained = kirkis.calculateLevelups(KIRKIS_LEVELS_GAINED, 1, curRng);
+    const kirkisStat = (stat) => kirkis.initial[stat] + gained[stat];
+    simResults.push({
       index: i,
       rng: rng.raw.toString(16),
-      turn1_move: sim_result.turns[0].move_name,
-      turn1_damage: sim_result.turns[0].damage,
-      turn2_move: sim_result.turns[1].move_name,
-      turn2_damage: sim_result.turns[1].damage,
-      end_rng: cur_rng.raw.toString(16),
-      end_index: assassin_end_index,
-      kirkis_hp: kirkis_stats('HP'),
-      kirkis_pwr: kirkis_stats('PWR'),
-      kirkis_skl: kirkis_stats('SKL'),
-      kirkis_def: kirkis_stats('DEF'),
-      kirkis_spd: kirkis_stats('SPD'),
-      kirkis_mgc: kirkis_stats('MGC'),
-      kirkis_luk: kirkis_stats('LUK'),
-      kirkis_index: cur_rng.count,
-      advancement: cur_rng.count - i,
+      turn1_move: simResult.turns[0].move_name,
+      turn1_damage: simResult.turns[0].damage,
+      turn2_move: simResult.turns[1].move_name,
+      turn2_damage: simResult.turns[1].damage,
+      end_rng: curRng.raw.toString(16),
+      end_index: assassinEndIndex,
+      kirkis_hp: kirkisStat('HP'),
+      kirkis_pwr: kirkisStat('PWR'),
+      kirkis_skl: kirkisStat('SKL'),
+      kirkis_def: kirkisStat('DEF'),
+      kirkis_spd: kirkisStat('SPD'),
+      kirkis_mgc: kirkisStat('MGC'),
+      kirkis_luk: kirkisStat('LUK'),
+      kirkis_index: curRng.count,
+      advancement: curRng.count - i,
     });
     rng.next();
   }
-  return sim_results;
+  return simResults;
 };
 
-const damage_filter = (sim_dmg, selected_dmg) => {
-  if (typeof selected_dmg != 'number' || isNaN(selected_dmg)) return true;
-  if (selected_dmg <= 0) return true;
-  return sim_dmg === selected_dmg;
+const damageFilter = (simDmg, selectedDmg) => {
+  if (typeof selectedDmg != 'number' || isNaN(selectedDmg)) return true;
+  if (selectedDmg <= 0) return true;
+  return simDmg === selectedDmg;
 };
 
 const AssassinResult = () => {
@@ -79,12 +79,12 @@ const AssassinResult = () => {
         : simulateRows(params.rng, params.rangeStart, params.rangeEnd, heroArmor),
     [problems, params, heroArmor],
   );
-  const results_to_show = useMemo(
+  const resultsToShow = useMemo(
     () =>
       rows
-        .filter(({ turn1_damage }) => damage_filter(turn1_damage, dmg1))
-        .filter(({ turn2_damage }) => damage_filter(turn2_damage, dmg2))
-        .filter(({ kirkis_hp }) => damage_filter(kirkis_hp, kirkisHP)),
+        .filter(({ turn1_damage }) => damageFilter(turn1_damage, dmg1))
+        .filter(({ turn2_damage }) => damageFilter(turn2_damage, dmg2))
+        .filter(({ kirkis_hp }) => damageFilter(kirkis_hp, kirkisHP)),
     [rows, dmg1, dmg2, kirkisHP],
   );
   if (problems.length > 0) return <InvalidLink problems={problems} formPath="/assassin" />;
@@ -131,7 +131,7 @@ const AssassinResult = () => {
           />
         </Form.Group>
       </Form>
-      <AssassinTable rng={`0x${new RNG(params.rng).seed.toString(16)}`} data={results_to_show} />
+      <AssassinTable rng={`0x${new RNG(params.rng).seed.toString(16)}`} data={resultsToShow} />
     </Container>
   );
 };

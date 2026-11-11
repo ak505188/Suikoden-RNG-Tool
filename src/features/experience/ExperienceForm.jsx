@@ -42,7 +42,7 @@ const ExperienceForm = () => {
   const showUndo = characters.length > 0 || undoStack.length > 0;
 
   const partySizeValid = isValidPartySize(partySize);
-  const selected_character_names = characters.map((character) => character.name);
+  const selectedCharacterNames = characters.map((character) => character.name);
 
   // Checks the file first, so one that isn't a plan changes nothing (ImportModal shows the error)
   const importData = (imported) => dispatch(planActions.importPlan(normalizeImport(imported)));
@@ -75,7 +75,7 @@ const ExperienceForm = () => {
           placeholder="Character"
           options={Object.keys(Characters)
             .sort()
-            .filter((name) => !selected_character_names.includes(name))
+            .filter((name) => !selectedCharacterNames.includes(name))
             .map((name) => ({ key: name, value: name, text: name }))}
           value={selectedCharacters}
           onChange={(_e, data) => {

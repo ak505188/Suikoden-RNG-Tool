@@ -4,7 +4,7 @@ export default class Status {
     this.progress = 0;
     this.matches = []; // { foundEncounterRNG, firstPossibleRNG, gap }
     this.limitReached = false; // stopped because maxMatches was hit
-    this.progressCallback = progressCallback || console.log;
+    this.progressCallback = progressCallback || (() => {});
   }
 
   update(status) {

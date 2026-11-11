@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import DoubleListSelector from 'shared/ui/DoubleListSelector';
-import { InputRNG } from 'shared/form/inputs';
+import { DEFAULT_RNG, InputRNG } from 'shared/form/inputs';
 import { formationName } from 'suikoden-rng-lib/encounters';
 import { ENCOUNTER_AREAS, areaId, findAreaById } from 'shared/lib/encounters';
 import { Helpers } from 'suikoden-rng-lib';
@@ -17,7 +17,7 @@ const initialStatus = {
 };
 
 const RNGFinder = () => {
-  const [rng, setRNG] = useState(Helpers.numToHexString(0x12));
+  const [rng, setRNG] = useState(DEFAULT_RNG);
   const [selectedArea, setSelectedArea] = useState(areaId(ENCOUNTER_AREAS[0]));
   const [fightList, setFightList] = useState([]);
   const [running, setRunning] = useState(false);

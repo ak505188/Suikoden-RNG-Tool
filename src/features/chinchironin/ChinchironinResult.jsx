@@ -22,26 +22,21 @@ const GenerateRollsResult = () => {
 
   const rng = new RNG(params.rng);
   const { iterations, player } = params;
-  const is_tai_ho = player === PLAYERS[0];
-  const frames_to_advance = params.framesToWait;
+  const isTaiHo = player === PLAYERS[0];
+  const framesToAdvance = params.framesToWait;
   const data = [];
 
   if (player !== PLAYERS[2]) {
     for (let i = 0; i < iterations; i++) {
-      const roll_data = simulateOpponentRollsFromGameStart(
-        rng.clone(),
-        is_tai_ho,
-        frames_to_advance,
-        0,
-      );
-      const rolls = roll_data.rolls.reduce((accumulator, current, index) => {
+      const rollData = simulateOpponentRollsFromGameStart(rng.clone(), isTaiHo, framesToAdvance, 0);
+      const rolls = rollData.rolls.reduce((accumulator, current, index) => {
         accumulator[`speed_${index * 4}`] = current;
         return accumulator;
       }, {});
       const result = {
         index: rng.count,
         rng: `0x${rng.raw.toString(16)}`,
-        wait: roll_data.wait,
+        wait: rollData.wait,
         ...rolls,
       };
 

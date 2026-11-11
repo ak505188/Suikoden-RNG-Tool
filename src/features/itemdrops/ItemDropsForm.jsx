@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Container, Form } from 'semantic-ui-react';
-import { Helpers } from 'suikoden-rng-lib';
 import AreaGroupPicker from 'shared/form/AreaGroupPicker';
-import { InputRNG, InputIterations } from 'shared/form/inputs';
+import { DEFAULT_RNG, InputRNG, InputIterations } from 'shared/form/inputs';
 import { submitTo } from 'shared/form/submitTo';
 
 const ItemDropsForm = () => {
   const history = useHistory();
-  const [rng, setRNG] = useState(Helpers.numToHexString(0x12));
+  const [rng, setRNG] = useState(DEFAULT_RNG);
   const [iterations, setIterations] = useState(1000);
   const [area, setArea] = useState('Cave of the Past');
   const [enemyGroup, setEnemyGroup] = useState(0);

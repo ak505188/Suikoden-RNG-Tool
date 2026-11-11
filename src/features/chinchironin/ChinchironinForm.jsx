@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
-import { Helpers } from 'suikoden-rng-lib';
 import { Container, Form } from 'semantic-ui-react';
-import { InputRNG, InputIterations } from 'shared/form/inputs';
+import { DEFAULT_RNG, InputRNG, InputIterations } from 'shared/form/inputs';
 import { submitTo } from 'shared/form/submitTo';
 import { useHistory } from 'react-router-dom';
 import { PLAYERS } from './lib';
 
 const ChinchironinForm = () => {
   const history = useHistory();
-  const [rng, setRNG] = useState(Helpers.numToHexString(0x12));
+  const [rng, setRNG] = useState(DEFAULT_RNG);
   const [iterations, setIterations] = useState(1000);
   const [framesToWait, setFramesToAdvance] = useState(203);
   const [player, setPlayer] = useState(PLAYERS[0]);

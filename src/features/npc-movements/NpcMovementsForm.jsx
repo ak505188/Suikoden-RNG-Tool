@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Container, Form } from 'semantic-ui-react';
-import { Helpers } from 'suikoden-rng-lib';
-import { InputRNG, InputIterations } from 'shared/form/inputs';
+import { DEFAULT_RNG, InputRNG, InputIterations } from 'shared/form/inputs';
 import { submitTo } from 'shared/form/submitTo';
 
 const NPCalcForm = () => {
   const history = useHistory();
-  const [rng, setRNG] = useState(Helpers.numToHexString(0x12));
+  const [rng, setRNG] = useState(DEFAULT_RNG);
   const [iterations, setIterations] = useState(1000);
   const [npcs, setNpcs] = useState(1);
 

@@ -14,15 +14,15 @@ const KakuResult = () => {
 
   const rng = new RNG(params.rng);
   const startIndex = params.startIndex;
-  const frames_to_simulate = params.frames;
+  const framesToSimulate = params.frames;
 
   const kaku = new Kaku();
   rng.jump(startIndex);
   let events = [];
 
-  for (let i = 1; i <= frames_to_simulate; i++) {
-    const frame_events = kaku.simulateMovement(rng).map((event) => ({ frame: i, ...event }));
-    events = [...events, ...frame_events];
+  for (let i = 1; i <= framesToSimulate; i++) {
+    const frameEvents = kaku.simulateMovement(rng).map((event) => ({ frame: i, ...event }));
+    events = [...events, ...frameEvents];
   }
 
   const data = events.map((event) => {

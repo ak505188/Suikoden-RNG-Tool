@@ -79,12 +79,12 @@ export function normalizeImport(data) {
   };
 }
 
-export function calculateLevels(characters, fights, disabled_characters) {
+export function calculateLevels(characters, fights, disabledCharacters) {
   const results = [];
-  let new_characters = characters;
+  let newCharacters = characters;
   for (let i = 0; i < fights.length; i++) {
-    new_characters = levelupCharacters(new_characters, fights[i], disabled_characters[i]);
-    results.push({ ...fights[i], characters: new_characters });
+    newCharacters = levelupCharacters(newCharacters, fights[i], disabledCharacters[i]);
+    results.push({ ...fights[i], characters: newCharacters });
   }
 
   return results;
@@ -94,23 +94,23 @@ export function calculateLevels(characters, fights, disabled_characters) {
 // Each character also gets `levelsGained`: how many whole levels this fight took them past (0 for
 // most fights, and for characters sitting it out). It is always reset, so it never carries over
 // from the fight before.
-function levelupCharacters(characters, fight, disabled_characters) {
+function levelupCharacters(characters, fight, disabledCharacters) {
   return characters.map((character) => {
-    if (!fight.enabled || disabled_characters.includes(character.name)) {
+    if (!fight.enabled || disabledCharacters.includes(character.name)) {
       return { ...character, levelsGained: 0 };
     }
-    const new_level = levelupCharacter(character.level, fight.enemy_group, fight.party_size);
-    const levelsGained = Math.floor(new_level) - Math.floor(character.level);
-    return { ...character, level: new_level, levelsGained };
+    const newLevel = levelupCharacter(character.level, fight.enemy_group, fight.party_size);
+    const levelsGained = Math.floor(newLevel) - Math.floor(character.level);
+    return { ...character, level: newLevel, levelsGained };
   });
 }
 
-function levelupCharacter(level, enemy_group, party_size) {
-  const total = enemy_group.levels.reduce((exp, enemyLevel) => {
+function levelupCharacter(level, enemyGroup, partySize) {
+  const total = enemyGroup.levels.reduce((exp, enemyLevel) => {
     let levelDiff = Math.ceil(enemyLevel - level);
     const index = Math.min(Math.max(levelDiff, -14), 15) + offset;
     return exp + EXP_TABLE[index];
   }, 0);
-  const exp = Math.max(Math.floor(total / party_size), MIN_BATTLE_EXP);
+  const exp = Math.max(Math.floor(total / partySize), MIN_BATTLE_EXP);
   return (Math.round(level * EXP_PER_LEVEL) + exp) / EXP_PER_LEVEL;
 }

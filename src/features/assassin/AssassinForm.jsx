@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import { Helpers } from 'suikoden-rng-lib';
 import { Container, Form } from 'semantic-ui-react';
-import { InputRNG } from 'shared/form/inputs';
+import { DEFAULT_RNG, InputRNG } from 'shared/form/inputs';
 import { submitTo } from 'shared/form/submitTo';
 import { useHistory } from 'react-router-dom';
 
 const AssassinForm = () => {
   const history = useHistory();
-  const [rng, setRNG] = useState(Helpers.numToHexString(0x12));
+  const [rng, setRNG] = useState(DEFAULT_RNG);
   const [rangeStart, setRangeStart] = useState(0);
   const [rangeEnd, setRangeEnd] = useState(1000);
 

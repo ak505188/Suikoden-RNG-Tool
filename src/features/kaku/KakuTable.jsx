@@ -10,15 +10,15 @@ import {
 } from 'semantic-ui-react';
 import './Kaku.css';
 
-const generateDescription = (npc_event) => {
+const generateDescription = (npcEvent) => {
   const description =
-    npc_event.name === 'Mina' && npc_event.event === 'Start Mina Timer' ? (
+    npcEvent.name === 'Mina' && npcEvent.event === 'Start Mina Timer' ? (
       <span>
         <b>Mina</b> Timer Start
       </span>
     ) : (
       <span>
-        <b>{npc_event.name}</b> {npc_event.event.toLowerCase()} {npc_event.direction}
+        <b>{npcEvent.name}</b> {npcEvent.event.toLowerCase()} {npcEvent.direction}
       </span>
     );
   return description;
@@ -36,11 +36,11 @@ const RegularTable = ({ events }) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {events.map((npc_event, index) => (
-            <TableRow key={index} className={npc_event.name.toLowerCase().replace(' ', '_')}>
-              <TableCell textAlign="right">{npc_event.frame}</TableCell>
-              <TableCell textAlign="right">{npc_event.index}</TableCell>
-              <TableCell>{generateDescription(npc_event)}</TableCell>
+          {events.map((npcEvent, index) => (
+            <TableRow key={index} className={npcEvent.name.toLowerCase().replace(' ', '_')}>
+              <TableCell textAlign="right">{npcEvent.frame}</TableCell>
+              <TableCell textAlign="right">{npcEvent.index}</TableCell>
+              <TableCell>{generateDescription(npcEvent)}</TableCell>
             </TableRow>
           ))}
         </TableBody>

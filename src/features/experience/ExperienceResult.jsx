@@ -35,9 +35,9 @@ const ExperienceContainer = ({
   const columnDrag = useReorder((from, to) => dispatch(planActions.moveCharacter(from, to)));
   const rowDrag = useReorder((from, to) => dispatch(planActions.moveFight(from, to)));
 
-  const changeFightPartySize = (party_size, index) => {
-    if (!isValidPartySize(party_size)) return;
-    dispatch(planActions.changeFight(index, { ...fights[index], party_size: Number(party_size) }));
+  const changeFightPartySize = (partySize, index) => {
+    if (!isValidPartySize(partySize)) return;
+    dispatch(planActions.changeFight(index, { ...fights[index], party_size: Number(partySize) }));
   };
 
   if (results.length <= 0) return null;

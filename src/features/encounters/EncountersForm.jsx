@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Helpers } from 'suikoden-rng-lib';
 import { Container, Form } from 'semantic-ui-react';
 import { ENCOUNTER_AREAS, areaId } from 'shared/lib/encounters';
-import { InputRNG, InputIterations, InputPartyLevel } from 'shared/form/inputs';
+import { DEFAULT_RNG, InputRNG, InputIterations, InputPartyLevel } from 'shared/form/inputs';
 import { submitTo } from 'shared/form/submitTo';
 
 const EncountersForm = () => {
   const history = useHistory();
-  const [rng, setRNG] = useState(Helpers.numToHexString(0x12));
+  const [rng, setRNG] = useState(DEFAULT_RNG);
   const [iterations, setIterations] = useState(1000);
   const [offset, setOffset] = useState(0);
   const [partyLevel, setPartyLevel] = useState(0);
