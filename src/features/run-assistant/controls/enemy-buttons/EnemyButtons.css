@@ -44,3 +44,19 @@
   border-radius: 0.28571429rem;
   padding: 2px;
 }
+
+.ui.container.enemy-buttons-container {
+  width: 100%;
+}
+
+.ui.buttons.enemy-button-group {
+  width: 100%;
+  margin: 2px;
+}
+
+/* The row of group sizes (1 to 6) that compact mode starts with */
+.ui.buttons .ui.button.compact-size-button {
+  height: 60px;
+  margin: 0 2px;
+  flex: 1;
+}

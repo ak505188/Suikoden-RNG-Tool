@@ -90,7 +90,7 @@ const AssassinResult = () => {
   if (problems.length > 0) return <InvalidLink problems={problems} formPath="/assassin" />;
 
   return (
-    <Container style={{ flex: 1 }} textAlign="center">
+    <Container className="page-fill" textAlign="center">
       <Form>
         <Form.Group>
           <Form.Field

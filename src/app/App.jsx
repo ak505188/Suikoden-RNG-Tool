@@ -45,7 +45,7 @@ const KakuResult = lazyExport(loadKaku, 'Result');
 const App = () => {
   const { pathname, search } = useLocation();
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100vh' }}>
+    <div className="app">
       <Navbar />
       <ErrorBoundary resetKey={pathname + search}>
         <React.Suspense fallback={<Loader active inline="centered" />}>

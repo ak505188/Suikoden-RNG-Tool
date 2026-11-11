@@ -39,7 +39,7 @@ const StartingStatsContainer = () => {
   });
 
   return (
-    <Container style={{ flex: 1 }} textAlign="center">
+    <Container className="page-fill" textAlign="center">
       <StartingStatsTable startingStats={startingStats} />
     </Container>
   );

@@ -6,6 +6,7 @@ import { ENCOUNTER_AREAS, areaId, findAreaById } from 'shared/lib/encounters';
 import { Helpers } from 'suikoden-rng-lib';
 import { Button, Container, Form } from 'semantic-ui-react';
 import RNGFinderStatus from './Status';
+import './RngFinder.css';
 
 import findRNGWorker from './findRNG.worker.js?worker';
 
@@ -91,15 +92,7 @@ const RNGFinder = () => {
           list={fightList}
           options={findAreaById(selectedArea).encounters.map(formationName)}
         />
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '0.5em',
-            marginBottom: '1em',
-          }}
-        >
+        <div className="find-row">
           <Button type="submit" primary={true} disabled={fightList.length < 2}>
             Find RNG Seed
           </Button>

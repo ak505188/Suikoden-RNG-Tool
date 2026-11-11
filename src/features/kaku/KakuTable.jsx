@@ -38,8 +38,8 @@ const RegularTable = ({ events }) => {
         <TableBody>
           {events.map((npc_event, index) => (
             <TableRow key={index} className={npc_event.name.toLowerCase().replace(' ', '_')}>
-              <TableCell style={{ textAlign: 'right' }}>{npc_event.frame}</TableCell>
-              <TableCell style={{ textAlign: 'right' }}>{npc_event.index}</TableCell>
+              <TableCell textAlign="right">{npc_event.frame}</TableCell>
+              <TableCell textAlign="right">{npc_event.index}</TableCell>
               <TableCell>{generateDescription(npc_event)}</TableCell>
             </TableRow>
           ))}

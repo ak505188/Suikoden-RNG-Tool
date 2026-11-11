@@ -73,7 +73,7 @@ const GenerateRollsResult = () => {
   }
 
   return (
-    <Container style={{ flex: 1 }} textAlign="center">
+    <Container className="page-fill" textAlign="center">
       {player === PLAYERS[2] && (
         <Input labelPosition="left">
           <Label>RNG Index at Start</Label>

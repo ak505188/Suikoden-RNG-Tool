@@ -1,0 +1,5 @@
+/* The table fills the page under the controls */
+.ui.container.run-assistant-table {
+  display: block;
+  height: 100%;
+}

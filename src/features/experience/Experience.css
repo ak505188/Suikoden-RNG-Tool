@@ -230,3 +230,12 @@
   font-weight: normal;
   white-space: nowrap;
 }
+
+/* While dragging: the row being dragged is dimmed, and what it would land on is outlined */
+.experience-table .dragging {
+  opacity: 0.4;
+}
+
+.experience-table .drag-over {
+  outline: 1px dashed #2185d0;
+}

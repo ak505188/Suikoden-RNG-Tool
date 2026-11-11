@@ -26,7 +26,7 @@ const SequenceResult = () => {
   }
 
   return (
-    <Container style={{ flex: 1 }} textAlign="center">
+    <Container className="page-fill" textAlign="center">
       <SequenceTable
         sequence={sequence.map((rng, index) => ({
           rng,

@@ -53,7 +53,7 @@ const NPCMovementsResult = () => {
   }
 
   return (
-    <Container style={{ flex: 1 }} textAlign="center">
+    <Container className="page-fill" textAlign="center">
       <Table NPCInfo={result} />
     </Container>
   );

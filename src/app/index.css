@@ -20,3 +20,16 @@ img.enemyImage {
 img.enemyImage {
   width: 16%;
 }
+
+/* The page: the navbar above, then one tool filling the rest of the height */
+.app {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+}
+
+/* A tool's result page, filling the height left under the navbar */
+.page-fill {
+  flex: 1;
+}

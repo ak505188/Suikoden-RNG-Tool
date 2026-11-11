@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Button, Container, Progress, Segment, Table } from 'semantic-ui-react';
 import { formatPair } from './rngPair';
+import './RngFinder.css';
 
 const heading = ({ count, done, stopped, limitReached }) => {
   const matches = `${count} ${count === 1 ? 'match' : 'matches'}`;
@@ -15,13 +16,13 @@ const Matches = ({ matches, done, stopped, limitReached }) => (
     <p>
       {heading({ count: matches.length, done, stopped, limitReached })}
       {matches.length > 0 && (
-        <span style={{ color: 'rgba(0, 0, 0, 0.55)' }}>
+        <span className="matches-note">
           {' · '}Each result is two equivalent RNG values: the game ignores the top bit.
         </span>
       )}
     </p>
     {matches.length > 0 && (
-      <div style={{ maxHeight: '22rem', overflowY: 'auto' }}>
+      <div className="matches-scroll">
         <Table compact basic="very" textAlign="center">
           <Table.Header>
             <Table.Row>

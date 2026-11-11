@@ -29,7 +29,7 @@ const ItemdropsContainer = () => {
     }));
 
   return (
-    <Container style={{ flex: 1 }} textAlign="center">
+    <Container className="page-fill" textAlign="center">
       <ItemdropsTable drops={drops} />
     </Container>
   );

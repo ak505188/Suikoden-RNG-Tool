@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { selectFight } from './actions/runAssistant';
 import { getCurrentFights } from './reducers/runAssistant';
 import { Helpers } from 'suikoden-rng-lib';
+import './RunAssistant.css';
 
 const mapStateToProps = (state) => ({
   fights: getCurrentFights(state.RunAssistant),
@@ -47,7 +48,7 @@ const RunAssistantTable = (props) => {
   }));
 
   return (
-    <Container textAlign="center" style={{ display: 'block', height: '100%' }}>
+    <Container textAlign="center" className="run-assistant-table">
       <VirtTable
         currentRow={props.currentRow}
         columns={columns}

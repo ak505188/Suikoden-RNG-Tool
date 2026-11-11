@@ -5,12 +5,12 @@ import './EnemyButtons.css';
 
 const EnemyButtonsView = ({ enemiesByEnemyCount, useImages, enemyButtonOnClick }) => {
   return (
-    <Container style={{ width: '100%' }}>
+    <Container className="enemy-buttons-container">
       <Segment>
         <div className="even-columns">
           {enemiesByEnemyCount.map((enemiesGroup, index) => {
             return (
-              <Button.Group style={{ width: '100%', margin: '2px' }} vertical={true} key={index}>
+              <Button.Group className="enemy-button-group" vertical={true} key={index}>
                 {enemiesGroup.map((enemyGroup) => {
                   return (
                     <EnemyButton

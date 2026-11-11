@@ -1,0 +1,18 @@
+/* The Find button with the hint under it */
+.find-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5em;
+  margin-bottom: 1em;
+}
+
+.matches-note {
+  color: rgba(0, 0, 0, 0.55);
+}
+
+/* The matches scroll inside the page instead of making it long */
+.matches-scroll {
+  max-height: 22rem;
+  overflow-y: auto;
+}

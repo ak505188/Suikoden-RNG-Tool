@@ -43,7 +43,7 @@ const ExperienceContainer = ({
   if (results.length <= 0) return null;
 
   return (
-    <Container style={{ flex: 1 }} textAlign="center">
+    <Container className="page-fill" textAlign="center">
       <Table striped className="experience-table">
         <TableHeader>
           <TableRow>
@@ -79,10 +79,9 @@ const ExperienceContainer = ({
               key={index}
               onDragOver={(e) => rowDrag.over(e, index)}
               onDrop={() => rowDrag.drop(index)}
-              style={{
-                opacity: rowDrag.dragging === index ? 0.4 : 1,
-                outline: rowDrag.overIndex === index ? '1px dashed #2185d0' : undefined,
-              }}
+              className={`${rowDrag.dragging === index ? 'dragging' : ''} ${
+                rowDrag.overIndex === index ? 'drag-over' : ''
+              }`}
             >
               <TableCell key={`${result.enemy_group.name}-${index}`}>
                 <DragHandle
@@ -187,15 +186,12 @@ const RowCell = ({
       onDrop={onDrop}
       className={`toggle ${enabled ? 'char_enabled' : 'char_disabled'}${
         levelUp ? ' level_up' : ''
-      }`}
+      }${isDragOver ? ' drag-over' : ''}`}
       key={character.name}
       role="button"
       aria-pressed={enabled}
       title={cellTitle(character, enabled, levelUp)}
       onClick={() => toggleDisabledCharacter(character.name)}
-      style={{
-        outline: isDragOver ? '1px dashed #2185d0' : undefined,
-      }}
     >
       {parseFloat(character.level).toFixed(3)} <span className="indicator">●</span>
     </TableCell>
@@ -216,9 +212,7 @@ const HeaderCell = ({
     <TableHeaderCell
       onDragOver={onDragOver}
       onDrop={onDrop}
-      style={{
-        outline: isDragOver ? '1px dashed #2185d0' : undefined,
-      }}
+      className={isDragOver ? 'drag-over' : undefined}
     >
       <DragHandle
         orientation="column"

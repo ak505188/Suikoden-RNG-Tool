@@ -12,6 +12,7 @@ import {
 } from '../actions/runAssistant';
 import { getCurrentArea } from '../reducers/runAssistant';
 import ConfigModal from './modal/ConfigModal';
+import './Controls.css';
 
 const mapStateToProps = (state) => ({
   areas: state.RunAssistant.areas.map((area) => area.name),
@@ -55,7 +56,7 @@ const Controls = ({
   return (
     <Container>
       {compactMode ? <CompactEnemyButtons /> : <EnemyButtons />}
-      <Segment style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <Segment className="controls-bar">
         <Dropdown
           label="Areas"
           placeholder="Area"
@@ -69,13 +70,13 @@ const Controls = ({
           selection={true}
         />
         <Checkbox
-          style={{ display: 'flex', margin: '0 1em', alignItems: 'center' }}
+          className="pattern-mode"
           label="Pattern Mode"
           checked={patternMode}
           onChange={() => togglePatternMode()}
         />
         <ConfigModal trigger={<Button>Config</Button>} />
-        <span style={{ display: 'flex', flex: 1, justifyContent: 'flex-end' }}>
+        <span className="jump-buttons">
           <Button content="+100" onClick={() => jumpRNG(100)} />
           <Button content="+500" onClick={() => jumpRNG(500)} />
           <Button content="+1000" onClick={() => jumpRNG(1000)} />

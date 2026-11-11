@@ -30,7 +30,7 @@ const LevelUpsContainer = () => {
   });
 
   return (
-    <Container style={{ flex: 1 }} textAlign="center">
+    <Container className="page-fill" textAlign="center">
       <LevelUpsTable levelUps={levelUps} />
     </Container>
   );

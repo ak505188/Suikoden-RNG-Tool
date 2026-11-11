@@ -4,6 +4,7 @@ import { getCurrentEnemies } from 'features/run-assistant/reducers/runAssistant'
 import { findFight } from 'features/run-assistant/actions/runAssistant';
 import { setEnemyButtonGroupSize } from 'features/run-assistant/actions/controls';
 import { Button, Container, Segment } from 'semantic-ui-react';
+import '../enemy-buttons/EnemyButtons.css';
 import { CompactEnemyButton } from '../enemy-buttons/EnemyButton';
 
 const mapStateToProps = (state) => ({
@@ -90,15 +91,14 @@ const EnemyButtonContainer = ({
   }, [hotkeys, handleHotkey]);
 
   return (
-    <Container style={{ width: '100%' }}>
+    <Container className="enemy-buttons-container">
       <Segment>
-        <Button.Group style={{ width: '100%', margin: '2px' }}>
+        <Button.Group className="enemy-button-group">
           {groupSize === null
             ? enemyGroupSizes.map((size) => (
                 <button
                   key={size}
-                  style={{ height: '60px', margin: '0 2px', flex: 1 }}
-                  className="ui button"
+                  className="ui button compact-size-button"
                   onClick={() => selectGroupSize(size)}
                 >
                   {size}

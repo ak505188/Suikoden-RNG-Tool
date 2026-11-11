@@ -6,6 +6,7 @@ import Table from './Table';
 import Filter from './Filter';
 import ColumnDropdown from './ColumnDropdown';
 import ExportModal from './export-modal';
+import './TableContainer.css';
 
 const createDefaultRowsToRender = (data) => data.map((_row, index) => index);
 
@@ -37,9 +38,9 @@ const TableContainer = (props) => {
     <AutoSizer>
       {({ height, width }) => (
         <React.Fragment>
-          <div style={{ display: 'flex', justifyContent: 'space-between', width, height: 38 }}>
+          <div className="table-toolbar" style={{ width, height: 38 }}>
             {props.filter !== false ? (
-              <div style={{ marginRight: 'auto' }}>
+              <div className="table-toolbar-filter">
                 <Filter
                   data={props.filterFromData !== undefined ? dataForFilter : props.data}
                   setRowsToRender={setRowsToRender}

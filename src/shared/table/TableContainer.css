@@ -1,0 +1,9 @@
+/* The row above a table: filter at the left, then Export and the column choice */
+.table-toolbar {
+  display: flex;
+  justify-content: space-between;
+}
+
+.table-toolbar-filter {
+  margin-right: auto;
+}
